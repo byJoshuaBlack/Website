@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       <section className="gutter flex justify-center pb-10 pt-6 sm:pb-14 sm:pt-10 lg:pb-20 lg:pt-12">
-        <h1 data-giant-wordmark className="w-full lg:w-[70%]">
+        <h1 data-giant-wordmark className="w-full text-pine lg:w-[70%]">
           <Wordmark />
         </h1>
       </section>

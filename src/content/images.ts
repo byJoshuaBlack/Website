@@ -1,28 +1,35 @@
 import type { ImageAsset } from "./types";
 
-import edNavy01 from "@/assets/images/editorial/ed-navy-01.jpg";
-import edNavy02 from "@/assets/images/editorial/ed-navy-02.jpg";
-import edNavy03 from "@/assets/images/editorial/ed-navy-03.jpg";
-import edNavy04 from "@/assets/images/editorial/ed-navy-04.jpg";
-import edNavy05 from "@/assets/images/editorial/ed-navy-05.jpg";
-import edNavy06 from "@/assets/images/editorial/ed-navy-06.jpg";
-import edNavy07 from "@/assets/images/editorial/ed-navy-07.jpg";
-import edNavy08 from "@/assets/images/editorial/ed-navy-08.jpg";
-import edNavy09 from "@/assets/images/editorial/ed-navy-09.jpg";
-import edTan01 from "@/assets/images/editorial/ed-tan-01.jpg";
-import edTan02 from "@/assets/images/editorial/ed-tan-02.jpg";
-import edTan03 from "@/assets/images/editorial/ed-tan-03.jpg";
-import edTan04 from "@/assets/images/editorial/ed-tan-04.jpg";
-import ppBoxEngraved from "@/assets/images/product/pp-box-engraved-01.jpg";
-import ppBoxOpen from "@/assets/images/product/pp-box-open-01.jpg";
-import ppBoxStack from "@/assets/images/product/pp-box-stack-01.jpg";
-import ppCloseup from "@/assets/images/product/pp-closeup-01.jpg";
-import ppDrape from "@/assets/images/product/pp-drape-01.jpg";
-import ppFan from "@/assets/images/product/pp-fan-01.jpg";
-import ppFounderBox from "@/assets/images/product/pp-founder-box-01.jpg";
-import ppNoir from "@/assets/images/product/pp-noir-01.jpg";
-import ppRail from "@/assets/images/product/pp-rail-01.jpg";
-import ppRust from "@/assets/images/product/pp-rust-01.jpg";
+import edNavy01 from "@/assets/images/editorial/ed-navy-01.webp";
+import edNavy02 from "@/assets/images/editorial/ed-navy-02.webp";
+import edNavy03 from "@/assets/images/editorial/ed-navy-03.webp";
+import edNavy04 from "@/assets/images/editorial/ed-navy-04.webp";
+import edNavy05 from "@/assets/images/editorial/ed-navy-05.webp";
+import edNavy06 from "@/assets/images/editorial/ed-navy-06.webp";
+import edNavy07 from "@/assets/images/editorial/ed-navy-07.webp";
+import edNavy08 from "@/assets/images/editorial/ed-navy-08.webp";
+import edNavy09 from "@/assets/images/editorial/ed-navy-09.webp";
+import edTan01 from "@/assets/images/editorial/ed-tan-01.webp";
+import edTan02 from "@/assets/images/editorial/ed-tan-02.webp";
+import edTan03 from "@/assets/images/editorial/ed-tan-03.webp";
+import edTan04 from "@/assets/images/editorial/ed-tan-04.webp";
+import ppBoxEngraved from "@/assets/images/product/pp-box-engraved-01.webp";
+import ppBoxOpen from "@/assets/images/product/pp-box-open-01.webp";
+import ppBoxStack from "@/assets/images/product/pp-box-stack-01.webp";
+import ppCloseup from "@/assets/images/product/pp-closeup-01.webp";
+import ppDrape from "@/assets/images/product/pp-drape-01.webp";
+import ppFan from "@/assets/images/product/pp-fan-01.webp";
+import ppFounderBox from "@/assets/images/product/pp-founder-box-01.webp";
+import ppNoir from "@/assets/images/product/pp-noir-01.webp";
+import ppRail from "@/assets/images/product/pp-rail-01.webp";
+import ppRust from "@/assets/images/product/pp-rust-01.webp";
+import tileAubergine from "@/assets/images/product/tile-aubergine.webp";
+import tileBlackPaisley from "@/assets/images/product/tile-black-paisley.webp";
+import tileChampagne from "@/assets/images/product/tile-champagne.webp";
+import tileEmerald from "@/assets/images/product/tile-emerald.webp";
+import tileMidnight from "@/assets/images/product/tile-midnight.webp";
+import tileSlate from "@/assets/images/product/tile-slate.webp";
+import tileTenth from "@/assets/images/product/tile-tenth.webp";
 
 export const images = {
   "pp-box-open": {
@@ -116,5 +123,33 @@ export const images = {
   "ed-tan-04": {
     src: edTan04,
     alt: "A man in a tan suit laughing in an armchair, navy socks and black shoes showing",
+  },
+  "tile-aubergine": {
+    src: tileAubergine,
+    alt: "Aubergine pocket square with a lilac and gold paisley print",
+  },
+  "tile-black-paisley": {
+    src: tileBlackPaisley,
+    alt: "Black pocket square with a gold paisley print and bronze edge",
+  },
+  "tile-champagne": {
+    src: tileChampagne,
+    alt: "Plain champagne pocket square with a soft sheen",
+  },
+  "tile-emerald": {
+    src: tileEmerald,
+    alt: "Emerald pocket square with a gold and red medallion print, draped in front of its box",
+  },
+  "tile-midnight": {
+    src: tileMidnight,
+    alt: "Navy pocket square with a blue diamond and white dot print",
+  },
+  "tile-slate": {
+    src: tileSlate,
+    alt: "Pocket squares hanging in folds, a slate blue square with black linework among them",
+  },
+  "tile-tenth": {
+    src: tileTenth,
+    alt: "Folded pocket squares inside an open Pocket Power box",
   },
 } satisfies Record<string, ImageAsset>;

@@ -3,6 +3,7 @@ import { Frame } from "@/components/ui/Frame";
 import { TextLink } from "@/components/ui/TextLink";
 import type { LinkItem, Picture } from "@/content/types";
 import { cn } from "@/lib/cn";
+import { sizes } from "@/lib/sizes";
 
 type Props = {
   title: string;
@@ -24,9 +25,9 @@ export function HeroBanner({ title, kicker, picture, links = [], href, opening, 
     >
       <Frame
         picture={picture}
-        sizes="100vw"
+        sizes={sizes.full}
         priority={opening}
-        hover={false}
+        quality={85}
         aspect="aspect-portrait md:aspect-[16/9] md:max-h-[92svh] md:w-full"
       />
       {href && <Link href={href} tabIndex={-1} aria-hidden="true" className="absolute inset-0" />}

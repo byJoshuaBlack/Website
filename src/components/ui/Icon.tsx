@@ -8,6 +8,12 @@ const glyphs = {
       <path d="m20 20-4.2-4.2" />
     </>
   ),
+  bag: (
+    <>
+      <path d="M5 8.5h14l-.9 11.5H5.9L5 8.5Z" />
+      <path d="M8.8 8.5V7a3.2 3.2 0 0 1 6.4 0v1.5" />
+    </>
+  ),
   close: <path d="m5.5 5.5 13 13m0-13-13 13" />,
   "chevron-right": <path d="m9.5 5.5 6.5 6.5-6.5 6.5" />,
   "chevron-left": <path d="M14.5 5.5 8 12l6.5 6.5" />,

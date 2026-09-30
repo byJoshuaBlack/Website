@@ -20,6 +20,10 @@ here. This site has no dark mode, no backend and no dashboard.
 - All copy, products, articles and contact details live in `src/content/`. Components never hard-code them.
 - Client components receive data as props and never import `src/content/*`.
 - Photos are statically imported through `src/content/images.ts`, never referenced by string path.
+- Photos are WebP, at most 1920px wide, produced by `scripts/prepare-photos.mjs`. Never add an
+  AI upscaler: the brand wants sharper photos with no feature changed.
+- Pages span the full window at every width. Do not cap the page width; the brand rejected that.
+- Images are delivered as WebP at quality 80, or 85 for heroes and the product gallery.
 - The logo lives in `src/components/brand/`: `Logo` masks the official artwork, `Wordmark` typesets
   the name in Tusker Grotesk.
 - Brand palette: carbon `#1A1A1A`, bronze `#CD7F32`, pine `#004F49`, linen `#F5F1E8`.
@@ -36,3 +40,5 @@ here. This site has no dark mode, no backend and no dashboard.
 
 - `npm run dev` — local server on port 3000
 - `npm run check` — type-check, lint and production build
+- `npm run photos -- <folder>` — prepare photos
+- Judge image sharpness on `npm run build && npm run start`, not on the dev server.

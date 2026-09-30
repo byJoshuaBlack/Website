@@ -14,7 +14,7 @@ export function ProductGallery({ pictures }: { pictures: Picture[] }) {
           id={`photo-${index + 1}`}
           className="w-full shrink-0 snap-center scroll-mt-[calc(var(--header-h)+1rem)] lg:w-auto"
         >
-          <Frame picture={picture} sizes={sizes.productMain} priority={index === 0} hover={false} />
+          <Frame picture={picture} sizes={sizes.productMain} priority={index === 0} quality={85} />
         </li>
       ))}
     </ul>
@@ -28,7 +28,7 @@ export function ProductThumbs({ pictures }: { pictures: Picture[] }) {
       {pictures.map((picture, index) => (
         <li key={index} className="w-11">
           <a href={`#photo-${index + 1}`} aria-label={`Photo ${index + 1}`} className="block border border-transparent transition-colors hover:border-ink focus-visible:border-ink">
-            <Frame picture={{ ...picture, alt: "" }} sizes={sizes.thumb} eager hover={false} />
+            <Frame picture={{ ...picture, alt: "" }} sizes={sizes.thumb} eager />
           </a>
         </li>
       ))}

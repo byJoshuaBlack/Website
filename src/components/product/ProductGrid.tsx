@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
+import { sizes } from "@/lib/sizes";
 import { ProductCard, type ProductCardData } from "./ProductCard";
 
 type Density = "large" | "medium" | "small";
@@ -14,7 +15,7 @@ const densities: { id: Density; icon: IconName; label: string; grid: string; siz
     icon: "grid-2",
     label: "Large tiles",
     grid: "grid-cols-1 md:grid-cols-2",
-    sizes: "(min-width: 768px) 50vw, 100vw",
+    sizes: sizes.half,
     mobile: true,
   },
   {
@@ -22,7 +23,7 @@ const densities: { id: Density; icon: IconName; label: string; grid: string; siz
     icon: "grid-3",
     label: "Medium tiles",
     grid: "grid-cols-2 md:grid-cols-3",
-    sizes: "(min-width: 768px) 33vw, 50vw",
+    sizes: sizes.third,
     mobile: true,
   },
   {

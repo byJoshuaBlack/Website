@@ -11,7 +11,7 @@ const pieceDetails = [
 ];
 
 // Square names are working titles taken from colour and pattern. Rename freely.
-// Squares marked needsPhoto only appear inside group shots.
+// `tile-*` images are cut from group shots by scripts/prepare-photos.mjs.
 export const products: Product[] = [
   {
     slug: "pocket-power",
@@ -56,7 +56,7 @@ export const products: Product[] = [
     ],
     details: pieceDetails,
     care: [],
-    tile: { id: "pp-closeup", crop: { x: 17, y: 52, zoom: 1.9 }, alt: "Emerald pocket square with a gold and red medallion print" },
+    tile: { id: "tile-emerald" },
     gallery: [{ id: "pp-rail" }, { id: "pp-closeup" }, { id: "pp-box-open" }, { id: "pp-fan" }],
   },
   {
@@ -71,7 +71,7 @@ export const products: Product[] = [
     ],
     details: pieceDetails,
     care: [],
-    tile: { id: "pp-closeup", crop: { x: 58, y: 54, zoom: 1.9 }, alt: "Navy pocket square with a blue diamond and white dot print" },
+    tile: { id: "tile-midnight" },
     gallery: [{ id: "pp-rail" }, { id: "pp-closeup" }, { id: "pp-fan" }],
   },
   {
@@ -86,7 +86,7 @@ export const products: Product[] = [
     ],
     details: pieceDetails,
     care: [],
-    tile: { id: "pp-fan", crop: { x: 26, y: 70, zoom: 2 }, alt: "Black pocket square with a gold paisley print and bronze edge" },
+    tile: { id: "tile-black-paisley" },
     gallery: [{ id: "pp-rail" }, { id: "pp-fan" }, { id: "pp-drape" }],
   },
   {
@@ -146,7 +146,7 @@ export const products: Product[] = [
     ],
     details: pieceDetails,
     care: [],
-    tile: { id: "pp-fan", crop: { x: 63, y: 76, zoom: 2 }, alt: "Plain champagne pocket square with a soft sheen" },
+    tile: { id: "tile-champagne" },
     gallery: [{ id: "pp-fan" }, { id: "pp-box-open" }],
   },
   {
@@ -161,7 +161,7 @@ export const products: Product[] = [
     ],
     details: pieceDetails,
     care: [],
-    tile: { id: "pp-drape", crop: { x: 24, y: 40, zoom: 1.8 }, alt: "Aubergine pocket square with a lilac and gold paisley print" },
+    tile: { id: "tile-aubergine" },
     gallery: [{ id: "pp-drape" }, { id: "pp-box-open" }],
     needsPhoto: true,
   },
@@ -177,7 +177,7 @@ export const products: Product[] = [
     ],
     details: pieceDetails,
     care: [],
-    tile: { id: "pp-drape", crop: { x: 50, y: 58, zoom: 2 }, alt: "Pocket squares hanging in folds, a slate blue square with black linework at the centre" },
+    tile: { id: "tile-slate" },
     gallery: [{ id: "pp-drape" }, { id: "pp-box-open" }],
     needsPhoto: true,
   },
@@ -193,7 +193,7 @@ export const products: Product[] = [
     ],
     details: pieceDetails,
     care: [],
-    tile: { id: "pp-box-open", crop: { x: 57, y: 38, zoom: 1.7 }, alt: "Folded pocket squares inside an open Pocket Power box" },
+    tile: { id: "tile-tenth" },
     gallery: [{ id: "pp-box-open" }, { id: "pp-drape" }],
     needsPhoto: true,
   },

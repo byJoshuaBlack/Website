@@ -2,9 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    formats: ["image/avif", "image/webp"],
-    // Portraits are 2400px wide; product shots stop at 1080px.
-    deviceSizes: [480, 640, 750, 828, 1080, 1200, 1600, 1920, 2400],
+    formats: ["image/webp"],
+    qualities: [80, 85],
+    // Stored photos top out at 1920px, so no larger candidate is worth generating.
+    deviceSizes: [480, 640, 750, 828, 1080, 1200, 1600, 1920],
     imageSizes: [96, 160, 256, 384],
     minimumCacheTTL: 2678400,
   },

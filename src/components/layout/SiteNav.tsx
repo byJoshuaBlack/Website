@@ -19,6 +19,9 @@ type Props = {
 
 export function SiteNav({ nav, searchIndex, suggestions, order, extras }: Props) {
   const pathname = usePathname();
+  const onOrder = pathname === order.href;
+  const tab = "flex h-10 flex-1 items-center justify-center gap-2 rounded-full px-4 text-label transition-colors duration-300";
+  const tabActive = "bg-ink/85 text-paper";
   const header = useRef<HTMLElement>(null);
   const menu = useRef<HTMLDialogElement>(null);
   const search = useRef<HTMLDialogElement>(null);
@@ -95,20 +98,33 @@ export function SiteNav({ nav, searchIndex, suggestions, order, extras }: Props)
       </header>
 
       <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 lg:hidden">
-        <div className="mx-auto flex h-14 max-w-md items-center justify-between rounded-full bg-paper/95 pl-2 pr-3 shadow-[0_4px_24px_rgb(0_0_0/0.16)] backdrop-blur">
+        <div className="mx-auto flex max-w-md items-center gap-2">
+          <div className="flex h-14 flex-1 items-center rounded-full glass px-2">
+            <button
+              type="button"
+              onClick={openMenu}
+              aria-haspopup="dialog"
+              className={`${tab} ${onOrder ? "" : tabActive}`}
+            >
+              <Icon name="menu" size={18} />
+              Menu
+            </button>
+            <Link
+              href={order.href}
+              aria-current={onOrder ? "page" : undefined}
+              className={`${tab} uppercase ${onOrder ? tabActive : ""}`}
+            >
+              <Icon name="bag" size={18} />
+              {order.label}
+            </Link>
+          </div>
           <button
             type="button"
-            onClick={openMenu}
+            onClick={openSearch}
             aria-haspopup="dialog"
-            className="flex h-10 items-center gap-2 rounded-full bg-ink pl-4 pr-5 text-label text-paper"
+            aria-label="Search"
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-full glass"
           >
-            <Icon name="menu" size={18} />
-            Menu
-          </button>
-          <Link href={order.href} className="px-3 text-label uppercase">
-            {order.label}
-          </Link>
-          <button type="button" onClick={openSearch} aria-haspopup="dialog" aria-label="Search" className="grid h-10 w-10 place-items-center">
             <Icon name="search" />
           </button>
         </div>

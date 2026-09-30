@@ -19,6 +19,8 @@ Open http://localhost:3000.
 | `npm run dev` | Local server with live reload |
 | `npm run check` | Type-check, lint and production build |
 | `npm run build` | Production build only |
+| `npm run start` | Serve the production build (run `build` first) |
+| `npm run photos -- <folder>` | Prepare photos as WebP (see below) |
 
 ## Edit the site
 
@@ -56,18 +58,41 @@ price: { amount: 150000, currency: "NGN" },
 
 Products without a price show none. While `showPrices` is off, prices never reach the page source.
 
-### Add a photo
+### Add or replace a photo
 
-1. Put the file in `src/assets/images/product/` or `src/assets/images/editorial/`.
-2. Import it in `src/content/images.ts` and add an entry with a description.
-3. Refer to it by its id: `{ id: "pp-new-photo" }`.
+Photos are stored as WebP, at most 1920px wide, and are prepared by a script rather than by hand.
 
-To frame one part of a photo, add a crop. `x` and `y` are the focal point in percent, `zoom` runs
-from 1 to 2:
+1. Put the original files in a folder with two subfolders, `product/` and `editorial/`.
+2. Run the script on that folder:
+
+   ```bash
+   npm run photos -- "/path/to/that/folder"
+   ```
+
+   It resizes each photo, sharpens it lightly and saves it to `src/assets/images/` as `.webp`.
+   It never invents detail, so the sharper the original, the sharper the result.
+3. Import the new file in `src/content/images.ts` and add an entry with a description.
+4. Refer to it by its id: `{ id: "pp-new-photo" }`.
+
+A file with the same name replaces the existing photo, so better originals can be dropped in
+without touching any other file.
+
+Squares without a photo of their own use a tile cut from a group shot. The cuts are listed at the
+top of `scripts/prepare-photos.mjs`; `x` and `y` are the focal point in percent.
+
+To shift which part of a photo shows inside its frame, add a focal point where the photo is used:
 
 ```ts
-{ id: "pp-fan", crop: { x: 26, y: 70, zoom: 2 } }
+{ id: "ed-tan-02", crop: { x: 45, y: 34 } }
 ```
+
+### How images are delivered
+
+Visitors never download the stored files. Each image is resized to the width their screen needs
+and sent as WebP, and images below the first screen load only when scrolled to.
+
+Pages span the full window. On very wide screens a full-width photo is stretched beyond the
+1920px that is stored, so sharper originals matter most there.
 
 ## Brand
 
@@ -116,4 +141,6 @@ Small headings and numerals switch to the bold weight on their own.
 - Add the WhatsApp number.
 - Replace the working names of the ten squares in `src/content/products.ts`.
 - Photograph the three squares marked `needsPhoto`.
+- Replace the founder portraits with the original camera files. The current ones came from
+  Instagram and are soft at large sizes.
 - Add care instructions to each product's `care` list. The section stays hidden while it is empty.

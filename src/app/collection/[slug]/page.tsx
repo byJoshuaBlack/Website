@@ -153,7 +153,7 @@ export default async function ProductPage(props: PageProps<"/collection/[slug]">
 
             {isPiece && (
               <Link href={`/collection/${box.slug}`} className="group mt-8 flex items-center gap-4 bg-paper p-3">
-                <Frame picture={picture(box.tile)} sizes={sizes.thumb} className="w-14 shrink-0" hover={false} />
+                <Frame picture={picture(box.tile)} sizes={sizes.thumb} className="w-14 shrink-0" />
                 <span>
                   <span className="display block text-[1.125rem] tracking-[0.04em]">{box.name}</span>
                   <span className="link-line-in text-label text-mute">Discover the box of ten</span>

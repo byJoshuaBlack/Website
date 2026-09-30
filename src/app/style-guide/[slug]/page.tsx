@@ -52,7 +52,7 @@ export default async function ArticlePage(props: PageProps<"/style-guide/[slug]"
     <>
       <article className="lg:grid lg:grid-cols-2">
         <div className="lg:sticky lg:top-(--header-h) lg:h-[calc(100svh-var(--header-h))] lg:self-start">
-          <Frame picture={cover} sizes={sizes.half} priority hover={false} aspect="aspect-portrait lg:aspect-auto lg:h-full" />
+          <Frame picture={cover} sizes={sizes.half} priority quality={85} aspect="aspect-portrait lg:aspect-auto lg:h-full" />
         </div>
 
         <div className="gutter pb-16 pt-10 lg:px-16 lg:pb-24 lg:pt-16 xl:px-24">
