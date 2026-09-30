@@ -45,7 +45,7 @@ export const home = {
 
   hero: {
     title: "The intentional man",
-    image: { id: "ed-tan-02", crop: { x: 45, y: 34 } } satisfies ImageRef,
+    image: { id: "ed-tan-02", crop: { x: 45, y: 14 } } satisfies ImageRef,
     links: [
       { label: "Discover Pocket Power", href: "/collection/pocket-power" },
       { label: "Read the Style Guide", href: "/style-guide" },
@@ -136,7 +136,7 @@ export const world = {
   hero: {
     kicker: "The World of Joshua Black",
     title: "2 words. 1 idea.",
-    image: { id: "ed-navy-03", crop: { x: 55, y: 28 } } satisfies ImageRef,
+    image: { id: "ed-navy-03", crop: { x: 55, y: 10 } } satisfies ImageRef,
   },
   name: {
     intro: "Joshua Black is more than a name. It is the idea behind everything the brand makes.",
