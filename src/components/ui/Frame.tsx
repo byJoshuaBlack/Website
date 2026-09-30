@@ -19,9 +19,9 @@ type Props = {
 };
 
 export function Frame({ picture, sizes, eager, priority, quality = 80, aspect = "aspect-portrait", className }: Props) {
-  const crop = cropLayout(picture.crop);
+  const crop = cropLayout(picture.crop, picture.src.height / picture.src.width);
   return (
-    <div className={cn("relative overflow-hidden bg-tile", aspect, className)}>
+    <div className={cn("relative overflow-hidden bg-tile", crop.contained && "@container-[size]", aspect, className)}>
       <div className="absolute" style={crop.box}>
         <Image
           src={picture.src}

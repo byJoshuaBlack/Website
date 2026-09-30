@@ -13,6 +13,8 @@ export type Crop = {
   x: number;
   y: number;
   zoom?: number;
+  /** Percent of the photo's height trimmed above the subject when the frame is wider than the photo. Replaces `y`. */
+  top?: number;
 };
 
 export type ImageRef = {

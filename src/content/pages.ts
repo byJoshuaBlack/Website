@@ -45,7 +45,7 @@ export const home = {
 
   hero: {
     title: "The intentional man",
-    image: { id: "ed-tan-02", crop: { x: 45, y: 14 } } satisfies ImageRef,
+    image: { id: "ed-tan-02", crop: { x: 45, y: 14, top: 11.5 } } satisfies ImageRef,
     links: [
       { label: "Discover Pocket Power", href: "/collection/pocket-power" },
       { label: "Read the Style Guide", href: "/style-guide" },
