@@ -64,10 +64,7 @@ export function IntroHero({ title, accents, body, link, rise, picture }: Props) 
           <h1 className="heading-lg md:max-w-[22ch] md:text-balance leading-[1.16] max-md:text-[length:min(calc((100vw-4.25rem)/8.5),4.25rem)]">
             <Highlight text={title} marks={accents.map((accent) => ({ text: accent.text, className: tones[accent.tone] }))} />
           </h1>
-        </div>
-        {/* On phones the description scales with the card, its longest line filling most of the width, and the
-            button takes that line's width (the block shrinks to fit it). */}
-        <div className="relative z-20 w-full max-md:ml-[calc(var(--gutter)*2)] max-md:w-fit">
+          {/* On phones the description scales with the card, its longest line filling most of the width. */}
           <p className="copy-lg mt-1 max-w-[40ch] leading-[1.25] md:mt-5 max-md:max-w-none max-md:text-[length:min(calc((100vw-4.25rem)/16),1.5rem)]">
             {body.map((line, index) => (
               <Fragment key={line}>
@@ -76,11 +73,11 @@ export function IntroHero({ title, accents, body, link, rise, picture }: Props) 
               </Fragment>
             ))}
           </p>
-          <div className="mt-4 w-full md:mt-8 md:max-w-sm">
-            <Button href={link.href} variant="bronze">
-              {link.label}
-            </Button>
-          </div>
+        </div>
+        <div className="relative z-20 mt-4 w-full md:mt-8 md:max-w-sm">
+          <Button href={link.href} variant="bronze">
+            {link.label}
+          </Button>
         </div>
         <ul
           aria-label="What RISE stands for"

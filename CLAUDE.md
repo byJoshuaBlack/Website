@@ -91,8 +91,8 @@ here. This site has no dark mode, no backend and no dashboard.
 - The home hero is a rounded carbon card floating on linen at every width (6px from the screen's
   edges on phones). Its photo dissolves into
   the carbon on the side facing the text, over a blurred stretch of its own edge colours. The text
-  is linen and left-aligned at every width (button and RISE panel share its left edge; on phones the button is exactly as wide as the description's
-  longest line, the RISE panel spans the card inside its gutters, and the
+  is linen and left-aligned at every width (button and RISE panel share its left edge; on phones the button and RISE panel span the card inside its gutters (the brand tried the button
+  at the description's width and went back), and the
   headline and description sit further in, three gutters from the card's edge; at every width the
   description runs in four lines, as the brand asked: "If you're here, dressing classy" / "probably feels like guesswork." / "You're not alone. It's hard, but" / "I can guide you."; on phones it scales with the card so its longest line fills about 90% of the text width; it is set at 1.25 leading, tighter than other copy), on phones the headline scales with the card and fills each line before breaking, so it always reads "Dress classy without / guessing. With the RISE / framework." (it is only width-capped from `md`), RISE is underlined (pine would sink into carbon), "Dress classy without guessing." is bronze, and the
   button (Get Started, to the RISE article) is a bronze pill.
