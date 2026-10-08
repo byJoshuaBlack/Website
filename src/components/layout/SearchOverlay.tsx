@@ -26,7 +26,7 @@ export function SearchOverlay({ ref, index, suggestions }: Props) {
       onClick={(event) => {
         if (event.target === event.currentTarget) close();
       }}
-      className="fixed inset-0 m-0 h-dvh w-screen bg-transparent p-0 text-ink backdrop:bg-white/70"
+      className="fixed inset-0 m-0 h-dvh w-screen bg-transparent p-0 text-ink backdrop:bg-paper/70"
     >
       <div className="max-h-dvh animate-sheet-in overflow-y-auto border-b border-rule bg-paper">
         <div className="gutter flex h-(--header-h) items-center gap-4 border-b border-rule">

@@ -5,21 +5,21 @@
   --font-display: var(--font-tusker), "Arial Narrow", Impact, sans-serif;
   /* Tusker Grotesk 3700 Bold falls back to 3500 Medium until its file is added. */
   --font-display-bold: var(--font-tusker-bold, var(--font-tusker)), "Arial Narrow", Impact, sans-serif;
-  --font-serif: var(--font-baskerville), Georgia, "Times New Roman", serif;
   --font-script: var(--font-signature), cursive;
 }
 
 @theme {
-  --color-paper: #ffffff;
+  /* Only the brand's four colours: carbon, bronze, pine and linen. Paper is the page ground, soft
+     linen; the site uses no white. Softer tones are carbon faded onto linen, never a new colour. */
+  --color-paper: #f5f1e8;
   --color-ink: #1a1a1a;
-  --color-mute: #696969;
-  --color-tile: #f8f8f8;
-  --color-rule: #e5e5e5;
   --color-linen: #f5f1e8;
   --color-pine: #004f49;
   --color-bronze: #cd7f32;
-  /* Bronze darkened until it passes 4.5:1 as text on white and linen. */
-  --color-bronze-ink: #95581c;
+  /* Secondary text, image placeholders and hairlines. */
+  --color-mute: rgb(26 26 26 / 0.7);
+  --color-tile: rgb(26 26 26 / 0.05);
+  --color-rule: rgb(26 26 26 / 0.14);
 
   --text-tiny: 0.6875rem;
   --text-tiny--line-height: 1.5;
@@ -41,7 +41,10 @@
   --header-h: 60px;
   --gutter: 16px;
   --caption-pad: 24px;
-  --drawer-col: 266px;
+  /* Wider windows centre the page on linen instead of stretching it. */
+  --page-max: 1600px;
+  /* Room kept clear at the bottom for the floating dock below lg. */
+  --dock-space: 5rem;
   color-scheme: light;
 }
 
@@ -57,10 +60,36 @@
     --header-h: 72px;
     --gutter: 64px;
     --caption-pad: 64px;
+    --dock-space: 0px;
   }
 }
 
-@custom-variant over-hero (&:where([data-scrolled="false"]):where(body:has([data-hero]) *));
+@custom-variant over-hero (&:where([data-scrolled="false"], [data-scrolled="false"] *):where(body:has([data-hero]) *));
+
+/* Items inside the header while it sits over a hero, which is dark behind every part of it. */
+@custom-variant over-photo (&:where([data-scrolled="false"] *):where(body:has([data-hero]) *));
+
+/* Anything on the home page, which opens with the full-width hero card. */
+@custom-variant on-home (&:where(body:has([data-wide]) *));
+
+/* The dock while a full-screen hero sits at the top of the page; script marks it once the page scrolls. */
+@custom-variant hero-in-view {
+  @media (scripting: enabled) {
+    &:where(body:has([data-wide]) *):not([data-past-hero]) {
+      @slot;
+    }
+  }
+}
+
+/* Nothing should move: the visitor asked for less motion, or no script runs to drive it. */
+@custom-variant still {
+  @media (prefers-reduced-motion: reduce) {
+    @slot;
+  }
+  @media (scripting: none) {
+    @slot;
+  }
+}
 
 @layer base {
   html {
@@ -117,6 +146,13 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* Content stays within the page width; backgrounds and rules around it run edge to edge. */
+@utility page-width {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--page-max);
 }
 
 @utility gutter {
@@ -184,7 +220,7 @@
 @utility heading-lg {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.5rem, 1.9rem + 2.4vw, 4.25rem);
+  font-size: clamp(2rem, 1.45rem + 2.6vw, 4.25rem);
   line-height: 1.04;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -209,23 +245,23 @@
   text-transform: uppercase;
 }
 
-/* Libre Baskerville is set with generous leading, per the brand guide. */
+/* Body copy is Inter, set with comfortable leading. */
 @utility copy {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 0.9375rem;
-  line-height: 1.85;
+  line-height: 1.4;
   letter-spacing: 0;
 }
 
 @utility copy-lg {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
-  line-height: 1.85;
+  line-height: 1.4;
   letter-spacing: 0;
 }
 
 @utility quote {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-style: italic;
   line-height: 1.5;
   letter-spacing: 0;
@@ -239,35 +275,50 @@
   text-transform: none;
 }
 
+/* Liquid glass for dark grounds, such as the hero card: a faint linen tint over a blur. */
+@utility glass-dark {
+  background: linear-gradient(rgb(245 241 232 / 0.1), rgb(245 241 232 / 0.03));
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgb(245 241 232 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(245 241 232 / 0.2),
+    inset 0 -1px 0 rgb(26 26 26 / 0.25);
+}
+
+/* Clear liquid glass for controls over photos: a faint linen tint, a strong blur and a lit edge. */
+@utility glass-clear {
+  background: linear-gradient(rgb(245 241 232 / 0.34), rgb(245 241 232 / 0.14));
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgb(245 241 232 / 0.42);
+  box-shadow:
+    inset 0 1px 0 rgb(245 241 232 / 0.55),
+    inset 0 -1px 0 rgb(26 26 26 / 0.08);
+}
+
+/* Frosted linen glass for the floating dock: clear tint, blurred backdrop, lit top edge. */
+@utility glass {
+  background: linear-gradient(rgb(245 241 232 / 0.62), rgb(245 241 232 / 0.4));
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgb(245 241 232 / 0.6);
+  box-shadow:
+    inset 0 1px 0 rgb(245 241 232 / 0.85),
+    inset 0 -1px 0 rgb(26 26 26 / 0.06),
+    0 0 0 0.5px rgb(26 26 26 / 0.1),
+    0 8px 32px rgb(26 26 26 / 0.18);
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: rgb(245 241 232 / 0.96);
+  }
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
-  }
-}
-
-/* Frosted glass for the mobile bottom bar: clear tint, blurred backdrop, lit top edge. */
-@utility glass {
-  background: linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.32));
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  backdrop-filter: blur(18px) saturate(180%);
-  border: 1px solid rgb(255 255 255 / 0.45);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.75),
-    inset 0 -1px 0 rgb(0 0 0 / 0.06),
-    0 0 0 0.5px rgb(0 0 0 / 0.1),
-    0 8px 32px rgb(0 0 0 / 0.18);
-
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    background: rgb(255 255 255 / 0.95);
-  }
-}
-
-@keyframes drawer-in {
-  from {
-    opacity: 0;
-    transform: translateX(-16px);
   }
 }
 
@@ -284,11 +335,40 @@
   }
 }
 
+/* One glyph of the hero's RISE row. Staggered letter by letter, the glow sweeps through the row
+   like synced lyrics: it brightens and lifts quickly, then trails off as the wave moves on. */
+@keyframes rise-wave {
+  0%,
+  32%,
+  100% {
+    opacity: 0.38;
+    transform: none;
+  }
+  7%,
+  15% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 @theme {
-  --animate-drawer-in: drawer-in 0.4s var(--ease-editorial) both;
   --animate-sheet-in: sheet-in 0.4s var(--ease-editorial) both;
+  --animate-rise-wave: rise-wave 6s ease-in-out infinite both;
 }
 
 dialog::backdrop {
   animation: veil-in 0.3s ease-out both;
+}
+
+/* While the carbon menu is open the page's top and bottom edges turn carbon too, so the browser's own
+   bars, which take their colour from the page, match it. */
+html:has(dialog[data-menu][open]) :is(body, header, nav[aria-label="Quick links"]) {
+  background: var(--color-ink);
+}
+
+/* A page that opens with a wide hero lets its main column and header row span the window; the
+   sections after it keep the page width themselves. Unlayered, so it wins over `page-width`. */
+main:has(> [data-wide]),
+body:has([data-wide]) header > div {
+  max-width: none;
 }

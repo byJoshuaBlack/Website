@@ -67,7 +67,7 @@ export default function WorldPage() {
           <ol className="mt-10 border-t border-rule lg:mt-14">
             {world.timeline.events.map((event) => (
               <li key={event.date} className="grid gap-x-8 gap-y-2 border-b border-rule py-6 sm:grid-cols-[9rem_1fr]">
-                <p className="text-tiny uppercase text-bronze-ink sm:pt-1.5">{event.date}</p>
+                <p className="text-tiny uppercase text-bronze sm:pt-1.5">{event.date}</p>
                 <p className="copy-lg">{event.text}</p>
               </li>
             ))}

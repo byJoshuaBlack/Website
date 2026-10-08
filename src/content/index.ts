@@ -9,11 +9,6 @@ function fail(message: string): never {
 }
 
 function validate() {
-  const { whatsappNumber } = site.contact;
-  if (whatsappNumber && !/^[1-9]\d{9,14}$/.test(whatsappNumber)) {
-    fail(`whatsappNumber "${whatsappNumber}" must be digits only with country code, e.g. 2348012345678`);
-  }
-
   const slugs = new Set<string>();
   for (const { slug } of [...allProducts, ...allArticles]) {
     if (slugs.has(slug)) fail(`duplicate slug "${slug}"`);
@@ -79,16 +74,22 @@ export const searchIndex: SearchEntry[] = [
     text: [a.kicker, a.excerpt].join(" "),
   })),
   {
+    title: "Traditional: the Fila",
+    kind: "Page",
+    href: "/traditional",
+    text: "fila cap Yoruba traditional agbada kaftan monogram green rose red navy tan",
+  },
+  {
     title: "The World of Joshua Black",
     kind: "Page",
     href: "/world",
     text: "about story founder Opeyemi Okediji name meaning",
   },
   {
-    title: "Order and enquiries",
+    title: "Ordering",
     kind: "Page",
     href: "/contact",
-    text: "contact order buy WhatsApp Instagram delivery",
+    text: "order buy shop online store pay delivery",
   },
 ];
 

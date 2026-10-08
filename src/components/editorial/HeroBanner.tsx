@@ -31,8 +31,8 @@ export function HeroBanner({ title, kicker, picture, links = [], href, opening, 
         aspect="aspect-portrait md:aspect-[16/9] md:max-h-[92svh] md:w-full"
       />
       {href && <Link href={href} tabIndex={-1} aria-hidden="true" className="absolute inset-0" />}
-      {opening && <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-black/45 to-transparent" />}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/65 via-black/25 to-transparent p-(--caption-pad) pt-32">
+      {opening && <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-ink/45 to-transparent" />}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-ink/65 via-ink/25 to-transparent p-(--caption-pad) pt-32">
         {kicker && <p className="mb-3 text-tiny uppercase">{kicker}</p>}
         <Heading className="heading-xl">{title}</Heading>
         {links.length > 0 && (

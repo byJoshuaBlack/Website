@@ -2,13 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Footer } from "@/components/layout/Footer";
 import { SiteNav } from "@/components/layout/SiteNav";
-import type { IconName } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { searchIndex, site } from "@/content";
-import { footerColumns, navigation } from "@/content/navigation";
+import { footerColumns, menuLinks, shopLink } from "@/content/navigation";
 import type { LinkItem } from "@/content/types";
-import { instagramProfile, orderChannels } from "@/lib/order";
-import { baskerville, inter, signature, tusker } from "./fonts";
+import { linkedProfiles, socialLinks } from "@/lib/social";
+import { inter, signature, tusker } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,25 +25,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#f5f1e8",
   viewportFit: "cover",
 };
-
-type IconLink = LinkItem & { icon: IconName };
-
-const channels = orderChannels();
-const social: IconLink[] = [
-  { label: "Instagram", href: instagramProfile, icon: "instagram", external: true },
-  ...channels
-    .filter((channel) => channel.kind === "whatsapp")
-    .map((channel): IconLink => ({ label: "WhatsApp", href: channel.href, icon: "whatsapp", external: true })),
-];
 
 const suggestions: LinkItem[] = [
   { label: "Pocket Power", href: "/collection/pocket-power" },
   { label: "The RISE framework", href: "/style-guide/the-rise-framework" },
   { label: "The World of Joshua Black", href: "/world" },
-  { label: "Order and enquiries", href: "/contact" },
+  { label: "Ordering", href: "/contact" },
 ];
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -52,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${tusker.variable} ${baskerville.variable} ${signature.variable} antialiased`}
+      className={`${inter.variable} ${tusker.variable} ${signature.variable} antialiased`}
     >
       <body className="flex min-h-dvh flex-col">
         <a
@@ -63,16 +52,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         {site.announcement && <AnnouncementBar {...site.announcement} />}
         <SiteNav
-          nav={navigation}
+          menuLinks={menuLinks}
           searchIndex={searchIndex}
           suggestions={suggestions}
-          order={{ label: "Order", href: "/contact" }}
-          extras={social}
+          shop={shopLink}
+          social={socialLinks}
         />
-        <main id="main" className="flex-1">
+        <main id="main" className="page-width flex-1">
           {children}
         </main>
-        <Footer columns={footerColumns} social={social} country={site.country} name={site.name} />
+        <Footer columns={footerColumns} social={socialLinks} name={site.name} registration={site.registration} />
         <JsonLd
           data={{
             "@context": "https://schema.org",
@@ -83,7 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             description: site.description,
             founder: { "@type": "Person", name: site.founder.name },
             address: { "@type": "PostalAddress", addressCountry: "NG" },
-            sameAs: [instagramProfile],
+            sameAs: linkedProfiles.map((link) => link.href),
           }}
         />
       </body>

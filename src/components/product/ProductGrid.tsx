@@ -83,7 +83,7 @@ export function ProductGrid({ products }: { products: ProductCardData[] }) {
                 type="button"
                 aria-pressed={filter === option.id}
                 onClick={() => setFilter(option.id)}
-                className="text-label"
+                className="whitespace-nowrap text-label"
               >
                 <span data-active={filter === option.id} className="link-line-in">
                   {option.label}

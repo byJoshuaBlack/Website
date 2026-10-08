@@ -1,24 +1,29 @@
-import { Wordmark } from "@/components/brand/Wordmark";
-import { Icon, type IconName } from "@/components/ui/Icon";
+import { Logo } from "@/components/brand/Logo";
+import { HomeLink } from "@/components/ui/HomeLink";
+import { SocialIcon } from "@/components/ui/SocialIcon";
 import { TextLink } from "@/components/ui/TextLink";
-import type { LinkItem } from "@/content/types";
+import type { LinkItem, SocialLink } from "@/content/types";
 
 type Props = {
   columns: { title: string; links: LinkItem[] }[];
-  social: (LinkItem & { icon: IconName })[];
-  country: string;
+  social: SocialLink[];
   name: string;
+  registration: string;
 };
 
-export function Footer({ columns, social, country, name }: Props) {
+export function Footer({ columns, social, name, registration }: Props) {
   return (
-    <footer className="mt-24 lg:mt-36">
-      <div className="gutter">
-        <Wordmark decorative className="pb-10 md:w-3/4 lg:w-[58%] lg:pb-14" />
-      </div>
-
+    <footer className="mt-24">
       <div className="border-t border-ink">
-        <div className="gutter grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:py-16">
+        {/* The logo and registration number lead, then the link columns and the social icons, never pushed
+            right. On phones the icons take their own row underneath. */}
+        <div className="page-width gutter grid grid-cols-2 gap-x-10 gap-y-8 pb-5 pt-12 lg:grid-cols-4 lg:py-16">
+          <div>
+            <HomeLink label={`${name}, home`} className="inline-block">
+              <Logo decorative className="h-12" />
+            </HomeLink>
+            <p className="mt-4 text-label">RC: {registration}</p>
+          </div>
           {columns.map((column) => (
             <div key={column.title}>
               <h3 className="heading-sm">{column.title}</h3>
@@ -33,33 +38,18 @@ export function Footer({ columns, social, country, name }: Props) {
               </ul>
             </div>
           ))}
-          <div>
-            <h3 className="heading-sm">Country</h3>
-            <p className="mt-5 text-label">{country}</p>
-          </div>
+          <ul aria-label="Social media" className="col-span-2 flex items-center gap-6 lg:col-span-1 lg:items-start">
+            {social.map((profile) => (
+              <li key={profile.label}>
+                <SocialIcon profile={profile} className="grid h-8 w-8 place-items-center transition-opacity [a&]:hover:opacity-60" />
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      <div className="border-t border-ink">
-        <ul className="gutter flex items-center gap-6 py-5">
-          {social.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={item.label}
-                className="grid h-8 w-8 place-items-center transition-opacity hover:opacity-60"
-              >
-                <Icon name={item.icon} />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="bg-pine pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-linen lg:pb-0">
-        <p className="gutter py-5 text-tiny">
+      <div className="bg-pine pb-[calc(var(--dock-space)+env(safe-area-inset-bottom))] text-linen">
+        <p className="page-width gutter py-5 text-tiny">
           Copyright © {new Date().getFullYear()} {name}. All rights reserved.
         </p>
       </div>

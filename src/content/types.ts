@@ -69,16 +69,23 @@ export type Article = {
   related?: string[];
 };
 
+/** A phrase in a headline picked out in a brand colour. */
+export type Accent = {
+  text: string;
+  tone: "pine" | "bronze";
+};
+
 export type LinkItem = {
   label: string;
   href: string;
   external?: boolean;
 };
 
-export type NavNode = {
+/** A social profile. Without a link yet, its icon shows in the menu but leads nowhere. */
+export type SocialLink = {
   label: string;
+  icon: "instagram" | "facebook" | "x" | "linkedin";
   href?: string;
-  children?: NavNode[];
 };
 
 export type SiteConfig = {
@@ -88,11 +95,14 @@ export type SiteConfig = {
   url: string;
   locale: string;
   country: string;
+  /** Company registration (RC) number, shown under the logo in the footer. */
+  registration: string;
   showPrices: boolean;
   contact: {
-    /** Digits only with country code, no plus sign or leading zero. Empty hides WhatsApp. */
-    whatsappNumber: string;
     instagramHandle: string;
+    facebook?: string;
+    x?: string;
+    linkedin?: string;
     email?: string;
   };
   founder: { name: string; role: string };

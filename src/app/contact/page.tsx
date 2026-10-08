@@ -1,14 +1,11 @@
-import { OrderButtons } from "@/components/product/OrderButtons";
 import { Frame } from "@/components/ui/Frame";
-import { TextLink } from "@/components/ui/TextLink";
 import { picture, site } from "@/content";
 import { contact } from "@/content/pages";
-import { instagramProfile, orderChannels } from "@/lib/order";
 import { pageMetadata } from "@/lib/seo";
 import { sizes } from "@/lib/sizes";
 
 export const metadata = pageMetadata({
-  title: "Order and Enquiries",
+  title: contact.title,
   description: contact.intro,
   path: "/contact",
 });
@@ -20,17 +17,13 @@ export default function ContactPage() {
         <h1 className="heading-lg">{contact.title}</h1>
         <p className="copy-lg mt-5 max-w-lg">{contact.intro}</p>
 
-        <div className="mt-10 max-w-sm">
-          <OrderButtons channels={orderChannels()} />
-        </div>
-
         <h2 id="how-it-works" className="heading-sm mt-16 scroll-mt-[calc(var(--header-h)+2rem)]">
-          How ordering works
+          {contact.stepsTitle}
         </h2>
         <ol className="mt-6 border-t border-rule">
           {contact.steps.map((step, index) => (
             <li key={step.title} className="grid grid-cols-[3rem_1fr] items-baseline gap-x-4 border-b border-rule py-6">
-              <span aria-hidden="true" className="display-bold text-[2.75rem] leading-none text-bronze-ink">
+              <span aria-hidden="true" className="display-bold text-[2.75rem] leading-none text-bronze">
                 {index + 1}
               </span>
               <div>
@@ -42,14 +35,6 @@ export default function ContactPage() {
         </ol>
 
         <dl className="mt-12 grid gap-8 sm:grid-cols-2">
-          <div>
-            <dt className="text-tiny uppercase text-mute">Instagram</dt>
-            <dd className="mt-2 text-label">
-              <TextLink href={instagramProfile} external line="in">
-                @{site.contact.instagramHandle}
-              </TextLink>
-            </dd>
-          </div>
           {site.contact.email && (
             <div>
               <dt className="text-tiny uppercase text-mute">Email</dt>

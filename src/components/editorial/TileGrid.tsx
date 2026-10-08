@@ -3,7 +3,8 @@ import { cn } from "@/lib/cn";
 
 const layouts = {
   2: "grid-cols-1 md:grid-cols-2",
-  3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+  // Two to a row on phones, where an odd tile out spans the row.
+  3: "grid-cols-2 md:grid-cols-3 [&>:last-child:nth-child(odd)]:col-span-2 md:[&>:last-child:nth-child(odd)]:col-span-1",
   4: "grid-cols-2 lg:grid-cols-4",
 };
 

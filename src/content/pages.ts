@@ -1,129 +1,94 @@
-import type { ImageRef, LinkItem } from "./types";
+import { shopLink } from "./navigation";
+import type { Accent, ImageRef, LinkItem } from "./types";
 
-export type TileContent = {
-  title: string;
-  href: string;
-  image: ImageRef;
-  links: LinkItem[];
+/** Follows the mouse over a tile's photo. */
+export const tileHint = "Learn more";
+
+/** Pocket Power's pitch, shared by the home page and the collection page. */
+const pocketPower = {
+  lines: ["One box.", "Ten pocket squares."],
+  highlight: "Ten",
+  accent: "to make you stand out",
+  body: "A silk-wool blend, soft yet structured enough to hold its fold in your pocket. Each square folds up to seven ways.",
 };
 
 export const home = {
-  statement: {
-    title: "A guide into sophistication, through accessories.",
-    links: [
-      { label: "Discover Pocket Power", href: "/collection/pocket-power" },
-      { label: "The world of Joshua Black", href: "/world" },
-    ] satisfies LinkItem[],
+  intro: {
+    title: "Dress classy without guessing. With the RISE framework.",
+    accents: [
+      { text: "RISE", tone: "pine" },
+      { text: "Dress classy without guessing.", tone: "bronze" },
+    ] satisfies Accent[],
+    // Each line starts on its own line at every width.
+    body: ["If you're here, dressing classy", "probably feels like guesswork.", "You're not alone. It's hard, but", "I can guide you."],
+    link: { label: "Get Started", href: "/style-guide/the-rise-framework" } satisfies LinkItem,
+    rise: ["Rhythm", "Interest", "Structure", "Entirety"],
+    image: { id: "ed-tan-01", crop: { x: 40, y: 30, top: 16 } } satisfies ImageRef,
   },
 
-  quartet: [
-    {
-      title: "Pocket Power",
-      href: "/collection/pocket-power",
-      image: { id: "pp-box-open" },
-      links: [{ label: "Discover the box", href: "/collection/pocket-power" }],
-    },
-    {
-      title: "The Squares",
-      href: "/collection",
-      image: { id: "pp-fan" },
-      links: [{ label: "View all ten", href: "/collection" }],
-    },
-    {
-      title: "Style Guide",
-      href: "/style-guide",
-      image: { id: "ed-tan-03" },
-      links: [{ label: "Read", href: "/style-guide" }],
-    },
-    {
-      title: "The World",
-      href: "/world",
-      image: { id: "ed-navy-04" },
-      links: [{ label: "Discover more", href: "/world" }],
-    },
-  ] satisfies TileContent[],
-
-  hero: {
-    title: "The intentional man",
-    image: { id: "ed-tan-02", crop: { x: 45, y: 14, top: 11.5 } } satisfies ImageRef,
-    links: [
-      { label: "Discover Pocket Power", href: "/collection/pocket-power" },
-      { label: "Read the Style Guide", href: "/style-guide" },
-    ] satisfies LinkItem[],
-  },
-
-  banner: {
+  pocketPower: {
+    ...pocketPower,
     kicker: "New",
-    lines: ["One box.", "Ten pocket squares."],
-    highlight: "Ten",
-    accent: "to make you stand out",
-    body: "A silk-wool blend, soft yet structured enough to hold its fold in your pocket. Each square folds up to seven ways.",
-    image: { id: "pp-drape" } satisfies ImageRef,
-    links: [
-      { label: "Discover Pocket Power", href: "/collection/pocket-power" },
-      { label: "View all ten", href: "/collection" },
-    ] satisfies LinkItem[],
+    // Shown in turn, in this order.
+    images: [
+      { id: "pp-rust" },
+      { id: "pp-box-open" },
+      { id: "pp-fan" },
+      { id: "pp-drape" },
+      { id: "pp-rail" },
+      { id: "pp-box-stack" },
+      { id: "pp-closeup" },
+      { id: "pp-noir" },
+      { id: "pp-box-engraved" },
+    ] satisfies ImageRef[],
+    cta: { label: "Buy Pocket Power", href: shopLink.href } satisfies LinkItem,
   },
-
-  duoProduct: [
-    {
-      title: "The squares",
-      href: "/collection",
-      image: { id: "pp-rail" },
-      links: [{ label: "Discover the collection", href: "/collection" }],
-    },
-    {
-      title: "From the founder",
-      href: "/world",
-      image: { id: "pp-founder-box" },
-      links: [{ label: "Read the story", href: "/world" }],
-    },
-  ] satisfies TileContent[],
-
-  duoGuide: [
-    {
-      title: "Less is not always more",
-      href: "/style-guide/less-is-not-always-more",
-      image: { id: "ed-navy-09" },
-      links: [{ label: "Read the guide", href: "/style-guide/less-is-not-always-more" }],
-    },
-    {
-      title: "Five sock shocks",
-      href: "/style-guide/five-sock-shocks",
-      image: { id: "ed-navy-08" },
-      links: [{ label: "Read the guide", href: "/style-guide/five-sock-shocks" }],
-    },
-  ] satisfies TileContent[],
-
-  rise: {
-    kicker: "The Style Guide",
-    title: "It is time to accessoRISE",
-    link: { label: "Read the RISE framework", href: "/style-guide/the-rise-framework" } satisfies LinkItem,
-    letters: [
-      { letter: "R", word: "Rhythm", text: "Repeat one colour, material or pattern." },
-      { letter: "I", word: "Interest", text: "Give the eye a single place to land." },
-      { letter: "S", word: "Structure", text: "Leave white space. Balance the weight." },
-      { letter: "E", word: "Entirety", text: "Check the clothes, then the occasion." },
-    ],
-  },
-
-  follow: [
-    { id: "ed-navy-04" },
-    { id: "pp-fan" },
-    { id: "ed-tan-01" },
-    { id: "pp-noir" },
-    { id: "ed-navy-03" },
-    { id: "pp-box-stack" },
-    { id: "ed-tan-04" },
-    { id: "pp-rust" },
-    { id: "ed-navy-06" },
-    { id: "pp-closeup" },
-  ] satisfies ImageRef[],
 };
 
 export const collection = {
   title: "Pocket Power",
   intro: "One box, ten pocket squares in a silk-wool blend. Browse the box and each square inside it.",
+  welcome: {
+    ...pocketPower,
+    kicker: "Pocket Power",
+    image: { id: "pp-drape" } satisfies ImageRef,
+    links: [
+      { label: "Discover the box", href: "/collection/pocket-power" },
+      { label: "View all ten", href: "#pieces" },
+    ] satisfies LinkItem[],
+  },
+};
+
+export const traditional = {
+  title: "Traditional: the Fila",
+  intro: "The fila, the Yoruba cap that completes a traditional outfit, with the Joshua Black monogram in its band.",
+  welcome: {
+    kicker: "Traditional",
+    lines: ["The fila.", "Worn like a crown."],
+    highlight: "crown",
+    accent: "for the royal bloodline",
+    body: "The fila is the Yoruba cap that completes a traditional outfit. Ours carries the Joshua Black monogram in its band, made to finish your kaftan or agbada.",
+    image: { id: "trad-rose-profile" } satisfies ImageRef,
+    links: [
+      { label: "See the colours", href: "#colours" },
+      { label: "Ordering", href: "#order" },
+    ] satisfies LinkItem[],
+  },
+  colours: {
+    title: "The colours",
+    intro: "Each fila carries the monogram in its band.",
+    items: [
+      { name: "Green", image: { id: "trad-green-band", crop: { x: 50, y: 30 } } },
+      { name: "Rose", image: { id: "trad-rose-band" } },
+      { name: "Red and navy", image: { id: "trad-red-band" } },
+      { name: "Tan", image: { id: "trad-tan-band" } },
+    ] satisfies { name: string; image: ImageRef }[],
+  },
+  order: {
+    title: "Order your fila",
+    text: "Our online store opens soon. When it does, you will choose your colour and order your fila right here.",
+    image: { id: "trad-green-seated" } satisfies ImageRef,
+  },
 };
 
 export const styleGuide = {
@@ -186,24 +151,26 @@ export const world = {
     image: { id: "pp-box-open" } satisfies ImageRef,
     links: [
       { label: "Discover Pocket Power", href: "/collection/pocket-power" },
-      { label: "Order and enquiries", href: "/contact" },
+      { label: "Ordering", href: "/contact" },
     ] satisfies LinkItem[],
   },
 };
 
+/** Shown where the order button will sit once the online store opens. */
+export const store = {
+  status: "Online store opening soon",
+  note: "You will be able to order right here on our website.",
+  details: "Our online store opens soon. You will be able to order and pay for every piece right here on our website.",
+};
+
 export const contact = {
-  title: "Order and enquiries",
-  intro: "Joshua Black takes orders by direct message. Tell us what you are looking for and we will take it from there.",
+  title: "Ordering",
+  intro: "Our online store opens soon. When it does, you will choose, order and pay for every piece right here on our website.",
   image: { id: "pp-box-stack" } satisfies ImageRef,
+  stepsTitle: "How ordering will work",
   steps: [
-    { title: "Choose", text: "Browse Pocket Power and note the pieces you like." },
-    {
-      title: "Message",
-      text: "Send a direct message. The order button on every product page starts the conversation for you.",
-    },
-    {
-      title: "Confirm",
-      text: "We confirm availability, price, payment and delivery with you directly.",
-    },
+    { title: "Choose", text: "Browse Pocket Power and the fila and pick the pieces you want." },
+    { title: "Order", text: "Place your order and pay on our website. There is nothing to arrange by message." },
+    { title: "Receive", text: "We prepare your order and send it to you." },
   ],
 };

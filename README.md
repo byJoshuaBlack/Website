@@ -1,7 +1,8 @@
 # Joshua Black
 
 The website for Joshua Black, a Nigerian men's accessories label. It presents Pocket Power (one
-box, ten pocket squares), a style guide, and the brand's story. Orders are taken by direct message.
+box, ten pocket squares), the fila, a style guide, and the brand's story. Ordering will happen on
+the site itself once the online store opens; until then the product pages say it is opening soon.
 
 Built with Next.js 16, React 19, TypeScript and Tailwind CSS 4. Every page is static.
 
@@ -28,24 +29,23 @@ All words, products and settings live in `src/content/`. No component needs to c
 
 | To change | Edit |
 |---|---|
-| WhatsApp number, Instagram handle, tagline | `src/content/site.ts` |
+| Instagram handle, tagline | `src/content/site.ts` |
+| The "Online store opening soon" wording | `store` in `src/content/pages.ts` |
 | Show or hide prices | `showPrices` in `src/content/site.ts` |
 | Products, names, descriptions, prices | `src/content/products.ts` |
 | Style guide articles | `src/content/articles.ts` |
-| Home, world and contact page copy | `src/content/pages.ts` |
-| Menu and footer links | `src/content/navigation.ts` |
+| Home, Pocket Power, fila, world and ordering page copy | `src/content/pages.ts` |
+| Menu and footer links, and the header's Shop now button | `src/content/navigation.ts` |
 | Photos and their descriptions | `src/content/images.ts` |
 
-### Turn on WhatsApp ordering
+### Show an announcement strip
 
-In `src/content/site.ts`, set `whatsappNumber` to the number with its country code, digits only:
+A thin carbon strip can sit above the header on every page. It is off. To turn it on, add this to
+`site` in `src/content/site.ts`:
 
 ```ts
-whatsappNumber: "2348012345678",
+announcement: { text: "Pocket Power. One box. Ten pocket squares.", href: "/collection/pocket-power" },
 ```
-
-"Order on WhatsApp" then becomes the main button on every product, with the product name already
-written into the message. While the field is empty, the button opens Instagram instead.
 
 ### Show prices
 
@@ -100,15 +100,15 @@ Pages span the full window. On very wide screens a full-width photo is stretched
 |---|---|
 | Carbon black | `#1A1A1A` |
 | Bronze | `#CD7F32` |
-| Pine teal | `#004F49` |
-| Soft linen | `#F5F1E8` |
+| Pine teal | `#004F49`, the primary accent |
+| Soft linen | `#F5F1E8`, the page ground. The site uses no white. |
 | Headings | Tusker Grotesk 3500 Medium (main) and 3700 Bold, uppercase only |
-| Body copy | Libre Baskerville, set with generous leading |
+| Body copy | Inter Regular, set with generous leading (italic for quotes) |
 | Interface text | Inter Regular |
 | Accent | Brilliant Signature |
 
-Logo files are in `src/assets/brand/` and the brand typefaces in `src/assets/fonts/`. Inter and
-Libre Baskerville are open source and are fetched from Google Fonts when the site is built.
+Logo files are in `src/assets/brand/` and the brand typefaces in `src/assets/fonts/`. Inter is
+open source and is fetched from Google Fonts when the site is built.
 
 Tusker Grotesk and Brilliant Signature are licensed fonts: confirm the brand's licences cover use
 on a website.
@@ -138,7 +138,8 @@ Small headings and numerals switch to the bold weight on their own.
 ## Before launch
 
 - Set `NEXT_PUBLIC_SITE_URL` to the live address, for example `https://your-domain.com`.
-- Add the WhatsApp number.
+- Connect the online store, and replace the "Online store opening soon" notice on the product
+  and fila pages with its order buttons.
 - Replace the working names of the ten squares in `src/content/products.ts`.
 - Photograph the three squares marked `needsPhoto`.
 - Replace the founder portraits with the original camera files. The current ones came from

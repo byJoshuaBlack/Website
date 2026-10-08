@@ -1,3 +1,4 @@
+import { SplitBanner } from "@/components/editorial/SplitBanner";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import type { ProductCardData } from "@/components/product/ProductCard";
 import { picture, products } from "@/content";
@@ -21,14 +22,24 @@ export default function CollectionPage() {
     price: product.price ? formatPrice(product.price) : undefined,
     picture: picture(product.tile),
   }));
+  const { welcome } = collection;
 
   return (
     <>
-      <header className="gutter pb-10 pt-10 lg:pb-14 lg:pt-16">
-        <h1 className="heading-lg">{collection.title}</h1>
-        <p className="copy mt-4 max-w-xl text-mute">{collection.intro}</p>
-      </header>
-      <ProductGrid products={cards} />
+      <SplitBanner
+        level="h1"
+        priority
+        kicker={welcome.kicker}
+        lines={welcome.lines}
+        highlight={welcome.highlight}
+        accent={welcome.accent}
+        body={welcome.body}
+        picture={picture(welcome.image)}
+        links={welcome.links}
+      />
+      <div id="pieces" className="scroll-mt-(--header-h)">
+        <ProductGrid products={cards} />
+      </div>
     </>
   );
 }

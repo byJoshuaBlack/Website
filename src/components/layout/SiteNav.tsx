@@ -2,27 +2,32 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type MouseEvent } from "react";
 import { Logo } from "@/components/brand/Logo";
-import { Icon, type IconName } from "@/components/ui/Icon";
-import type { LinkItem, NavNode, SearchEntry } from "@/content/types";
-import { MenuDrawer } from "./MenuDrawer";
+import { Button } from "@/components/ui/Button";
+import { HomeLink } from "@/components/ui/HomeLink";
+import { Icon } from "@/components/ui/Icon";
+import type { LinkItem, SearchEntry, SocialLink } from "@/content/types";
+import { cn } from "@/lib/cn";
+import { MenuOverlay } from "./MenuOverlay";
 import { SearchOverlay } from "./SearchOverlay";
 
+const tab = "flex h-10 flex-1 items-center justify-center gap-2 rounded-full px-4 text-label transition-colors duration-300";
+const tabActive = "bg-ink text-paper";
+
 type Props = {
-  nav: NavNode[];
+  menuLinks: LinkItem[];
   searchIndex: SearchEntry[];
   suggestions: LinkItem[];
-  order: LinkItem;
-  extras: (LinkItem & { icon: IconName })[];
+  shop: LinkItem;
+  social: SocialLink[];
 };
 
-export function SiteNav({ nav, searchIndex, suggestions, order, extras }: Props) {
+export function SiteNav({ menuLinks, searchIndex, suggestions, shop, social }: Props) {
   const pathname = usePathname();
-  const onOrder = pathname === order.href;
-  const tab = "flex h-10 flex-1 items-center justify-center gap-2 rounded-full px-4 text-label transition-colors duration-300";
-  const tabActive = "bg-ink/85 text-paper";
+  const onShop = pathname === shop.href;
   const header = useRef<HTMLElement>(null);
+  const dock = useRef<HTMLElement>(null);
   const menu = useRef<HTMLDialogElement>(null);
   const search = useRef<HTMLDialogElement>(null);
 
@@ -30,107 +35,120 @@ export function SiteNav({ nav, searchIndex, suggestions, order, extras }: Props)
     const el = header.current;
     if (!el) return;
 
+    // The header turns linen, and over a full-screen hero the dock slides in, as soon as the page moves
+    // and the next section starts to show. The few pixels absorb jitter at the top.
     const onScroll = () => {
-      el.dataset.scrolled = String(window.scrollY > 40);
+      const moved = window.scrollY > 4;
+      el.dataset.scrolled = String(moved);
+      dock.current?.toggleAttribute("data-past-hero", moved);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // On the home page the giant wordmark stands in for the header logo.
-    const giant = document.querySelector("[data-giant-wordmark]");
-    let observer: IntersectionObserver | undefined;
-    if (giant) {
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          el.dataset.logo = entry?.isIntersecting ? "hidden" : "shown";
-        },
-        { rootMargin: "-72px 0px 0px 0px" },
-      );
-      observer.observe(giant);
-    } else {
-      el.dataset.logo = "shown";
-    }
-
     menu.current?.close();
     search.current?.close();
 
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      observer?.disconnect();
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
 
-  const openMenu = () => menu.current?.showModal();
+  // A tap or click starts on the menu's hidden title, so no focus ring lands on a button. Keys keep the default.
+  const openMenu = (event: MouseEvent) => {
+    menu.current?.showModal();
+    if (event.detail > 0) menu.current?.querySelector<HTMLElement>("h2")?.focus();
+  };
   const openSearch = () => search.current?.showModal();
+  const searchFromMenu = () => {
+    menu.current?.close();
+    search.current?.showModal();
+  };
 
   return (
     <>
       <header
         ref={header}
         data-scrolled="false"
-        data-logo={pathname === "/" ? "hidden" : "shown"}
-        className="group/header sticky top-0 z-40 h-(--header-h) bg-paper text-ink transition-colors duration-300 ease-editorial over-hero:bg-transparent over-hero:text-paper"
+        className="sticky top-0 z-40 h-(--header-h) bg-paper text-ink transition-colors duration-300 ease-editorial over-hero:bg-transparent over-hero:text-paper"
       >
-        <div className="gutter relative flex h-full items-center justify-between">
-          <div className="hidden items-center gap-7 lg:flex">
-            <button type="button" onClick={openMenu} aria-haspopup="dialog" className="flex items-center gap-2 text-body">
+        {/* Over the floating hero card the contents clear its top edge; on desktop they sit an even
+            1.5rem in from its top and sides (the card itself is inset 1rem). */}
+        <div className="page-width gutter grid h-full grid-cols-[1fr_auto_1fr] items-center gap-3 transition-[translate,padding] duration-300 ease-editorial over-photo:translate-y-5 lg:over-photo:translate-y-0 lg:over-photo:items-start lg:over-photo:px-10 lg:over-photo:pt-10">
+          {/* From xl the menu's links sit in the header itself; narrower screens open them as an overlay. */}
+          <div className="hidden items-center gap-7 lg:flex lg:h-9">
+            <button type="button" onClick={openMenu} aria-haspopup="dialog" className="flex items-center gap-2 text-body xl:hidden">
               <Icon name="menu" />
               Menu
             </button>
+            <nav aria-label="Main" className="hidden xl:block">
+              <ul className="flex items-center gap-7">
+                {menuLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={pathname === link.href ? "page" : undefined}
+                      className="link-line-in whitespace-nowrap text-body"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+
+          {/* On phones over the home hero it turns carbon against the bright photo and moves left, in line
+              with the headline (the card's 6px inset plus three gutters). */}
+          <HomeLink
+            label="Joshua Black, home"
+            className="col-start-2 max-md:on-home:col-start-1 max-md:on-home:ml-[calc(var(--gutter)*2+0.375rem)] max-md:on-home:justify-self-start max-md:on-home:text-ink"
+          >
+            <Logo decorative className="h-9 lg:h-11" />
+          </HomeLink>
+
+          <div className="col-start-3 hidden items-center justify-end gap-7 lg:flex lg:h-9">
             <button type="button" onClick={openSearch} aria-haspopup="dialog" className="flex items-center gap-2 text-body">
               <Icon name="search" />
               Search
             </button>
+            <Button
+              href={shop.href}
+              variant="solid"
+              size="compact"
+              className="over-photo:border-paper over-photo:bg-paper over-photo:text-ink over-photo:hover:bg-transparent over-photo:hover:text-paper"
+            >
+              {shop.label}
+            </Button>
           </div>
-
-          <Link
-            href="/"
-            aria-label="Joshua Black, home"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 group-data-[logo=hidden]/header:pointer-events-none group-data-[logo=hidden]/header:opacity-0"
-          >
-            <Logo decorative className="h-9 lg:h-11" />
-          </Link>
-
-          <Link href={order.href} className="link-line-in ml-auto hidden text-body lg:block">
-            {order.label}
-          </Link>
         </div>
       </header>
 
-      <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 lg:hidden">
-        <div className="mx-auto flex max-w-md items-center gap-2">
-          <div className="flex h-14 flex-1 items-center rounded-full glass px-2">
-            <button
-              type="button"
-              onClick={openMenu}
-              aria-haspopup="dialog"
-              className={`${tab} ${onOrder ? "" : tabActive}`}
-            >
-              <Icon name="menu" size={18} />
-              Menu
-            </button>
-            <Link
-              href={order.href}
-              aria-current={onOrder ? "page" : undefined}
-              className={`${tab} uppercase ${onOrder ? tabActive : ""}`}
-            >
-              <Icon name="bag" size={18} />
-              {order.label}
-            </Link>
-          </div>
-          <button
-            type="button"
-            onClick={openSearch}
-            aria-haspopup="dialog"
-            aria-label="Search"
-            className="grid h-14 w-14 shrink-0 place-items-center rounded-full glass"
-          >
-            <Icon name="search" />
+      {/* Below lg, navigation lives in a floating dock at the bottom of the screen. */}
+      <nav
+        ref={dock}
+        aria-label="Quick links"
+        className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 flex gap-2 text-ink transition-[translate,opacity,visibility] duration-500 ease-editorial still:transition-none hero-in-view:invisible hero-in-view:translate-y-[calc(100%+2rem)] hero-in-view:opacity-0 lg:hidden"
+      >
+        <div className="glass flex h-14 flex-1 items-center rounded-full px-2">
+          <button type="button" onClick={openMenu} aria-haspopup="dialog" className={cn(tab, !onShop && tabActive)}>
+            <Icon name="menu" size={18} />
+            Menu
           </button>
+          <Link href={shop.href} aria-current={onShop ? "page" : undefined} className={cn(tab, onShop && tabActive)}>
+            <Icon name="bag" size={18} />
+            {shop.label}
+          </Link>
         </div>
-      </div>
+        <button
+          type="button"
+          onClick={openSearch}
+          aria-haspopup="dialog"
+          aria-label="Search"
+          className="glass grid size-14 shrink-0 place-items-center rounded-full"
+        >
+          <Icon name="search" />
+        </button>
+      </nav>
 
-      <MenuDrawer ref={menu} nav={nav} extras={extras} />
+      <MenuOverlay ref={menu} links={menuLinks} cta={shop} social={social} onSearch={searchFromMenu} />
       <SearchOverlay ref={search} index={searchIndex} suggestions={suggestions} />
     </>
   );

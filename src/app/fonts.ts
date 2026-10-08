@@ -1,20 +1,13 @@
-import { Inter, Libre_Baskerville } from "next/font/google";
+import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 
-// Typography follows the brand guide: Tusker Grotesk for headings, Libre Baskerville
-// and Inter Regular for body copy, Brilliant Signature for accents.
+// Tusker Grotesk for headings, Inter Regular for body copy and interface text (its italic for
+// quotes, its bold for buttons), Brilliant Signature for accents.
 export const inter = Inter({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-inter",
-  display: "swap",
-});
-
-export const baskerville = Libre_Baskerville({
-  subsets: ["latin"],
-  weight: "400",
+  weight: ["400", "700"],
   style: ["normal", "italic"],
-  variable: "--font-baskerville",
+  variable: "--font-inter",
   display: "swap",
 });
 

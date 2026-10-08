@@ -34,7 +34,7 @@ function Block({ block }: { block: ArticleBlock }) {
           <ol className="border-t border-rule">
             {block.items.map((item, index) => (
               <li key={index} className="grid grid-cols-[3.5rem_1fr] items-baseline gap-x-4 border-b border-rule py-6">
-                <span aria-hidden="true" className="display-bold text-[3.25rem] leading-none text-bronze-ink">
+                <span aria-hidden="true" className="display-bold text-[3.25rem] leading-none text-bronze">
                   {index + 1}
                 </span>
                 <div>
@@ -77,7 +77,7 @@ function Block({ block }: { block: ArticleBlock }) {
         <ol className="border-t border-rule">
           {block.letters.map((item) => (
             <li key={item.letter} className="grid grid-cols-[3.5rem_1fr] gap-x-4 border-b border-rule py-7 lg:grid-cols-[5rem_1fr]">
-              <span aria-hidden="true" className="display-bold text-[4rem] leading-[0.9] text-bronze-ink lg:text-[5rem]">
+              <span aria-hidden="true" className="display-bold text-[4rem] leading-[0.9] text-bronze lg:text-[5rem]">
                 {item.letter}
               </span>
               <div>

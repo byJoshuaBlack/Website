@@ -12,20 +12,15 @@ export const site: SiteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? deployedUrl ?? "http://localhost:3000",
   locale: "en-NG",
   country: "Nigeria",
+  registration: "9286208",
 
   // Set to true to show prices. Products without a price stay blank.
   showPrices: false,
 
   contact: {
-    // Example: "2348012345678". Leave empty until the brand confirms its number.
-    whatsappNumber: "",
     instagramHandle: "byjoshuablack",
+    // Full profile links for Facebook, X and LinkedIn are still to come from the brand.
   },
 
   founder: { name: "Opeyemi Okediji", role: "Founder" },
-
-  announcement: {
-    text: "Pocket Power. One box. Ten pocket squares.",
-    href: "/collection/pocket-power",
-  },
 };
