@@ -10,14 +10,14 @@ export default function NotFound() {
         404
       </h1>
       <p className="copy-lg mt-6 max-w-md">
-        This page has moved or never existed. The collection is still where you left it.
+        This page has moved or never existed. The online store is still where you left it.
       </p>
       <ul className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-body">
         <li>
           <TextLink href="/">Home</TextLink>
         </li>
         <li>
-          <TextLink href="/collection">Pocket Power</TextLink>
+          <TextLink href="/collection">Online Store</TextLink>
         </li>
         <li>
           <TextLink href="/style-guide">Style Guide</TextLink>

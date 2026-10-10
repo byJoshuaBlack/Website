@@ -1,23 +1,26 @@
+import { PhotoCarousel } from "@/components/editorial/PhotoCarousel";
 import { Frame } from "@/components/ui/Frame";
 import type { Picture } from "@/content/types";
 import { sizes } from "@/lib/sizes";
 
-export function ProductGallery({ pictures }: { pictures: Picture[] }) {
+// Below lg the photos play as a slideshow; from lg they stack beside the details. Both views ask for
+// the same first photo, so it downloads once.
+export function ProductGallery({ pictures, label }: { pictures: Picture[]; label: string }) {
   return (
-    <ul
-      aria-label="Product photos"
-      className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto lg:block lg:snap-none lg:space-y-4 lg:overflow-visible"
-    >
-      {pictures.map((picture, index) => (
-        <li
-          key={index}
-          id={`photo-${index + 1}`}
-          className="w-full shrink-0 snap-center scroll-mt-[calc(var(--header-h)+1rem)] lg:w-auto"
-        >
-          <Frame picture={picture} sizes={sizes.productMain} priority={index === 0} quality={85} />
-        </li>
-      ))}
-    </ul>
+    <>
+      {pictures.length > 1 ? (
+        <PhotoCarousel pictures={pictures} sizes={sizes.productMain} label={label} priority quality={85} className="lg:hidden" />
+      ) : (
+        <Frame picture={pictures[0]} sizes={sizes.productMain} priority quality={85} className="lg:hidden" />
+      )}
+      <ul aria-label="Product photos" className="hidden space-y-4 lg:block">
+        {pictures.map((picture, index) => (
+          <li key={index} id={`photo-${index + 1}`} className="scroll-mt-[calc(var(--header-h)+1rem)]">
+            <Frame picture={picture} sizes={sizes.productMain} priority={index === 0} quality={85} />
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 

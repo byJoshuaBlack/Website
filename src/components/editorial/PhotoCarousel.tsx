@@ -14,13 +14,15 @@ type Props = {
   pictures: Picture[];
   sizes: string;
   label: string;
+  /** Loads the first photo before anything else on the page. */
+  priority?: boolean;
+  quality?: 80 | 85;
   className?: string;
 };
 
-// Photos cross-fade in a loop, one every three and a half seconds, with back and forward buttons on either side.
-// It holds still while hovered, focused from the keyboard or off screen, and never moves on its own
-// for reduced motion.
-export function PhotoCarousel({ pictures, sizes, label, className }: Props) {
+// Photos cross-fade in a loop every 3.5 seconds, with back and forward buttons and a sideways swipe on touch.
+// It holds still while hovered, focused from the keyboard or off screen, and never moves on its own for reduced motion.
+export function PhotoCarousel({ pictures, sizes, label, priority, quality, className }: Props) {
   const count = pictures.length;
   // Only the photos already seen and the one coming next are mounted, so the rest never load early.
   const [{ index, mounted }, setState] = useState(() => ({ index: 0, mounted: new Set([0, 1 % count]) }));
@@ -30,6 +32,7 @@ export function PhotoCarousel({ pictures, sizes, label, className }: Props) {
   const [hidden, setHidden] = useState(false);
   const [calm, setCalm] = useState(true);
   const root = useRef<HTMLDivElement>(null);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
 
   const step = (by: number) =>
     setState((current) => {
@@ -68,6 +71,16 @@ export function PhotoCarousel({ pictures, sizes, label, className }: Props) {
   const leaveFocus = (event: FocusEvent) => {
     if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
   };
+  const startSwipe = (event: PointerEvent) => {
+    if (event.pointerType !== "mouse") swipe.current = { x: event.clientX, y: event.clientY };
+  };
+  const endSwipe = (event: PointerEvent) => {
+    const start = swipe.current;
+    swipe.current = null;
+    if (!start) return;
+    const dx = event.clientX - start.x;
+    if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(event.clientY - start.y)) step(dx < 0 ? 1 : -1);
+  };
 
   return (
     <div
@@ -77,9 +90,12 @@ export function PhotoCarousel({ pictures, sizes, label, className }: Props) {
       aria-label={label}
       onPointerEnter={hover(true)}
       onPointerLeave={hover(false)}
+      onPointerDown={startSwipe}
+      onPointerUp={endSwipe}
+      onPointerCancel={() => (swipe.current = null)}
       onFocus={(event) => setFocused(event.target.matches(":focus-visible"))}
       onBlur={leaveFocus}
-      className={cn("relative aspect-portrait overflow-hidden bg-tile", className)}
+      className={cn("relative aspect-portrait touch-pan-y touch-pinch-zoom overflow-hidden bg-tile", className)}
     >
       {pictures.map((picture, at) => (
         <div
@@ -94,7 +110,9 @@ export function PhotoCarousel({ pictures, sizes, label, className }: Props) {
             at === index ? "opacity-100" : "opacity-0",
           )}
         >
-          {mounted.has(at) && <Frame picture={picture} sizes={sizes} aspect="h-full" />}
+          {mounted.has(at) && (
+            <Frame picture={picture} sizes={sizes} priority={priority && at === 0} quality={quality} aspect="h-full" />
+          )}
         </div>
       ))}
       <button type="button" aria-label="Previous photo" onClick={() => step(-1)} className={cn(control, "left-4")}>

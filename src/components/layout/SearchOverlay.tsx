@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type RefObject } from "react";
+import { useState, type MouseEvent, type RefObject } from "react";
 import { Icon } from "@/components/ui/Icon";
 import type { LinkItem, SearchEntry } from "@/content/types";
 import { searchEntries } from "@/lib/search";
@@ -10,19 +10,27 @@ type Props = {
   ref: RefObject<HTMLDialogElement | null>;
   index: SearchEntry[];
   suggestions: LinkItem[];
+  onLeave: (event: MouseEvent<HTMLAnchorElement>, href: string) => void;
+  onClose: () => void;
 };
 
-export function SearchOverlay({ ref, index, suggestions }: Props) {
+export function SearchOverlay({ ref, index, suggestions, onLeave, onClose }: Props) {
   const [query, setQuery] = useState("");
   const results = searchEntries(index, query);
   const searching = query.trim().length > 0;
-  const close = () => ref.current?.close();
+  const close = () => {
+    ref.current?.close();
+    onClose();
+  };
 
   return (
     <dialog
       ref={ref}
       aria-label="Search"
-      onClose={() => setQuery("")}
+      onClose={() => {
+        setQuery("");
+        onClose();
+      }}
       onClick={(event) => {
         if (event.target === event.currentTarget) close();
       }}
@@ -56,7 +64,7 @@ export function SearchOverlay({ ref, index, suggestions }: Props) {
               <ul className="grid gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
                 {results.map((entry) => (
                   <li key={entry.href}>
-                    <Link href={entry.href} onClick={close} className="group block">
+                    <Link href={entry.href} replace onClick={(event) => onLeave(event, entry.href)} className="group block">
                       <span className="block text-tiny uppercase text-mute">{entry.kind}</span>
                       <span className="link-line-in text-body">{entry.title}</span>
                     </Link>
@@ -70,7 +78,7 @@ export function SearchOverlay({ ref, index, suggestions }: Props) {
             <ul className="flex flex-wrap gap-x-8 gap-y-3">
               {suggestions.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} onClick={close} className="link-line text-body">
+                  <Link href={item.href} replace onClick={(event) => onLeave(event, item.href)} className="link-line text-body">
                     {item.label}
                   </Link>
                 </li>

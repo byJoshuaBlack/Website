@@ -19,6 +19,7 @@ export const site: SiteConfig = {
 
   contact: {
     instagramHandle: "byjoshuablack",
+    email: "hi@byjoshuablack.com",
     // Full profile links for Facebook, X and LinkedIn are still to come from the brand.
   },
 

@@ -1,4 +1,3 @@
-import { SplitBanner } from "@/components/editorial/SplitBanner";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import type { ProductCardData } from "@/components/product/ProductCard";
 import { picture, products } from "@/content";
@@ -22,24 +21,12 @@ export default function CollectionPage() {
     price: product.price ? formatPrice(product.price) : undefined,
     picture: picture(product.tile),
   }));
-  const { welcome } = collection;
 
   return (
     <>
-      <SplitBanner
-        level="h1"
-        priority
-        kicker={welcome.kicker}
-        lines={welcome.lines}
-        highlight={welcome.highlight}
-        accent={welcome.accent}
-        body={welcome.body}
-        picture={picture(welcome.image)}
-        links={welcome.links}
-      />
-      <div id="pieces" className="scroll-mt-(--header-h)">
-        <ProductGrid products={cards} />
-      </div>
+      {/* The brand asked for no visible title; screen readers and search engines still get one. */}
+      <h1 className="sr-only">{collection.title}</h1>
+      <ProductGrid products={cards} />
     </>
   );
 }

@@ -8,12 +8,13 @@ type Props = {
   label: string;
   children: ReactNode;
   className?: string;
+  replace?: boolean;
   onClick?: () => void;
 };
 
 // Always lands at the very top of the home page: it scrolls up when home is already open, and
 // otherwise opens home at its top rather than where the router would leave it.
-export function HomeLink({ label, children, className, onClick }: Props) {
+export function HomeLink({ label, children, className, replace, onClick }: Props) {
   const pathname = usePathname();
   const arriving = useRef(false);
 
@@ -36,7 +37,7 @@ export function HomeLink({ label, children, className, onClick }: Props) {
   };
 
   return (
-    <Link href="/" scroll={false} aria-label={label} onClick={go} className={className}>
+    <Link href="/" scroll={false} replace={replace} aria-label={label} onClick={go} className={className}>
       {children}
     </Link>
   );

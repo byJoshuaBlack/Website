@@ -7,7 +7,7 @@ import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Icon } from "@/components/ui/Icon";
-import type { LinkItem, SearchEntry, SocialLink } from "@/content/types";
+import type { LinkItem, SearchEntry } from "@/content/types";
 import { cn } from "@/lib/cn";
 import { MenuOverlay } from "./MenuOverlay";
 import { SearchOverlay } from "./SearchOverlay";
@@ -15,21 +15,25 @@ import { SearchOverlay } from "./SearchOverlay";
 const tab = "flex h-10 flex-1 items-center justify-center gap-2 rounded-full px-4 text-label transition-colors duration-300";
 const tabActive = "bg-ink text-paper";
 
+type Overlay = "menu" | "search";
+
 type Props = {
   menuLinks: LinkItem[];
   searchIndex: SearchEntry[];
   suggestions: LinkItem[];
   shop: LinkItem;
-  social: SocialLink[];
 };
 
-export function SiteNav({ menuLinks, searchIndex, suggestions, shop, social }: Props) {
+export function SiteNav({ menuLinks, searchIndex, suggestions, shop }: Props) {
   const pathname = usePathname();
   const onShop = pathname === shop.href;
   const header = useRef<HTMLElement>(null);
   const dock = useRef<HTMLElement>(null);
   const menu = useRef<HTMLDialogElement>(null);
   const search = useRef<HTMLDialogElement>(null);
+  // The overlay standing on its own history entry, so Back closes it instead of leaving the page.
+  const entry = useRef<Overlay | null>(null);
+  const afterBack = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const el = header.current;
@@ -51,15 +55,64 @@ export function SiteNav({ menuLinks, searchIndex, suggestions, shop, social }: P
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
 
+  useEffect(() => {
+    const onPop = () => {
+      entry.current = null;
+      menu.current?.close();
+      search.current?.close();
+      const then = afterBack.current;
+      afterBack.current = null;
+      // The browser puts the page's scroll back just after popstate, so this runs a task later.
+      if (then) window.setTimeout(then);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // Spreading the state keeps the router's own markers on the new entry.
+  const show = (name: Overlay) => {
+    (name === "menu" ? menu : search).current?.showModal();
+    if (!entry.current) window.history.pushState({ ...window.history.state }, "");
+    entry.current = name;
+  };
+
+  // Closed by hand (×, Escape, backdrop): step back off the overlay's entry. Safe to call twice.
+  const closed = (name: Overlay) => () => {
+    if (entry.current !== name) return;
+    entry.current = null;
+    window.history.back();
+  };
+
+  // Links out replace the overlay's entry; one to the page already open just closes the overlay.
+  const leave = (event: MouseEvent, href: string) => {
+    if (href === pathname) event.preventDefault();
+    else entry.current = null;
+    if (entry.current) closed(entry.current)();
+    menu.current?.close();
+    search.current?.close();
+  };
+
+  const homeFromMenu = () => {
+    if (pathname === "/" && entry.current) {
+      entry.current = null;
+      afterBack.current = () => window.scrollTo({ top: 0 });
+      window.history.back();
+      return;
+    }
+    entry.current = null;
+    menu.current?.close();
+  };
+
   // A tap or click starts on the menu's hidden title, so no focus ring lands on a button. Keys keep the default.
   const openMenu = (event: MouseEvent) => {
-    menu.current?.showModal();
+    show("menu");
     if (event.detail > 0) menu.current?.querySelector<HTMLElement>("h2")?.focus();
   };
-  const openSearch = () => search.current?.showModal();
+  const openSearch = () => show("search");
+  // The search takes over the menu's history entry, so one Back still closes it.
   const searchFromMenu = () => {
     menu.current?.close();
-    search.current?.showModal();
+    show("search");
   };
 
   return (
@@ -96,10 +149,10 @@ export function SiteNav({ menuLinks, searchIndex, suggestions, shop, social }: P
           </div>
 
           {/* On phones over the home hero it turns carbon against the bright photo and moves left, in line
-              with the headline (the card's 6px inset plus three gutters). */}
+              with the button and RISE panel (the card's 6px inset plus one gutter). */}
           <HomeLink
             label="Joshua Black, home"
-            className="col-start-2 max-md:on-home:col-start-1 max-md:on-home:ml-[calc(var(--gutter)*2+0.375rem)] max-md:on-home:justify-self-start max-md:on-home:text-ink"
+            className="col-start-2 max-md:on-home:col-start-1 max-md:on-home:ml-1.5 max-md:on-home:justify-self-start max-md:on-home:text-ink"
           >
             <Logo decorative className="h-9 lg:h-11" />
           </HomeLink>
@@ -148,8 +201,16 @@ export function SiteNav({ menuLinks, searchIndex, suggestions, shop, social }: P
         </button>
       </nav>
 
-      <MenuOverlay ref={menu} links={menuLinks} cta={shop} social={social} onSearch={searchFromMenu} />
-      <SearchOverlay ref={search} index={searchIndex} suggestions={suggestions} />
+      <MenuOverlay
+        ref={menu}
+        links={menuLinks}
+        cta={shop}
+        onSearch={searchFromMenu}
+        onLeave={leave}
+        onHome={homeFromMenu}
+        onClose={closed("menu")}
+      />
+      <SearchOverlay ref={search} index={searchIndex} suggestions={suggestions} onLeave={leave} onClose={closed("search")} />
     </>
   );
 }

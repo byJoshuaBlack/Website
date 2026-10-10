@@ -33,7 +33,7 @@ const suggestions: LinkItem[] = [
   { label: "Pocket Power", href: "/collection/pocket-power" },
   { label: "The RISE framework", href: "/style-guide/the-rise-framework" },
   { label: "The World of Joshua Black", href: "/world" },
-  { label: "Ordering", href: "/contact" },
+  { label: "Ordering", href: "/ordering" },
 ];
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -56,7 +56,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           searchIndex={searchIndex}
           suggestions={suggestions}
           shop={shopLink}
-          social={socialLinks}
         />
         <main id="main" className="page-width flex-1">
           {children}

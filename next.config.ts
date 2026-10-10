@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The dev-only Next.js badge sat on top of the dock; production never shows it.
+  devIndicators: false,
   images: {
     formats: ["image/webp"],
     qualities: [80, 85],

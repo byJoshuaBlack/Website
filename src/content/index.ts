@@ -74,22 +74,28 @@ export const searchIndex: SearchEntry[] = [
     text: [a.kicker, a.excerpt].join(" "),
   })),
   {
-    title: "Traditional: the Fila",
-    kind: "Page",
-    href: "/traditional",
-    text: "fila cap Yoruba traditional agbada kaftan monogram green rose red navy tan",
-  },
-  {
     title: "The World of Joshua Black",
     kind: "Page",
     href: "/world",
     text: "about story founder Opeyemi Okediji name meaning",
   },
   {
+    title: "Online Store",
+    kind: "Page",
+    href: "/collection",
+    text: "shop store buy all products pocket power box squares",
+  },
+  {
     title: "Ordering",
     kind: "Page",
-    href: "/contact",
+    href: "/ordering",
     text: "order buy shop online store pay delivery",
+  },
+  {
+    title: "Contact",
+    kind: "Page",
+    href: "/contact",
+    text: "contact message dm instagram reach get in touch",
   },
 ];
 
