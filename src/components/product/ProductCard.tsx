@@ -4,7 +4,9 @@ import type { Picture } from "@/content/types";
 
 export type ProductCardData = {
   slug: string;
-  kind: "set" | "piece";
+  kind: "set" | "piece" | "fila";
+  /** Where the card leads, when it is not the product's own page. */
+  href?: string;
   name: string;
   descriptor: string;
   number?: string;
@@ -18,7 +20,7 @@ export function ProductCard({ product, sizes, eager }: { product: ProductCardDat
       <Frame picture={product.picture} sizes={sizes} eager={eager} />
       <div className="px-4 pb-6 pt-4 text-center">
         <h3 className="heading-sm truncate">
-          <Link href={`/collection/${product.slug}`} className="after:absolute after:inset-0">
+          <Link href={product.href ?? `/collection/${product.slug}`} className="after:absolute after:inset-0">
             {product.name}
           </Link>
         </h3>

@@ -45,6 +45,45 @@ export const collection = {
   intro: "Pocket Power: the box, and each of the ten silk-wool pocket squares inside it.",
 };
 
+export const traditional = {
+  title: "Traditional: the Fila",
+  // Its card in the online store and its picture link on the Pocket Power page.
+  card: {
+    name: "The Fila",
+    descriptor: "Traditional cap",
+    link: "Discover the fila",
+    image: { id: "trad-red-portrait" } satisfies ImageRef,
+  },
+  intro: "The fila, the Yoruba cap that completes a traditional outfit, with the Joshua Black monogram in its band.",
+  welcome: {
+    kicker: "Traditional",
+    lines: ["The fila.", "Worn like a crown."],
+    highlight: "crown",
+    accent: "for the royal bloodline",
+    body: "The fila is the Yoruba cap that completes a traditional outfit. Ours carries the Joshua Black monogram in its band, made to finish your kaftan or agbada.",
+    image: { id: "trad-rose-profile" } satisfies ImageRef,
+    links: [
+      { label: "See the colours", href: "#colours" },
+      { label: "Ordering", href: "#order" },
+    ] satisfies LinkItem[],
+  },
+  colours: {
+    title: "The colours",
+    intro: "Each fila carries the monogram in its band.",
+    items: [
+      { name: "Green", image: { id: "trad-green-band", crop: { x: 50, y: 30 } } },
+      { name: "Rose", image: { id: "trad-rose-band" } },
+      { name: "Red and navy", image: { id: "trad-red-band" } },
+      { name: "Tan", image: { id: "trad-tan-band" } },
+    ] satisfies { name: string; image: ImageRef }[],
+  },
+  order: {
+    title: "Order your fila",
+    text: "Our online store opens soon. When it does, you will choose your colour and order your fila right here.",
+    image: { id: "trad-green-seated" } satisfies ImageRef,
+  },
+};
+
 export const styleGuide = {
   title: "Style Guide",
   intro: "Notes on dressing with intention. Fewer rules than you think, and better ones.",
@@ -123,7 +162,7 @@ export const ordering = {
   image: { id: "pp-box-stack" } satisfies ImageRef,
   stepsTitle: "How ordering will work",
   steps: [
-    { title: "Choose", text: "Browse Pocket Power and pick the pieces you want." },
+    { title: "Choose", text: "Browse Pocket Power and the fila and pick the pieces you want." },
     { title: "Order", text: "Place your order and pay on our website. There is nothing to arrange by message." },
     { title: "Receive", text: "We prepare your order and send it to you." },
   ],

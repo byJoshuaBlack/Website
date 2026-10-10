@@ -74,6 +74,12 @@ export const searchIndex: SearchEntry[] = [
     text: [a.kicker, a.excerpt].join(" "),
   })),
   {
+    title: "Traditional: the Fila",
+    kind: "Page",
+    href: "/traditional",
+    text: "fila cap Yoruba traditional agbada kaftan monogram green rose red navy tan",
+  },
+  {
     title: "The World of Joshua Black",
     kind: "Page",
     href: "/world",

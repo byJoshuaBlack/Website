@@ -24,8 +24,9 @@ here. This site has no dark mode, no backend and no dashboard.
 - Catalogue is Pocket Power (the box and its ten squares), listed at `/collection`, which opens
   straight on the grid (its Online Store title is for screen readers only). Every Shop Now (header, dock, menu) goes there; Buy Pocket Power goes to the box's
   own page. The box's page has no "Inside the box" section; a square's page keeps "More from Pocket
-  Power". The fila page (`/traditional`) was removed until the fila is ready; its photos stay in
-  `src/assets/images/editorial/trad-*`, out of the build.
+  Power". The fila, a branded Yoruba cap, has its own page at `/traditional`. Its card in the
+  store (second, after the box; Fila filter) and a picture link on the Pocket Power page both lead
+  there (`traditional.card`).
 - Fully static. No database, no CMS, no runtime dependencies beyond Next and React.
 
 ## Conventions

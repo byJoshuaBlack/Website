@@ -1,7 +1,7 @@
 import { ProductGrid } from "@/components/product/ProductGrid";
 import type { ProductCardData } from "@/components/product/ProductCard";
 import { picture, products } from "@/content";
-import { collection } from "@/content/pages";
+import { collection, traditional } from "@/content/pages";
 import { formatPrice } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 
@@ -21,6 +21,15 @@ export default function CollectionPage() {
     price: product.price ? formatPrice(product.price) : undefined,
     picture: picture(product.tile),
   }));
+  // The fila has its own page outside the catalogue; its card sits after the box.
+  cards.splice(1, 0, {
+    slug: "fila",
+    kind: "fila",
+    href: "/traditional",
+    name: traditional.card.name,
+    descriptor: traditional.card.descriptor,
+    picture: picture(traditional.card.image),
+  });
 
   return (
     <>

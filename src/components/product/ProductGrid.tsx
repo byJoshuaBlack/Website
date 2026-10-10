@@ -7,7 +7,7 @@ import { sizes } from "@/lib/sizes";
 import { ProductCard, type ProductCardData } from "./ProductCard";
 
 type Density = "large" | "medium" | "small";
-type Filter = "all" | "set" | "piece";
+type Filter = "all" | "set" | "piece" | "fila";
 
 const densities: { id: Density; icon: IconName; label: string; grid: string; sizes: string; mobile: boolean }[] = [
   {
@@ -40,6 +40,7 @@ const filters: { id: Filter; label: string }[] = [
   { id: "all", label: "All" },
   { id: "set", label: "The box" },
   { id: "piece", label: "Squares" },
+  { id: "fila", label: "Fila" },
 ];
 
 export function ProductGrid({ products }: { products: ProductCardData[] }) {
@@ -52,8 +53,8 @@ export function ProductGrid({ products }: { products: ProductCardData[] }) {
   return (
     <>
       <div className="sticky top-(--header-h) z-30 border-y border-rule bg-paper">
-        <div className="gutter grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-4">
-          <p aria-live="polite" className="text-label">
+        <div className="gutter grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4">
+          <p aria-live="polite" className="whitespace-nowrap text-label">
             {visible.length} {visible.length === 1 ? "piece" : "pieces"}
           </p>
 
@@ -66,7 +67,7 @@ export function ProductGrid({ products }: { products: ProductCardData[] }) {
                 aria-pressed={density === option.id}
                 onClick={() => setDensity(option.id)}
                 className={cn(
-                  "h-9 w-9 place-items-center transition-colors",
+                  "h-9 w-8 place-items-center transition-colors sm:w-9",
                   option.mobile ? "grid" : "hidden md:grid",
                   density === option.id ? "text-ink" : "text-mute/50 hover:text-ink",
                 )}
@@ -76,7 +77,7 @@ export function ProductGrid({ products }: { products: ProductCardData[] }) {
             ))}
           </div>
 
-          <div role="group" aria-label="Filter" className="flex items-center justify-end gap-4 sm:gap-6">
+          <div role="group" aria-label="Filter" className="flex items-center justify-end gap-2.5 sm:gap-6">
             {filters.map((option) => (
               <button
                 key={option.id}

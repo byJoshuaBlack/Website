@@ -14,6 +14,13 @@ import edTan01 from "@/assets/images/editorial/ed-tan-01.webp";
 import edTan02 from "@/assets/images/editorial/ed-tan-02.webp";
 import edTan03 from "@/assets/images/editorial/ed-tan-03.webp";
 import edTan04 from "@/assets/images/editorial/ed-tan-04.webp";
+import tradGreenBand from "@/assets/images/editorial/trad-green-band.webp";
+import tradGreenSeated from "@/assets/images/editorial/trad-green-seated.webp";
+import tradRedBand from "@/assets/images/editorial/trad-red-band.webp";
+import tradRedPortrait from "@/assets/images/editorial/trad-red-portrait.webp";
+import tradRoseBand from "@/assets/images/editorial/trad-rose-band.webp";
+import tradRoseProfile from "@/assets/images/editorial/trad-rose-profile.webp";
+import tradTanBand from "@/assets/images/editorial/trad-tan-band.webp";
 import ppBoxEngraved from "@/assets/images/product/pp-box-engraved-01.webp";
 import ppBoxOpen from "@/assets/images/product/pp-box-open-01.webp";
 import ppBoxStack from "@/assets/images/product/pp-box-stack-01.webp";
@@ -128,6 +135,34 @@ export const images = {
   "ed-tan-04": {
     src: edTan04,
     alt: "A man in a tan suit laughing in an armchair, navy socks and black shoes showing",
+  },
+  "trad-rose-profile": {
+    src: tradRoseProfile,
+    alt: "A man in a navy kaftan and a rose fila, the Joshua Black monogram on its band, seated in profile under warm light",
+  },
+  "trad-red-portrait": {
+    src: tradRedPortrait,
+    alt: "A smiling man in a red and navy fila, the Joshua Black monogram across its band",
+  },
+  "trad-green-seated": {
+    src: tradGreenSeated,
+    alt: "A man in a grey kaftan and a green fila, seated and talking with his hands together",
+  },
+  "trad-green-band": {
+    src: tradGreenBand,
+    alt: "A green fila seen from behind, the Joshua Black monogram in grey along its band",
+  },
+  "trad-rose-band": {
+    src: tradRoseBand,
+    alt: "A rose fila seen from behind, the Joshua Black monogram in rose on a sand band",
+  },
+  "trad-red-band": {
+    src: tradRedBand,
+    alt: "A fila with a striped crown seen from behind, the Joshua Black monogram in navy on a red band",
+  },
+  "trad-tan-band": {
+    src: tradTanBand,
+    alt: "A tan fila with brown stripes seen from behind, the Joshua Black monogram on a brown band",
   },
   "tile-aubergine": {
     src: tileAubergine,

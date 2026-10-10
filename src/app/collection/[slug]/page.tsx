@@ -8,7 +8,7 @@ import { Accordion, type AccordionItem } from "@/components/ui/Accordion";
 import { Frame } from "@/components/ui/Frame";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { box, getProduct, picture, products, site, squares } from "@/content";
-import { collection, store } from "@/content/pages";
+import { collection, store, traditional } from "@/content/pages";
 import type { Product } from "@/content/types";
 import { formatPrice } from "@/lib/format";
 import { absoluteUrl } from "@/lib/seo";
@@ -148,6 +148,15 @@ export default async function ProductPage(props: PageProps<"/collection/[slug]">
                 <span>
                   <span className="display block text-[1.125rem] tracking-[0.04em]">{box.name}</span>
                   <span className="link-line-in text-label text-mute">Discover the box of ten</span>
+                </span>
+              </Link>
+            )}
+            {product.kind === "set" && (
+              <Link href="/traditional" className="group mt-8 flex items-center gap-4 bg-paper p-3">
+                <Frame picture={picture(traditional.card.image)} sizes={sizes.thumb} className="w-14 shrink-0" />
+                <span>
+                  <span className="display block text-[1.125rem] tracking-[0.04em]">{traditional.card.name}</span>
+                  <span className="link-line-in text-label text-mute">{traditional.card.link}</span>
                 </span>
               </Link>
             )}
