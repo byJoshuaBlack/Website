@@ -64,8 +64,8 @@ export function IntroHero({ title, accents, body, link, rise, picture }: Props) 
           <h1 className="heading-lg md:max-w-[22ch] md:text-balance leading-[1.16] max-md:text-[length:min(calc((100vw-4.25rem)/8.5),4.25rem)]">
             <Highlight text={title} marks={accents.map((accent) => ({ text: accent.text, className: tones[accent.tone] }))} />
           </h1>
-          {/* On phones the description scales with the card, its longest line filling most of the width. */}
-          <p className="copy-lg mt-1 max-w-[40ch] leading-[1.25] md:mt-5 max-md:max-w-none max-md:text-[length:min(calc((100vw-4.25rem)/16),1.5rem)]">
+          {/* On phones the description scales with the card, its longest line ending before the headline's. */}
+          <p className="copy-lg mt-4 max-w-[40ch] leading-[1.25] md:mt-5 max-md:max-w-none max-md:text-[length:min(calc((100vw-4.25rem)/18),1.5rem)]">
             {body.map((line, index) => (
               <Fragment key={line}>
                 {index > 0 && " "}

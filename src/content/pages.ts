@@ -1,16 +1,7 @@
-import { shopLink } from "./navigation";
 import type { Accent, ImageRef, LinkItem } from "./types";
 
 /** Follows the mouse over a tile's photo. */
 export const tileHint = "Learn more";
-
-/** Pocket Power's pitch, shared by the home page and the collection page. */
-const pocketPower = {
-  lines: ["One box.", "Ten pocket squares."],
-  highlight: "Ten",
-  accent: "to make you stand out",
-  body: "A silk-wool blend, soft yet structured enough to hold its fold in your pocket. Each square folds up to seven ways.",
-};
 
 export const home = {
   intro: {
@@ -27,7 +18,10 @@ export const home = {
   },
 
   pocketPower: {
-    ...pocketPower,
+    lines: ["One box.", "Ten pocket squares."],
+    highlight: "Ten",
+    accent: "to make you stand out",
+    body: "A silk-wool blend, soft yet structured enough to hold its fold in your pocket. Each square folds up to seven ways.",
     kicker: "New",
     // Shown in turn, in this order.
     images: [
@@ -41,26 +35,25 @@ export const home = {
       { id: "pp-noir" },
       { id: "pp-box-engraved" },
     ] satisfies ImageRef[],
-    cta: { label: "Buy Pocket Power", href: shopLink.href } satisfies LinkItem,
+    cta: { label: "Buy Pocket Power", href: "/collection/pocket-power" } satisfies LinkItem,
   },
 };
 
 export const collection = {
-  title: "Pocket Power",
-  intro: "One box, ten pocket squares in a silk-wool blend. Browse the box and each square inside it.",
-  welcome: {
-    ...pocketPower,
-    kicker: "Pocket Power",
-    image: { id: "pp-drape" } satisfies ImageRef,
-    links: [
-      { label: "Discover the box", href: "/collection/pocket-power" },
-      { label: "View all ten", href: "#pieces" },
-    ] satisfies LinkItem[],
-  },
+  title: "Online Store",
+  // Search engines only; the page shows the title alone.
+  intro: "Pocket Power: the box, and each of the ten silk-wool pocket squares inside it.",
 };
 
 export const traditional = {
   title: "Traditional: the Fila",
+  // Its card in the online store and its picture link on the Pocket Power page.
+  card: {
+    name: "The Fila",
+    descriptor: "Traditional cap",
+    link: "Discover the fila",
+    image: { id: "trad-red-portrait" } satisfies ImageRef,
+  },
   intro: "The fila, the Yoruba cap that completes a traditional outfit, with the Joshua Black monogram in its band.",
   welcome: {
     kicker: "Traditional",
@@ -151,7 +144,7 @@ export const world = {
     image: { id: "pp-box-open" } satisfies ImageRef,
     links: [
       { label: "Discover Pocket Power", href: "/collection/pocket-power" },
-      { label: "Ordering", href: "/contact" },
+      { label: "Ordering", href: "/ordering" },
     ] satisfies LinkItem[],
   },
 };
@@ -163,7 +156,7 @@ export const store = {
   details: "Our online store opens soon. You will be able to order and pay for every piece right here on our website.",
 };
 
-export const contact = {
+export const ordering = {
   title: "Ordering",
   intro: "Our online store opens soon. When it does, you will choose, order and pay for every piece right here on our website.",
   image: { id: "pp-box-stack" } satisfies ImageRef,
@@ -173,4 +166,16 @@ export const contact = {
     { title: "Order", text: "Place your order and pay on our website. There is nothing to arrange by message." },
     { title: "Receive", text: "We prepare your order and send it to you." },
   ],
+};
+
+/** Contact runs through Instagram direct messages; ordering stays on the website. */
+export const contact = {
+  title: "Contact",
+  intro: "The quickest way to reach Joshua Black is a direct message on Instagram. Tap below and the chat opens, ready for your message.",
+  cta: "Send a DM",
+  emailCta: "Send Email",
+  // Followed by the address, which copies itself when tapped.
+  emailHint: "Send mail to",
+  copied: "Copied",
+  image: { id: "ed-tan-02", crop: { x: 50, y: 20 } } satisfies ImageRef,
 };

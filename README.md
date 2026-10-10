@@ -1,8 +1,9 @@
 # Joshua Black
 
 The website for Joshua Black, a Nigerian men's accessories label. It presents Pocket Power (one
-box, ten pocket squares), the fila, a style guide, and the brand's story. Ordering will happen on
-the site itself once the online store opens; until then the product pages say it is opening soon.
+box, ten pocket squares), the fila, a style guide, and the brand's story. Ordering will happen on the site
+itself once the online store opens; until then the product pages say it is opening soon. Visitors
+reach the brand by Instagram direct message from the Contact page.
 
 Built with Next.js 16, React 19, TypeScript and Tailwind CSS 4. Every page is static.
 
@@ -34,7 +35,7 @@ All words, products and settings live in `src/content/`. No component needs to c
 | Show or hide prices | `showPrices` in `src/content/site.ts` |
 | Products, names, descriptions, prices | `src/content/products.ts` |
 | Style guide articles | `src/content/articles.ts` |
-| Home, Pocket Power, fila, world and ordering page copy | `src/content/pages.ts` |
+| Home, shop, fila, world, ordering and contact page copy | `src/content/pages.ts` |
 | Menu and footer links, and the header's Shop now button | `src/content/navigation.ts` |
 | Photos and their descriptions | `src/content/images.ts` |
 

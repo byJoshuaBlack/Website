@@ -86,10 +86,22 @@ export const searchIndex: SearchEntry[] = [
     text: "about story founder Opeyemi Okediji name meaning",
   },
   {
+    title: "Online Store",
+    kind: "Page",
+    href: "/collection",
+    text: "shop store buy all products pocket power box squares",
+  },
+  {
     title: "Ordering",
     kind: "Page",
-    href: "/contact",
+    href: "/ordering",
     text: "order buy shop online store pay delivery",
+  },
+  {
+    title: "Contact",
+    kind: "Page",
+    href: "/contact",
+    text: "contact message dm instagram reach get in touch",
   },
 ];
 

@@ -3,6 +3,9 @@ import type { SocialLink } from "@/content/types";
 
 export const instagramProfile = `https://www.instagram.com/${site.contact.instagramHandle}/`;
 
+/** Meta's direct link into a chat with the account, in the app when it is installed. */
+export const instagramDm = `https://ig.me/m/${site.contact.instagramHandle}`;
+
 export const socialLinks: SocialLink[] = [
   { label: "Instagram", icon: "instagram", href: instagramProfile },
   { label: "Facebook", icon: "facebook", href: site.contact.facebook },

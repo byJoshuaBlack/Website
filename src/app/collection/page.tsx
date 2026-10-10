@@ -1,8 +1,7 @@
-import { SplitBanner } from "@/components/editorial/SplitBanner";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import type { ProductCardData } from "@/components/product/ProductCard";
 import { picture, products } from "@/content";
-import { collection } from "@/content/pages";
+import { collection, traditional } from "@/content/pages";
 import { formatPrice } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 
@@ -22,24 +21,21 @@ export default function CollectionPage() {
     price: product.price ? formatPrice(product.price) : undefined,
     picture: picture(product.tile),
   }));
-  const { welcome } = collection;
+  // The fila has its own page outside the catalogue; its card sits after the box.
+  cards.splice(1, 0, {
+    slug: "fila",
+    kind: "fila",
+    href: "/traditional",
+    name: traditional.card.name,
+    descriptor: traditional.card.descriptor,
+    picture: picture(traditional.card.image),
+  });
 
   return (
     <>
-      <SplitBanner
-        level="h1"
-        priority
-        kicker={welcome.kicker}
-        lines={welcome.lines}
-        highlight={welcome.highlight}
-        accent={welcome.accent}
-        body={welcome.body}
-        picture={picture(welcome.image)}
-        links={welcome.links}
-      />
-      <div id="pieces" className="scroll-mt-(--header-h)">
-        <ProductGrid products={cards} />
-      </div>
+      {/* The brand asked for no visible title; screen readers and search engines still get one. */}
+      <h1 className="sr-only">{collection.title}</h1>
+      <ProductGrid products={cards} />
     </>
   );
 }

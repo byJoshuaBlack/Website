@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 const variants = {
@@ -16,25 +16,27 @@ type Props = {
   variant?: keyof typeof variants;
   size?: "default" | "compact";
   className?: string;
-  onClick?: () => void;
+  /** Takes the current history entry's place instead of adding one. */
+  replace?: boolean;
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
 };
 
-export function Button({ href, children, external, variant = "outline", size = "default", className, onClick }: Props) {
+export function Button({ href, children, external, variant = "outline", size = "default", className, replace, onClick }: Props) {
   const classes = cn(
     "flex items-center justify-center gap-3 rounded-full border text-label font-bold transition-colors duration-300 ease-editorial",
     size === "compact" ? "h-9 whitespace-nowrap px-3" : "h-12 w-full px-6 text-base max-md:text-lg",
     variants[variant],
     className,
   );
-  if (external) {
+  if (external || href.startsWith("mailto:")) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" onClick={onClick} className={classes}>
+      <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} onClick={onClick} className={classes}>
         {children}
       </a>
     );
   }
   return (
-    <Link href={href} onClick={onClick} className={classes}>
+    <Link href={href} replace={replace} onClick={onClick} className={classes}>
       {children}
     </Link>
   );

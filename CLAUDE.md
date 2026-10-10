@@ -13,10 +13,20 @@ here. This site has no dark mode, no backend and no dashboard.
 
 - Ordering will happen on this site, through an online store that opens soon. Until then, product
   pages show "Online store opening soon" (`store` in `src/content/pages.ts`) where the order button
-  will go. Never send visitors to Instagram, WhatsApp or direct messages to order.
+  will go. Never send visitors to Instagram, WhatsApp or direct messages to order; how ordering will
+  work is explained at `/ordering` (the menu's Orders and Enquiries).
+- Contact is an Instagram direct message: `/contact` (the footer's Contact) is one line and a pine
+  Send a DM button to `instagramDm` (`ig.me/m/byjoshuablack`, `src/lib/social.ts`), which opens the
+  chat straight away. Instagram cannot pre-write the message. Under it, an outline Send Email button
+  opens `mailto:` `site.contact.email` (hi@byjoshuablack.com), with a hint whose address copies itself
+  when tapped (`CopyText`). Its copy never mentions ordering.
 - Prices hidden. `showPrices` in `src/content/site.ts` turns them on.
-- Catalogue is Pocket Power (the box and its ten squares) plus the fila, a branded Yoruba cap.
-  The fila has its own page at `/traditional`, outside the product catalogue.
+- Catalogue is Pocket Power (the box and its ten squares), listed at `/collection`, which opens
+  straight on the grid (its Online Store title is for screen readers only). Every Shop Now (header, dock, menu) goes there; Buy Pocket Power goes to the box's
+  own page. The box's page has no "Inside the box" section; a square's page keeps "More from Pocket
+  Power". The fila, a branded Yoruba cap, has its own page at `/traditional`. Its card in the
+  store (second, after the box; Fila filter) and a picture link on the Pocket Power page both lead
+  there (`traditional.card`).
 - Fully static. No database, no CMS, no runtime dependencies beyond Next and React.
 
 ## Conventions
@@ -62,11 +72,14 @@ here. This site has no dark mode, no backend and no dashboard.
   corners) break the square, shadow-free rule.
 - The menu (phones up to `xl`) is a full-screen carbon overlay with linen logo and items, centred both
   ways: About Us, Learn RISE, Articles, Orders and Enquiries (`menuLinks`), then a bronze Shop Now
-  button with carbon text, and linen Instagram, Facebook, X and LinkedIn icons at the foot. While it
+  button with carbon text, and nothing under it (the brand removed the social icons). While it
   is open the page's edges and theme colour turn carbon so the browser's bars match (iOS Safari keeps
   its top strip linen).
+- The menu and search overlays each stand on their own history entry (`SiteNav`), so the browser's
+  Back closes them and stays on the page underneath. Closing by hand steps back off that entry, and
+  links inside them replace it, so no stray entries are left.
 - Social profiles live in `site.contact` and `socialLinks` (`src/lib/social.ts`). Facebook, X and
-  LinkedIn have no links yet: their icons show in the menu and footer without a link
+  LinkedIn have no links yet: their icons show in the footer without a link
   (`SocialIcon`), and search-engine data lists only profiles that have one.
 - The footer leads with the logo and the RC number under it (`site.registration`), then a Company
   column (About Us, Contact; `footerColumns`) in the next column rather than pushed right, then the
@@ -76,8 +89,8 @@ here. This site has no dark mode, no backend and no dashboard.
 - Pages that open with a photo hero (`data-hero`, including the home page) start with a transparent
   header whose items turn linen, and Shop Now turns to a linen button (`over-hero`, `over-photo`).
   Once the page scrolls, the header returns to linen with dark items. On phones on the home page the
-  logo is carbon (the hero photo is bright behind it) and sits left, in line with the hero's
-  headline and description (`on-home`); every other page centres it.
+  logo is carbon (the hero photo is bright behind it) and sits left, in line with Get Started and
+  the RISE panel (`on-home`); every other page centres it.
 - Anything that moves on its own has a static layout under the `still` variant (reduced motion or
   no script).
 - The home page is the hero, the Pocket Power banner (text, then photo on phones; text left, photo
@@ -87,14 +100,16 @@ here. This site has no dark mode, no backend and no dashboard.
   tile crops are left out). It cross-fades (half a second) every 3.5 seconds in a loop, with small round back and forward
   buttons in clear liquid glass (`glass-clear`) halfway down its sides at every width. It pauses while hovered, focused from the
   keyboard or off screen, does not move on its own under reduced motion, and only loads the photo
-  showing and the next one.
+  showing and the next one. It also steps on a sideways swipe on touch screens.
+- Product pages show their photos in the same `PhotoCarousel` below `lg` (`ProductGallery`); from
+  `lg` they stack beside the details with thumbnails, as before.
 - The home hero is a rounded carbon card floating on linen at every width (6px from the screen's
   edges on phones). Its photo dissolves into
   the carbon on the side facing the text, over a blurred stretch of its own edge colours. The text
   is linen and left-aligned at every width (button and RISE panel share its left edge; on phones the button and RISE panel span the card inside its gutters (the brand tried the button
   at the description's width and went back), and the
   headline and description sit further in, three gutters from the card's edge; at every width the
-  description runs in four lines, as the brand asked: "If you're here, dressing classy" / "probably feels like guesswork." / "You're not alone. It's hard, but" / "I can guide you."; on phones it scales with the card so its longest line fills about 90% of the text width; it is set at 1.25 leading, tighter than other copy), on phones the headline scales with the card and fills each line before breaking, so it always reads "Dress classy without / guessing. With the RISE / framework." (it is only width-capped from `md`), RISE is underlined (pine would sink into carbon), "Dress classy without guessing." is bronze, and the
+  description runs in four lines, as the brand asked: "If you're here, dressing classy" / "probably feels like guesswork." / "You're not alone. It's hard, but" / "I can guide you."; on phones it scales with the card, about 11% smaller than before at the brand's request, so its longest line never runs past the headline's right edge; it is set at 1.25 leading, tighter than other copy), on phones the headline scales with the card and fills each line before breaking, so it always reads "Dress classy without / guessing. With the RISE / framework." (it is only width-capped from `md`), RISE is underlined (pine would sink into carbon), "Dress classy without guessing." is bronze, and the
   button (Get Started, to the RISE article) is a bronze pill.
   Under it, in a dark liquid-glass panel as wide as the button, with the hero card's corner radius (`glass-dark`), R I S E and their words (Rhythm, Interest, Structure, Entirety) light up letter by letter in
   one continuous wave, capital then word, like synced lyrics (CSS only; static under `still`).
@@ -103,8 +118,9 @@ here. This site has no dark mode, no backend and no dashboard.
   scrolling. The photo zooms in until his raised hand is about 10px from the card's right edge, his
   head just under the left-hand logo, as far as the frame's height allows with his hands ending where
   the headline begins (shorter phones stop sooner). It fades into carbon just below his hands (its
-  frame has no placeholder colour there), so the headline sits on carbon. The headline sits close
-  over the description, and Get Started is 16px below it, like the RISE panel below the button.
+  frame has no placeholder colour there), so the headline sits on carbon. The description sits 16px
+  under the headline (the brand asked for more room than the earlier 4px), and Get Started is 16px
+  below it, like the RISE panel below the button.
   (The brand tried its own 4:5 crop and went back to this one.) From `md` it is zoomed to roughly waist up.
 - Borrow Armani's layout, never its assets, fonts or copy.
 - Code comments are rare and at most two lines.

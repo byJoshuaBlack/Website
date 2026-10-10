@@ -8,7 +8,7 @@ import { Accordion, type AccordionItem } from "@/components/ui/Accordion";
 import { Frame } from "@/components/ui/Frame";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { box, getProduct, picture, products, site, squares } from "@/content";
-import { store } from "@/content/pages";
+import { collection, store, traditional } from "@/content/pages";
 import type { Product } from "@/content/types";
 import { formatPrice } from "@/lib/format";
 import { absoluteUrl } from "@/lib/seo";
@@ -53,7 +53,6 @@ function Bullets({ items }: { items: string[] }) {
 }
 
 function related(product: Product): Product[] {
-  if (product.kind === "set") return squares.slice(0, 4);
   const others = squares.filter((square) => square.slug !== product.slug);
   const start = others.findIndex((square) => (square.number ?? "") > (product.number ?? ""));
   const rotated = [...others.slice(Math.max(start, 0)), ...others.slice(0, Math.max(start, 0))];
@@ -79,7 +78,7 @@ export default async function ProductPage(props: PageProps<"/collection/[slug]">
       <div className="bg-tile">
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,min(44vw,calc(var(--page-max)*0.44)))_minmax(0,1fr)]">
           <div className="lg:order-2 lg:py-4">
-            <ProductGallery pictures={pictures} />
+            <ProductGallery pictures={pictures} label={`${product.name} photos`} />
           </div>
 
           <section
@@ -114,7 +113,7 @@ export default async function ProductPage(props: PageProps<"/collection/[slug]">
                 </li>
                 <li>
                   <Link href="/collection" className="link-line-in">
-                    Pocket Power
+                    {collection.title}
                   </Link>
                   <span aria-hidden="true"> /</span>
                 </li>
@@ -152,38 +151,49 @@ export default async function ProductPage(props: PageProps<"/collection/[slug]">
                 </span>
               </Link>
             )}
+            {product.kind === "set" && (
+              <Link href="/traditional" className="group mt-8 flex items-center gap-4 bg-paper p-3">
+                <Frame picture={picture(traditional.card.image)} sizes={sizes.thumb} className="w-14 shrink-0" />
+                <span>
+                  <span className="display block text-[1.125rem] tracking-[0.04em]">{traditional.card.name}</span>
+                  <span className="link-line-in text-label text-mute">{traditional.card.link}</span>
+                </span>
+              </Link>
+            )}
           </section>
         </div>
       </div>
 
-      <section aria-labelledby="more-title" className="pt-16 lg:pt-24">
-        <h2 id="more-title" className="heading-md gutter mb-8">
-          {isPiece ? "More from Pocket Power" : "Inside the box"}
-        </h2>
-        <ul className="grid grid-cols-2 border-t border-rule lg:grid-cols-4">
-          {related(product).map((item) => (
-            <li key={item.slug} className="border-b border-r border-rule">
-              <ProductCard
-                product={{
-                  slug: item.slug,
-                  kind: item.kind,
-                  name: item.name,
-                  descriptor: item.descriptor,
-                  number: item.number,
-                  price: item.price ? formatPrice(item.price) : undefined,
-                  picture: picture(item.tile),
-                }}
-                sizes={sizes.quarter}
-              />
-            </li>
-          ))}
-        </ul>
-        <p className="gutter mt-8 text-body">
-          <Link href="/collection" className="link-line">
-            View all pieces
-          </Link>
-        </p>
-      </section>
+      {isPiece && (
+        <section aria-labelledby="more-title" className="pt-16 lg:pt-24">
+          <h2 id="more-title" className="heading-md gutter mb-8">
+            More from Pocket Power
+          </h2>
+          <ul className="grid grid-cols-2 border-t border-rule lg:grid-cols-4">
+            {related(product).map((item) => (
+              <li key={item.slug} className="border-b border-r border-rule">
+                <ProductCard
+                  product={{
+                    slug: item.slug,
+                    kind: item.kind,
+                    name: item.name,
+                    descriptor: item.descriptor,
+                    number: item.number,
+                    price: item.price ? formatPrice(item.price) : undefined,
+                    picture: picture(item.tile),
+                  }}
+                  sizes={sizes.quarter}
+                />
+              </li>
+            ))}
+          </ul>
+          <p className="gutter mt-8 text-body">
+            <Link href="/collection" className="link-line">
+              View all pieces
+            </Link>
+          </p>
+        </section>
+      )}
 
       <JsonLd
         data={{
