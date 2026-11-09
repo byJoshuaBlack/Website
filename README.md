@@ -23,6 +23,19 @@ Open http://localhost:3000.
 | `npm run build` | Production build only |
 | `npm run start` | Serve the production build (run `build` first) |
 | `npm run photos -- <folder>` | Prepare photos as WebP (see below) |
+| `npm run preview` | Build for Cloudflare and serve it locally on the Workers runtime (port 8787) |
+| `npm run deploy` | Build for Cloudflare and deploy to the live Worker |
+
+## Hosting
+
+The site runs on Cloudflare Workers through the OpenNext adapter (`@opennextjs/cloudflare`).
+`wrangler.jsonc` names the Worker (`joshua-black`) and its bindings, and `open-next.config.ts`
+serves every prerendered page straight from the Worker's static assets. Photos are resized
+and converted to WebP by Cloudflare Images through the `IMAGES` binding.
+
+Pushes to `main` deploy through Workers Builds once the repository is connected in the
+Cloudflare dashboard (build command `npx opennextjs-cloudflare build`, deploy command
+`npx wrangler deploy`). Set `NEXT_PUBLIC_SITE_URL` as a build variable there.
 
 ## Edit the site
 
@@ -138,7 +151,8 @@ Small headings and numerals switch to the bold weight on their own.
 
 ## Before launch
 
-- Set `NEXT_PUBLIC_SITE_URL` to the live address, for example `https://your-domain.com`.
+- Set `NEXT_PUBLIC_SITE_URL` to the live address, for example `https://your-domain.com`, in the
+  Worker's build variables. Without it, the sitemap and shared previews point at localhost.
 - Connect the online store, and replace the "Online store opening soon" notice on the product
   and fila pages with its order buttons.
 - Replace the working names of the ten squares in `src/content/products.ts`.

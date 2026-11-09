@@ -28,6 +28,8 @@ here. This site has no dark mode, no backend and no dashboard.
   store (second, after the box; Fila filter) and a picture link on the Pocket Power page both lead
   there (`traditional.card`).
 - Fully static. No database, no CMS, no runtime dependencies beyond Next and React.
+- Hosted on Cloudflare Workers through OpenNext (`wrangler.jsonc`, `open-next.config.ts`), not Vercel.
+  Cloudflare Images resizes photos through the `IMAGES` binding.
 
 ## Conventions
 
@@ -130,4 +132,7 @@ here. This site has no dark mode, no backend and no dashboard.
 - `npm run dev` — local server on port 3000
 - `npm run check` — type-check, lint and production build
 - `npm run photos -- <folder>` — prepare photos
-- Judge image sharpness on `npm run build && npm run start`, not on the dev server.
+- `npm run preview` — Cloudflare build served locally on the Workers runtime, port 8787
+- `npm run deploy` — build for Cloudflare and deploy
+- Judge image sharpness on a deployed Cloudflare version, where Cloudflare Images resizes photos;
+  locally, `npm run build && npm run start` is the closest, never the dev server.

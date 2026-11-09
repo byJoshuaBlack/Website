@@ -21,6 +21,15 @@
         "3100"
       ],
       "port": 3100
+    },
+    {
+      "name": "joshua-black-cloudflare",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "opennextjs-cloudflare",
+        "preview"
+      ],
+      "port": 8787
     }
   ]
 }
