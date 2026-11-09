@@ -134,5 +134,7 @@ here. This site has no dark mode, no backend and no dashboard.
 - `npm run photos -- <folder>` — prepare photos
 - `npm run preview` — Cloudflare build served locally on the Workers runtime, port 8787
 - `npm run deploy` — build for Cloudflare and deploy
+- Cloudflare installs with npm 10 (`npm clean-install`). After changing dependencies, refresh the lock
+  file with `npx npm@10 install`: one written by npm 11 alone fails there (missing `@emnapi/*`).
 - Judge image sharpness on a deployed Cloudflare version, where Cloudflare Images resizes photos;
   locally, `npm run build && npm run start` is the closest, never the dev server.
