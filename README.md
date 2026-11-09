@@ -29,7 +29,7 @@ Open http://localhost:3000.
 ## Hosting
 
 The site runs on Cloudflare Workers through the OpenNext adapter (`@opennextjs/cloudflare`).
-`wrangler.jsonc` names the Worker (`joshua-black`) and its bindings, and `open-next.config.ts`
+`wrangler.jsonc` names the Worker (`website`, as created in the Cloudflare dashboard) and its bindings, and `open-next.config.ts`
 serves every prerendered page straight from the Worker's static assets. Photos are resized
 and converted to WebP by Cloudflare Images through the `IMAGES` binding.
 
