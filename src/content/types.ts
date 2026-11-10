@@ -1,10 +1,10 @@
 import type { StaticImageData } from "next/image";
-import type { images } from "./images";
 
-export type ImageId = keyof typeof images;
+/** A photo in the media library: its address and size, plus a tiny blurred preview when one exists. */
+export type ImageSource = StaticImageData;
 
 export type ImageAsset = {
-  src: StaticImageData;
+  src: ImageSource;
   alt: string;
 };
 
@@ -17,13 +17,14 @@ export type Crop = {
   top?: number;
 };
 
+/** A photo as used in one place, with an optional crop and alt override. */
 export type ImageRef = {
-  id: ImageId;
+  asset: ImageAsset;
   crop?: Crop;
   alt?: string;
 };
 
-/** An ImageRef resolved against the manifest, safe to pass to client components. */
+/** An ImageRef ready for the frame, safe to pass to client components. */
 export type Picture = {
   src: StaticImageData;
   alt: string;
@@ -114,4 +115,85 @@ export type SearchEntry = {
   kind: "Product" | "Style Guide" | "Page";
   href: string;
   text: string;
+};
+
+export type NavigationContent = {
+  shopLink: LinkItem;
+  menuLinks: LinkItem[];
+  footerColumns: { title: string; links: LinkItem[] }[];
+  suggestions: LinkItem[];
+};
+
+/** Headline lines with one word drawn larger and a line in the script face, as in banners. */
+type Banner = { lines: string[]; highlight: string; accent: string };
+
+export type HomeContent = {
+  intro: {
+    title: string;
+    accents: Accent[];
+    body: string[];
+    link: LinkItem;
+    rise: string[];
+    image: ImageRef;
+  };
+  pocketPower: Banner & { kicker: string; body: string; images: ImageRef[]; cta: LinkItem };
+};
+
+export type CollectionContent = { title: string; intro: string };
+
+export type TraditionalContent = {
+  title: string;
+  intro: string;
+  card: { name: string; descriptor: string; link: string; image: ImageRef };
+  welcome: Banner & { kicker: string; body: string; image: ImageRef; links: LinkItem[] };
+  colours: { title: string; intro: string; items: { name: string; image: ImageRef }[] };
+  order: { title: string; text: string; image: ImageRef };
+};
+
+export type StyleGuideContent = { title: string; intro: string; hero: ImageRef };
+
+export type WorldContent = {
+  hero: { kicker: string; title: string; image: ImageRef };
+  name: { intro: string; parts: { term: string; text: string }[]; together: string };
+  founder: { image: ImageRef; title: string; paragraphs: string[]; quote: string };
+  timeline: { title: string; image: ImageRef; events: { date: string; text: string }[] };
+  closing: Banner & { image: ImageRef; links: LinkItem[] };
+};
+
+export type StoreContent = { status: string; note: string; details: string };
+
+export type OrderingContent = {
+  title: string;
+  intro: string;
+  image: ImageRef;
+  stepsTitle: string;
+  steps: { title: string; text: string }[];
+};
+
+export type ContactContent = {
+  title: string;
+  intro: string;
+  cta: string;
+  emailCta: string;
+  emailHint: string;
+  copied: string;
+  image: ImageRef;
+};
+
+/** Everything the site shows, read from Payload in one go. */
+export type Content = {
+  site: SiteConfig;
+  tileHint: string;
+  searchPages: { title: string; href: string; text: string }[];
+  navigation: NavigationContent;
+  home: HomeContent;
+  collection: CollectionContent;
+  traditional: TraditionalContent;
+  styleGuide: StyleGuideContent;
+  world: WorldContent;
+  store: StoreContent;
+  ordering: OrderingContent;
+  contact: ContactContent;
+  products: Product[];
+  articles: Article[];
 };

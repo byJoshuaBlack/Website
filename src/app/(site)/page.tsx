@@ -1,9 +1,9 @@
 import { IntroHero } from "@/components/editorial/IntroHero";
 import { SplitBanner } from "@/components/editorial/SplitBanner";
-import { picture } from "@/content";
-import { home } from "@/content/pages";
+import { getContent, picture } from "@/content";
 
-export default function Home() {
+export default async function Home() {
+  const { home } = await getContent();
   return (
     <>
       <IntroHero

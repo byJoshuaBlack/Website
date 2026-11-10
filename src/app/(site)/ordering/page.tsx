@@ -1,16 +1,15 @@
 import { Frame } from "@/components/ui/Frame";
-import { picture, site } from "@/content";
-import { ordering } from "@/content/pages";
+import { getContent, picture } from "@/content";
 import { pageMetadata } from "@/lib/seo";
 import { sizes } from "@/lib/sizes";
 
-export const metadata = pageMetadata({
-  title: ordering.title,
-  description: ordering.intro,
-  path: "/ordering",
-});
+export async function generateMetadata() {
+  const { ordering, site } = await getContent();
+  return pageMetadata({ title: ordering.title, description: ordering.intro, path: "/ordering", siteName: site.name });
+}
 
-export default function OrderingPage() {
+export default async function OrderingPage() {
+  const { ordering, site } = await getContent();
   return (
     <div className="lg:grid lg:grid-cols-2">
       <div className="gutter pb-16 pt-10 lg:px-16 lg:pb-24 lg:pt-16 xl:px-24">

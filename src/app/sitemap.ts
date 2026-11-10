@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
-import { articles, products } from "@/content";
+import { getContent } from "@/content";
 import { absoluteUrl } from "@/lib/seo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { articles, products } = await getContent();
   const paths = [
     "/",
     "/collection",

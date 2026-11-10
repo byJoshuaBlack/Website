@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
-import { site } from "@/content/site";
+import { siteConfig } from "@/content/config";
 
 export function absoluteUrl(path = "/"): string {
-  return new URL(path, site.url).toString();
+  return new URL(path, siteConfig.url).toString();
 }
 
-export function pageMetadata({ title, description, path }: { title: string; description: string; path: string }): Metadata {
+export function pageMetadata({
+  title,
+  description,
+  path,
+  siteName,
+}: {
+  title: string;
+  description: string;
+  path: string;
+  siteName: string;
+}): Metadata {
   return {
     title,
     description,
     alternates: { canonical: path },
-    openGraph: { title: `${title} | ${site.name}`, description, url: path },
+    openGraph: { title: `${title} | ${siteName}`, description, url: path },
   };
 }

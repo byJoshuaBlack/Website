@@ -1,17 +1,16 @@
 import { ProductGrid } from "@/components/product/ProductGrid";
 import type { ProductCardData } from "@/components/product/ProductCard";
-import { picture, products } from "@/content";
-import { collection, traditional } from "@/content/pages";
+import { getContent, picture } from "@/content";
 import { formatPrice } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 
-export const metadata = pageMetadata({
-  title: collection.title,
-  description: collection.intro,
-  path: "/collection",
-});
+export async function generateMetadata() {
+  const { collection, site } = await getContent();
+  return pageMetadata({ title: collection.title, description: collection.intro, path: "/collection", siteName: site.name });
+}
 
-export default function CollectionPage() {
+export default async function CollectionPage() {
+  const { collection, products, traditional } = await getContent();
   const cards: ProductCardData[] = products.map((product) => ({
     slug: product.slug,
     kind: product.kind,

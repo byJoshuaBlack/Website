@@ -67,8 +67,10 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
+    products: Product;
+    articles: Article;
     media: Media;
+    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,8 +78,10 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +91,30 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    siteSettings: SiteSetting;
+    navigation: Navigation;
+    home: Home;
+    collectionPage: CollectionPage;
+    traditional: Traditional;
+    styleGuidePage: StyleGuidePage;
+    world: World;
+    storeNotice: StoreNotice;
+    ordering: Ordering;
+    contact: Contact;
+  };
+  globalsSelect: {
+    siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    home: HomeSelect<false> | HomeSelect<true>;
+    collectionPage: CollectionPageSelect<false> | CollectionPageSelect<true>;
+    traditional: TraditionalSelect<false> | TraditionalSelect<true>;
+    styleGuidePage: StyleGuidePageSelect<false> | StyleGuidePageSelect<true>;
+    world: WorldSelect<false> | WorldSelect<true>;
+    storeNotice: StoreNoticeSelect<false> | StoreNoticeSelect<true>;
+    ordering: OrderingSelect<false> | OrderingSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -118,11 +144,255 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Drag to set the order of the store's grid. The box comes first.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * The page's address: /collection/<slug>. Lowercase words joined by hyphens.
+   */
+  slug: string;
+  kind: 'set' | 'piece';
+  /**
+   * A square's number in the box, like 01.
+   */
+  number?: string | null;
+  /**
+   * Its colour, or what the box holds.
+   */
+  descriptor: string;
+  summary: string;
+  description?:
+    | {
+        line: string;
+        id?: string | null;
+      }[]
+    | null;
+  details?:
+    | {
+        line: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Hidden on the page while empty.
+   */
+  care?:
+    | {
+        line: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Shown in the store's grid.
+   */
+  tile: {
+    image: number | Media;
+    /**
+     * Leave empty to use the photo's own description.
+     */
+    alt?: string | null;
+    /**
+     * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+     */
+    crop?: {
+      x?: number | null;
+      y?: number | null;
+      /**
+       * 1 to 2. Needs x and y.
+       */
+      zoom?: number | null;
+      /**
+       * Trim above the subject, in percent. Replaces y.
+       */
+      top?: number | null;
+    };
+  };
+  gallery?:
+    | {
+        image: number | Media;
+        /**
+         * Leave empty to use the photo's own description.
+         */
+        alt?: string | null;
+        /**
+         * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+         */
+        crop?: {
+          x?: number | null;
+          y?: number | null;
+          /**
+           * 1 to 2. Needs x and y.
+           */
+          zoom?: number | null;
+          /**
+           * Trim above the subject, in percent. Replaces y.
+           */
+          top?: number | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Marks squares still waiting for their own photo.
+   */
+  needsPhoto?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Prepare photos with `npm run photos` first: WebP, at most 1920px wide, so they stay sharp and light.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * What the photo shows, for people who cannot see it.
+   */
+  alt: string;
+  /**
+   * Set for the photos that came with the site.
+   */
+  key?: string | null;
+  blurDataURL?: string | null;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * The style guide's articles. Drag to set their order.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  _order?: string | null;
+  title: string;
+  /**
+   * The page's address: /style-guide/<slug>.
+   */
+  slug: string;
+  /**
+   * The script line under the title.
+   */
+  kicker: string;
+  excerpt: string;
+  cover: {
+    image: number | Media;
+    /**
+     * Leave empty to use the photo's own description.
+     */
+    alt?: string | null;
+    /**
+     * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+     */
+    crop?: {
+      x?: number | null;
+      y?: number | null;
+      /**
+       * 1 to 2. Needs x and y.
+       */
+      zoom?: number | null;
+      /**
+       * Trim above the subject, in percent. Replaces y.
+       */
+      top?: number | null;
+    };
+  };
+  body: (
+    | {
+        text: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'paragraph';
+      }
+    | {
+        text: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'heading';
+      }
+    | {
+        text: string;
+        /**
+         * Optional: who said it.
+         */
+        cite?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'quote';
+      }
+    | {
+        style: 'bullet' | 'number';
+        items?:
+          | {
+              /**
+               * Optional lead-in.
+               */
+              title?: string | null;
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'list';
+      }
+    | {
+        items?:
+          | {
+              term: string;
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'pair';
+      }
+    | {
+        letters?:
+          | {
+              letter: string;
+              word: string;
+              text: string;
+              example?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'acronym';
+      }
+  )[];
+  related?: (number | Product)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -142,27 +412,6 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Describe the photo for people who cannot see it.
-   */
-  alt: string;
-  _objectKey?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -189,12 +438,20 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
       } | null)
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -240,9 +497,190 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  slug?: T;
+  kind?: T;
+  number?: T;
+  descriptor?: T;
+  summary?: T;
+  description?:
+    | T
+    | {
+        line?: T;
+        id?: T;
+      };
+  details?:
+    | T
+    | {
+        line?: T;
+        id?: T;
+      };
+  care?:
+    | T
+    | {
+        line?: T;
+        id?: T;
+      };
+  tile?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        crop?:
+          | T
+          | {
+              x?: T;
+              y?: T;
+              zoom?: T;
+              top?: T;
+            };
+      };
+  gallery?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        crop?:
+          | T
+          | {
+              x?: T;
+              y?: T;
+              zoom?: T;
+              top?: T;
+            };
+        id?: T;
+      };
+  needsPhoto?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  _order?: T;
+  title?: T;
+  slug?: T;
+  kicker?: T;
+  excerpt?: T;
+  cover?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        crop?:
+          | T
+          | {
+              x?: T;
+              y?: T;
+              zoom?: T;
+              top?: T;
+            };
+      };
+  body?:
+    | T
+    | {
+        paragraph?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+              blockName?: T;
+            };
+        heading?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+              blockName?: T;
+            };
+        quote?:
+          | T
+          | {
+              text?: T;
+              cite?: T;
+              id?: T;
+              blockName?: T;
+            };
+        list?:
+          | T
+          | {
+              style?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        pair?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    term?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        acronym?:
+          | T
+          | {
+              letters?:
+                | T
+                | {
+                    letter?: T;
+                    word?: T;
+                    text?: T;
+                    example?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  related?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  key?: T;
+  blurDataURL?: T;
+  _objectKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -260,23 +698,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  _objectKey?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -317,6 +738,1244 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings".
+ */
+export interface SiteSetting {
+  id: number;
+  name: string;
+  registration: string;
+  tagline: string;
+  /**
+   * Shown by search engines and when the site is shared.
+   */
+  description: string;
+  /**
+   * Products without a price stay blank.
+   */
+  showPrices?: boolean | null;
+  contact: {
+    /**
+     * Without the @.
+     */
+    instagramHandle: string;
+    email?: string | null;
+    /**
+     * Full profile address.
+     */
+    facebook?: string | null;
+    /**
+     * Full profile address.
+     */
+    x?: string | null;
+    /**
+     * Full profile address.
+     */
+    linkedin?: string | null;
+  };
+  founder: {
+    name: string;
+    role: string;
+  };
+  /**
+   * Optional bar above the header. Leave empty to hide it.
+   */
+  announcement?: {
+    text?: string | null;
+    href?: string | null;
+  };
+  /**
+   * Follows the mouse over a tile's photo.
+   */
+  tileHint: string;
+  /**
+   * Pages the search finds, beside every product and article.
+   */
+  searchPages?:
+    | {
+        title: string;
+        href: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  /**
+   * The header's button, the dock's middle tab and the menu's last item.
+   */
+  shopLink: {
+    label: string;
+    /**
+     * A page on this site, like /collection, or a full address.
+     */
+    href: string;
+  };
+  menuLinks?:
+    | {
+        label: string;
+        /**
+         * A page on this site, like /collection, or a full address.
+         */
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  footerColumns?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              /**
+               * A page on this site, like /collection, or a full address.
+               */
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Shown before anything is typed in search.
+   */
+  suggestions?:
+    | {
+        label: string;
+        /**
+         * A page on this site, like /collection, or a full address.
+         */
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home".
+ */
+export interface Home {
+  id: number;
+  intro: {
+    /**
+     * On phones it always fills three lines.
+     */
+    title: string;
+    /**
+     * Phrases from the headline shown in pine or bronze. Each must appear in the headline exactly.
+     */
+    accents?:
+      | {
+          text: string;
+          tone: 'pine' | 'bronze';
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Exactly four lines, as the brand set them. Keep each line about as long as today's.
+     */
+    body?:
+      | {
+          line: string;
+          id?: string | null;
+        }[]
+      | null;
+    link: {
+      label: string;
+      /**
+       * A page on this site, like /collection, or a full address.
+       */
+      href: string;
+    };
+    /**
+     * Rhythm, Interest, Structure, Entirety, in order.
+     */
+    rise?:
+      | {
+          line: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Admins only. The hero's layout is tuned to this photo's framing; changing it needs a design check.
+     */
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+  };
+  pocketPower: {
+    kicker: string;
+    lines?:
+      | {
+          line: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * One word from the lines above, drawn larger.
+     */
+    highlight: string;
+    accent: string;
+    body: string;
+    /**
+     * Shown in turn, in this order.
+     */
+    images?:
+      | {
+          image: number | Media;
+          /**
+           * Leave empty to use the photo's own description.
+           */
+          alt?: string | null;
+          /**
+           * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+           */
+          crop?: {
+            x?: number | null;
+            y?: number | null;
+            /**
+             * 1 to 2. Needs x and y.
+             */
+            zoom?: number | null;
+            /**
+             * Trim above the subject, in percent. Replaces y.
+             */
+            top?: number | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
+    cta: {
+      label: string;
+      /**
+       * A page on this site, like /collection, or a full address.
+       */
+      href: string;
+    };
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collectionPage".
+ */
+export interface CollectionPage {
+  id: number;
+  /**
+   * For screen readers and search engines; the page shows no title.
+   */
+  title: string;
+  /**
+   * For search engines.
+   */
+  intro: string;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "traditional".
+ */
+export interface Traditional {
+  id: number;
+  title: string;
+  /**
+   * For search engines.
+   */
+  intro: string;
+  card: {
+    name: string;
+    descriptor: string;
+    link: string;
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+  };
+  welcome: {
+    kicker: string;
+    lines?:
+      | {
+          line: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * One word from the lines above, drawn larger.
+     */
+    highlight: string;
+    accent: string;
+    body: string;
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+    links?:
+      | {
+          label: string;
+          /**
+           * A page on this site, like /collection, or a full address.
+           */
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  colours: {
+    title: string;
+    intro: string;
+    items?:
+      | {
+          name: string;
+          image: {
+            image: number | Media;
+            /**
+             * Leave empty to use the photo's own description.
+             */
+            alt?: string | null;
+            /**
+             * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+             */
+            crop?: {
+              x?: number | null;
+              y?: number | null;
+              /**
+               * 1 to 2. Needs x and y.
+               */
+              zoom?: number | null;
+              /**
+               * Trim above the subject, in percent. Replaces y.
+               */
+              top?: number | null;
+            };
+          };
+          id?: string | null;
+        }[]
+      | null;
+  };
+  order: {
+    title: string;
+    text: string;
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "styleGuidePage".
+ */
+export interface StyleGuidePage {
+  id: number;
+  title: string;
+  intro: string;
+  hero: {
+    image: number | Media;
+    /**
+     * Leave empty to use the photo's own description.
+     */
+    alt?: string | null;
+    /**
+     * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+     */
+    crop?: {
+      x?: number | null;
+      y?: number | null;
+      /**
+       * 1 to 2. Needs x and y.
+       */
+      zoom?: number | null;
+      /**
+       * Trim above the subject, in percent. Replaces y.
+       */
+      top?: number | null;
+    };
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "world".
+ */
+export interface World {
+  id: number;
+  hero: {
+    kicker: string;
+    title: string;
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+  };
+  name: {
+    intro: string;
+    parts?:
+      | {
+          term: string;
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    together: string;
+  };
+  founder: {
+    title: string;
+    paragraphs?:
+      | {
+          line: string;
+          id?: string | null;
+        }[]
+      | null;
+    quote: string;
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+  };
+  timeline: {
+    title: string;
+    events?:
+      | {
+          date: string;
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+  };
+  closing: {
+    lines?:
+      | {
+          line: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * One word from the lines above, drawn larger.
+     */
+    highlight: string;
+    accent: string;
+    image: {
+      image: number | Media;
+      /**
+       * Leave empty to use the photo's own description.
+       */
+      alt?: string | null;
+      /**
+       * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+       */
+      crop?: {
+        x?: number | null;
+        y?: number | null;
+        /**
+         * 1 to 2. Needs x and y.
+         */
+        zoom?: number | null;
+        /**
+         * Trim above the subject, in percent. Replaces y.
+         */
+        top?: number | null;
+      };
+    };
+    links?:
+      | {
+          label: string;
+          /**
+           * A page on this site, like /collection, or a full address.
+           */
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Shown until the online store opens.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeNotice".
+ */
+export interface StoreNotice {
+  id: number;
+  /**
+   * Shown where the order button will go.
+   */
+  status: string;
+  note: string;
+  details: string;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ordering".
+ */
+export interface Ordering {
+  id: number;
+  title: string;
+  intro: string;
+  stepsTitle: string;
+  steps?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  image: {
+    image: number | Media;
+    /**
+     * Leave empty to use the photo's own description.
+     */
+    alt?: string | null;
+    /**
+     * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+     */
+    crop?: {
+      x?: number | null;
+      y?: number | null;
+      /**
+       * 1 to 2. Needs x and y.
+       */
+      zoom?: number | null;
+      /**
+       * Trim above the subject, in percent. Replaces y.
+       */
+      top?: number | null;
+    };
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: number;
+  title: string;
+  intro: string;
+  cta: string;
+  emailCta: string;
+  emailHint: string;
+  copied: string;
+  image: {
+    image: number | Media;
+    /**
+     * Leave empty to use the photo's own description.
+     */
+    alt?: string | null;
+    /**
+     * Optional. x and y are the point to keep in view, in percent of the photo's width and height (0 to 100).
+     */
+    crop?: {
+      x?: number | null;
+      y?: number | null;
+      /**
+       * 1 to 2. Needs x and y.
+       */
+      zoom?: number | null;
+      /**
+       * Trim above the subject, in percent. Replaces y.
+       */
+      top?: number | null;
+    };
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  name?: T;
+  registration?: T;
+  tagline?: T;
+  description?: T;
+  showPrices?: T;
+  contact?:
+    | T
+    | {
+        instagramHandle?: T;
+        email?: T;
+        facebook?: T;
+        x?: T;
+        linkedin?: T;
+      };
+  founder?:
+    | T
+    | {
+        name?: T;
+        role?: T;
+      };
+  announcement?:
+    | T
+    | {
+        text?: T;
+        href?: T;
+      };
+  tileHint?: T;
+  searchPages?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        text?: T;
+        id?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  shopLink?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  menuLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  footerColumns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  suggestions?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_select".
+ */
+export interface HomeSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        title?: T;
+        accents?:
+          | T
+          | {
+              text?: T;
+              tone?: T;
+              id?: T;
+            };
+        body?:
+          | T
+          | {
+              line?: T;
+              id?: T;
+            };
+        link?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+        rise?:
+          | T
+          | {
+              line?: T;
+              id?: T;
+            };
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+      };
+  pocketPower?:
+    | T
+    | {
+        kicker?: T;
+        lines?:
+          | T
+          | {
+              line?: T;
+              id?: T;
+            };
+        highlight?: T;
+        accent?: T;
+        body?: T;
+        images?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+              id?: T;
+            };
+        cta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collectionPage_select".
+ */
+export interface CollectionPageSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "traditional_select".
+ */
+export interface TraditionalSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  card?:
+    | T
+    | {
+        name?: T;
+        descriptor?: T;
+        link?: T;
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+      };
+  welcome?:
+    | T
+    | {
+        kicker?: T;
+        lines?:
+          | T
+          | {
+              line?: T;
+              id?: T;
+            };
+        highlight?: T;
+        accent?: T;
+        body?: T;
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  colours?:
+    | T
+    | {
+        title?: T;
+        intro?: T;
+        items?:
+          | T
+          | {
+              name?: T;
+              image?:
+                | T
+                | {
+                    image?: T;
+                    alt?: T;
+                    crop?:
+                      | T
+                      | {
+                          x?: T;
+                          y?: T;
+                          zoom?: T;
+                          top?: T;
+                        };
+                  };
+              id?: T;
+            };
+      };
+  order?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "styleGuidePage_select".
+ */
+export interface StyleGuidePageSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  hero?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        crop?:
+          | T
+          | {
+              x?: T;
+              y?: T;
+              zoom?: T;
+              top?: T;
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "world_select".
+ */
+export interface WorldSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        kicker?: T;
+        title?: T;
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+      };
+  name?:
+    | T
+    | {
+        intro?: T;
+        parts?:
+          | T
+          | {
+              term?: T;
+              text?: T;
+              id?: T;
+            };
+        together?: T;
+      };
+  founder?:
+    | T
+    | {
+        title?: T;
+        paragraphs?:
+          | T
+          | {
+              line?: T;
+              id?: T;
+            };
+        quote?: T;
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+      };
+  timeline?:
+    | T
+    | {
+        title?: T;
+        events?:
+          | T
+          | {
+              date?: T;
+              text?: T;
+              id?: T;
+            };
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+      };
+  closing?:
+    | T
+    | {
+        lines?:
+          | T
+          | {
+              line?: T;
+              id?: T;
+            };
+        highlight?: T;
+        accent?: T;
+        image?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              crop?:
+                | T
+                | {
+                    x?: T;
+                    y?: T;
+                    zoom?: T;
+                    top?: T;
+                  };
+            };
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeNotice_select".
+ */
+export interface StoreNoticeSelect<T extends boolean = true> {
+  status?: T;
+  note?: T;
+  details?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ordering_select".
+ */
+export interface OrderingSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  stepsTitle?: T;
+  steps?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  image?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        crop?:
+          | T
+          | {
+              x?: T;
+              y?: T;
+              zoom?: T;
+              top?: T;
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  cta?: T;
+  emailCta?: T;
+  emailHint?: T;
+  copied?: T;
+  image?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        crop?:
+          | T
+          | {
+              x?: T;
+              y?: T;
+              zoom?: T;
+              top?: T;
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

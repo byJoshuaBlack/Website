@@ -38,50 +38,38 @@ Payload's database is the D1 database `website`, and uploaded files go to the R2
 `website-media`. Database changes are migrations in `src/migrations`, applied to the live database
 before each deploy.
 
-Pushes to `main` deploy through Workers Builds (build command `npx opennextjs-cloudflare build`,
-deploy command `npm run deploy:database && npx wrangler deploy`). Set `NEXT_PUBLIC_SITE_URL` as a
-build variable there, and `PAYLOAD_SECRET` (`openssl rand -hex 32`) as a secret on the Worker.
+Pushes to `main` deploy through Workers Builds (build command `npm run typecheck && npm run lint`,
+deploy command `npm run deploy`, which migrates, snapshots, builds and deploys). Build variables:
+`NEXT_PUBLIC_SITE_URL` and `REVALIDATE_SECRET`. Worker secrets (type Secret): `PAYLOAD_SECRET`,
+`REVALIDATE_SECRET` (the same value), `CACHE_PURGE_API_TOKEN` (Zone → Cache Purge on byjoshuablack.com).
+Generate secrets with `openssl rand -hex 32`.
 
 For local work, copy `.env.example` to `.env` and to `.dev.vars` and fill in `PAYLOAD_SECRET`.
 
 ## Edit the site
 
-All words, products and settings live in `src/content/`. No component needs to change.
+Everything visitors read and see is edited at **byjoshuablack.com/admin**, behind Cloudflare Access
+(an emailed code) and a Payload account. Press **Publish** and the site shows the change on the next
+visit; **Save draft** keeps it off the site until you publish.
 
-| To change | Edit |
+| To change | In the admin |
 |---|---|
-| Instagram handle, tagline | `src/content/site.ts` |
-| The "Online store opening soon" wording | `store` in `src/content/pages.ts` |
-| Show or hide prices | `showPrices` in `src/content/site.ts` |
-| Products, names, descriptions, prices | `src/content/products.ts` |
-| Style guide articles | `src/content/articles.ts` |
-| Home, shop, fila, world, ordering and contact page copy | `src/content/pages.ts` |
-| Menu and footer links, and the header's Shop now button | `src/content/navigation.ts` |
-| Photos and their descriptions | `src/content/images.ts` |
+| Name, tagline, description, RC number, Instagram and email | Site settings |
+| Show or hide prices, the announcement strip, pages in search | Site settings |
+| Menu, footer columns, Shop Now button, search suggestions | Navigation |
+| Products: names, descriptions, details, photos, order in the store | Products (drag to reorder) |
+| Style guide articles | Style guide |
+| Home, store, fila, style guide, world, ordering and contact copy | Pages |
+| The "Online store opening soon" wording | Pages → Store notice |
+| Photos and their descriptions | Photos |
 
-### Show an announcement strip
-
-A thin carbon strip can sit above the header on every page. It is off. To turn it on, add this to
-`site` in `src/content/site.ts`:
-
-```ts
-announcement: { text: "Pocket Power. One box. Ten pocket squares.", href: "/collection/pocket-power" },
-```
-
-### Show prices
-
-Set `showPrices: true` in `src/content/site.ts`, then give each product a price in
-`src/content/products.ts`:
-
-```ts
-price: { amount: 150000, currency: "NGN" },
-```
-
-Products without a price show none. While `showPrices` is off, prices never reach the page source.
+Site settings, Navigation, accounts and the home hero photo are for admins; editors change
+everything else. Some fields guard the design: the home description is exactly four lines, an
+accent must appear in its headline, every photo needs a description and crops stay in range.
 
 ### Add or replace a photo
 
-Photos are stored as WebP, at most 1920px wide, and are prepared by a script rather than by hand.
+Prepare photos before uploading them, so they stay sharp and light: WebP, at most 1920px wide.
 
 1. Put the original files in a folder with two subfolders, `product/` and `editorial/`.
 2. Run the script on that folder:
@@ -92,20 +80,21 @@ Photos are stored as WebP, at most 1920px wide, and are prepared by a script rat
 
    It resizes each photo, sharpens it lightly and saves it to `src/assets/images/` as `.webp`.
    It never invents detail, so the sharper the original, the sharper the result.
-3. Import the new file in `src/content/images.ts` and add an entry with a description.
-4. Refer to it by its id: `{ id: "pp-new-photo" }`.
+3. Upload the file under **Photos** with a description, then choose it wherever it should appear.
 
-A file with the same name replaces the existing photo, so better originals can be dropped in
-without touching any other file.
+Where a photo is used, its optional crop keeps a point in view: `x` and `y` in percent of the
+photo's width and height, `zoom` from 1 to 2, or `top` to trim a fixed share above the subject.
 
-Squares without a photo of their own use a tile cut from a group shot. The cuts are listed at the
-top of `scripts/prepare-photos.mjs`; `x` and `y` are the focal point in percent.
+### How content reaches the pages
 
-To shift which part of a photo shows inside its frame, add a focal point where the photo is used:
+Payload stores content in the D1 database `website` and photos in the R2 bucket `website-media`,
+served from `media.byjoshuablack.com`. Each deploy migrates the database, saves a snapshot of the
+published content (`npm run content:snapshot:live`), builds every page from it, and afterwards
+refreshes pages if anything was published during the build. After that, publishing marks pages
+stale in the tag cache and the next visit renders them again from Payload.
 
-```ts
-{ id: "ed-tan-02", crop: { x: 45, y: 34 } }
-```
+To work locally, copy `.env.example` to `.env` and `.dev.vars`, then run `npm run payload -- migrate`
+once: it creates a local database with all of today's content and photos.
 
 ### How images are delivered
 
@@ -162,7 +151,7 @@ Small headings and numerals switch to the bold weight on their own.
   Worker's build variables. Without it, the sitemap and shared previews point at localhost.
 - Connect the online store, and replace the "Online store opening soon" notice on the product
   and fila pages with its order buttons.
-- Replace the working names of the ten squares in `src/content/products.ts`.
+- Replace the working names of the ten squares (Products in the admin).
 - Photograph the three squares marked `needsPhoto`.
 - Replace the founder portraits with the original camera files. The current ones came from
   Instagram and are soft at large sizes.

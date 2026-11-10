@@ -3,40 +3,37 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Footer } from "@/components/layout/Footer";
 import { SiteNav } from "@/components/layout/SiteNav";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { searchIndex, site } from "@/content";
-import { footerColumns, menuLinks, shopLink } from "@/content/navigation";
-import type { LinkItem } from "@/content/types";
+import { getContent, searchIndex } from "@/content";
 import { linkedProfiles, socialLinks } from "@/lib/social";
 import { inter, signature, tusker } from "./fonts";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: { default: `${site.name} | Men's Accessories`, template: `%s | ${site.name}` },
-  description: site.description,
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    locale: site.locale.replace("-", "_"),
-    title: site.name,
+export async function generateMetadata(): Promise<Metadata> {
+  const { site } = await getContent();
+  return {
+    metadataBase: new URL(site.url),
+    title: { default: `${site.name} | Men's Accessories`, template: `%s | ${site.name}` },
     description: site.description,
-    url: "/",
-  },
-};
+    openGraph: {
+      type: "website",
+      siteName: site.name,
+      locale: site.locale.replace("-", "_"),
+      title: site.name,
+      description: site.description,
+      url: "/",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#f5f1e8",
   viewportFit: "cover",
 };
 
-const suggestions: LinkItem[] = [
-  { label: "Pocket Power", href: "/collection/pocket-power" },
-  { label: "The RISE framework", href: "/style-guide/the-rise-framework" },
-  { label: "The World of Joshua Black", href: "/world" },
-  { label: "Ordering", href: "/ordering" },
-];
-
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const content = await getContent();
+  const { site } = content;
+  const { footerColumns, menuLinks, shopLink, suggestions } = content.navigation;
   return (
     <html
       lang="en"
@@ -53,14 +50,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {site.announcement && <AnnouncementBar {...site.announcement} />}
         <SiteNav
           menuLinks={menuLinks}
-          searchIndex={searchIndex}
+          searchIndex={searchIndex(content)}
           suggestions={suggestions}
           shop={shopLink}
         />
         <main id="main" className="page-width flex-1">
           {children}
         </main>
-        <Footer columns={footerColumns} social={socialLinks} name={site.name} registration={site.registration} />
+        <Footer columns={footerColumns} social={socialLinks(site.contact)} name={site.name} registration={site.registration} />
         <JsonLd
           data={{
             "@context": "https://schema.org",
@@ -71,7 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             description: site.description,
             founder: { "@type": "Person", name: site.founder.name },
             address: { "@type": "PostalAddress", addressCountry: "NG" },
-            sameAs: linkedProfiles.map((link) => link.href),
+            sameAs: linkedProfiles(site.contact).map((link) => link.href),
           }}
         />
       </body>

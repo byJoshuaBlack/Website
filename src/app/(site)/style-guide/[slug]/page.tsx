@@ -7,20 +7,24 @@ import { TileGrid } from "@/components/editorial/TileGrid";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Frame } from "@/components/ui/Frame";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { articles, getArticle, getProduct, picture, site } from "@/content";
+import { getArticle, getContent, getProduct, picture } from "@/content";
 import { formatPrice } from "@/lib/format";
 import { absoluteUrl } from "@/lib/seo";
 import { sizes } from "@/lib/sizes";
 
-export const dynamicParams = false;
+// Articles added in Payload after a deploy are rendered on their first visit.
+export const dynamicParams = true;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { articles } = await getContent();
   return articles.map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata(props: PageProps<"/style-guide/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
-  const article = getArticle(slug);
+  const content = await getContent();
+  const { site } = content;
+  const article = getArticle(content, slug);
   if (!article) return {};
   const path = `/style-guide/${article.slug}`;
   const cover = picture(article.cover);
@@ -40,13 +44,15 @@ export async function generateMetadata(props: PageProps<"/style-guide/[slug]">):
 
 export default async function ArticlePage(props: PageProps<"/style-guide/[slug]">) {
   const { slug } = await props.params;
-  const article = getArticle(slug);
+  const content = await getContent();
+  const { articles, site, tileHint } = content;
+  const article = getArticle(content, slug);
   if (!article) notFound();
 
   const cover = picture(article.cover);
   const position = articles.findIndex((item) => item.slug === article.slug);
   const next = [1, 2].map((step) => articles[(position + step) % articles.length]).filter((item) => item !== undefined);
-  const related = (article.related ?? []).map(getProduct).filter((item) => item !== undefined);
+  const related = (article.related ?? []).map((slug) => getProduct(content, slug)).filter((item) => item !== undefined);
 
   return (
     <>
@@ -110,6 +116,7 @@ export default async function ArticlePage(props: PageProps<"/style-guide/[slug]"
               href={`/style-guide/${item.slug}`}
               picture={picture(item.cover)}
               links={[{ label: "Read the guide", href: `/style-guide/${item.slug}` }]}
+              hint={tileHint}
               sizes={sizes.half}
             />
           ))}

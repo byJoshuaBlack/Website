@@ -1,18 +1,17 @@
 import { SplitBanner } from "@/components/editorial/SplitBanner";
 import { StoreNotice } from "@/components/product/StoreNotice";
 import { Frame } from "@/components/ui/Frame";
-import { picture } from "@/content";
-import { store, traditional } from "@/content/pages";
+import { getContent, picture } from "@/content";
 import { pageMetadata } from "@/lib/seo";
 import { sizes } from "@/lib/sizes";
 
-export const metadata = pageMetadata({
-  title: traditional.title,
-  description: traditional.intro,
-  path: "/traditional",
-});
+export async function generateMetadata() {
+  const { traditional, site } = await getContent();
+  return pageMetadata({ title: traditional.title, description: traditional.intro, path: "/traditional", siteName: site.name });
+}
 
-export default function TraditionalPage() {
+export default async function TraditionalPage() {
+  const { traditional, store } = await getContent();
   const { welcome, colours, order } = traditional;
 
   return (

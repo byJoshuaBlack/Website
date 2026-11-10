@@ -7,22 +7,25 @@ import { StoreNotice } from "@/components/product/StoreNotice";
 import { Accordion, type AccordionItem } from "@/components/ui/Accordion";
 import { Frame } from "@/components/ui/Frame";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { box, getProduct, picture, products, site, squares } from "@/content";
-import { collection, store, traditional } from "@/content/pages";
+import { getBox, getContent, getProduct, getSquares, picture } from "@/content";
 import type { Product } from "@/content/types";
 import { formatPrice } from "@/lib/format";
 import { absoluteUrl } from "@/lib/seo";
 import { sizes } from "@/lib/sizes";
 
-export const dynamicParams = false;
+// Products added in Payload after a deploy are rendered on their first visit.
+export const dynamicParams = true;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { products } = await getContent();
   return products.map((product) => ({ slug: product.slug }));
 }
 
 export async function generateMetadata(props: PageProps<"/collection/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
-  const product = getProduct(slug);
+  const content = await getContent();
+  const { site } = content;
+  const product = getProduct(content, slug);
   if (!product) return {};
   const path = `/collection/${product.slug}`;
   const image = picture(product.gallery[0] ?? product.tile);
@@ -52,7 +55,7 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
-function related(product: Product): Product[] {
+function related(product: Product, box: Product, squares: Product[]): Product[] {
   const others = squares.filter((square) => square.slug !== product.slug);
   const start = others.findIndex((square) => (square.number ?? "") > (product.number ?? ""));
   const rotated = [...others.slice(Math.max(start, 0)), ...others.slice(0, Math.max(start, 0))];
@@ -61,8 +64,12 @@ function related(product: Product): Product[] {
 
 export default async function ProductPage(props: PageProps<"/collection/[slug]">) {
   const { slug } = await props.params;
-  const product = getProduct(slug);
+  const content = await getContent();
+  const { collection, site, store, traditional } = content;
+  const product = getProduct(content, slug);
   if (!product) notFound();
+  const box = getBox(content);
+  const squares = getSquares(content);
 
   const pictures = product.gallery.map(picture);
   const isPiece = product.kind === "piece";
@@ -170,7 +177,7 @@ export default async function ProductPage(props: PageProps<"/collection/[slug]">
             More from Pocket Power
           </h2>
           <ul className="grid grid-cols-2 border-t border-rule lg:grid-cols-4">
-            {related(product).map((item) => (
+            {related(product, box, squares).map((item) => (
               <li key={item.slug} className="border-b border-r border-rule">
                 <ProductCard
                   product={{

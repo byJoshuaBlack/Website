@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     deviceSizes: [480, 640, 750, 828, 1080, 1200, 1600, 1920, 2560],
     imageSizes: [96, 160, 256, 384],
     minimumCacheTTL: 2678400,
+    // Photos uploaded through Payload, served from the media bucket's public domain.
+    remotePatterns: [{ protocol: "https", hostname: "media.byjoshuablack.com", pathname: "/**" }],
   },
   // Packages with code written for the Workers runtime.
   serverExternalPackages: ["jose", "pg-cloudflare"],

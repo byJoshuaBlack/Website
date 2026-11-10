@@ -19,19 +19,28 @@
       "service": "website"
     }
   ],
-  // Payload's database.
+  // Payload's database, and the tag cache that marks pages stale when content is published.
   "d1_databases": [
     {
       "binding": "D1",
       "database_name": "website",
       "database_id": "2b690e35-2c71-4160-8fab-888777fc60e4"
+    },
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_name": "website-cache",
+      "database_id": "40f6e2d0-63e6-4417-bef2-8feed6a330cf"
     }
   ],
-  // Files uploaded through Payload's admin.
+  // Files uploaded through Payload's admin (public at media.byjoshuablack.com), and rendered pages.
   "r2_buckets": [
     {
       "binding": "R2",
       "bucket_name": "website-media"
+    },
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "website-cache"
     }
   ],
   // Resizes next/image photos through Cloudflare Images.
@@ -41,11 +50,17 @@
   "observability": {
     "enabled": true
   },
+  // Where photos uploaded through Payload are served from (local runs leave it empty in .dev.vars),
+  // and the zone whose cache is purged when content is published.
+  "vars": {
+    "MEDIA_ORIGIN": "https://media.byjoshuablack.com",
+    "CACHE_PURGE_ZONE_ID": "737f2e62e0010acf6e68453f3ca9ead6"
+  },
   // Deploys keep variables set in the Cloudflare dashboard instead of deleting them.
   "keep_vars": true,
   "env": {
-    // Used only by `npm run deploy:database`, so Payload's migrations reach the live database.
-    // Everything else, local builds and previews included, stays on a local copy.
+    // Used only by the deploy's migration and snapshot steps, so they reach the live database and
+    // photos. Everything else, local builds and previews included, stays on a local copy.
     "migrate": {
       "d1_databases": [
         {
@@ -58,7 +73,8 @@
       "r2_buckets": [
         {
           "binding": "R2",
-          "bucket_name": "website-media"
+          "bucket_name": "website-media",
+          "remote": true
         }
       ]
     }

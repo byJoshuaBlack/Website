@@ -12,7 +12,7 @@ here. This site has no dark mode, no backend and no dashboard.
 ## Decisions already made
 
 - Ordering will happen on this site, through an online store that opens soon. Until then, product
-  pages show "Online store opening soon" (`store` in `src/content/pages.ts`) where the order button
+  pages show "Online store opening soon" (the Store notice in Payload) where the order button
   will go. Never send visitors to Instagram, WhatsApp or direct messages to order; how ordering will
   work is explained at `/ordering` (the menu's Orders and Enquiries).
 - Contact is an Instagram direct message: `/contact` (the footer's Contact) is one line and a pine
@@ -20,16 +20,21 @@ here. This site has no dark mode, no backend and no dashboard.
   chat straight away. Instagram cannot pre-write the message. Under it, an outline Send Email button
   opens `mailto:` `site.contact.email` (hi@byjoshuablack.com), with a hint whose address copies itself
   when tapped (`CopyText`). Its copy never mentions ordering.
-- Prices hidden. `showPrices` in `src/content/site.ts` turns them on.
+- Prices hidden. `showPrices` in Payload's Site settings turns them on (products carry no prices until the
+  store plugin adds them in Phase 4).
 - Catalogue is Pocket Power (the box and its ten squares), listed at `/collection`, which opens
   straight on the grid (its Online Store title is for screen readers only). Every Shop Now (header, dock, menu) goes there; Buy Pocket Power goes to the box's
   own page. The box's page has no "Inside the box" section; a square's page keeps "More from Pocket
   Power". The fila, a branded Yoruba cap, has its own page at `/traditional`. Its card in the
   store (second, after the box; Fila filter) and a picture link on the Pocket Power page both lead
   there (`traditional.card`).
-- Every page is prerendered. Payload CMS 3 runs on the same Worker (admin at `/admin`, API at `/api`)
-  with D1 (`website`) and R2 (`website-media`); the site does not read from it yet. Runtime
-  dependencies are Next, React, Payload and the OpenNext adapter.
+- All content lives in Payload CMS 3 on the same Worker (admin at `/admin`, API at `/api`), with D1
+  (`website`) and R2 (`website-media`, public at `media.byjoshuablack.com`). Pages are prerendered from
+  a snapshot taken just before `next build` (`.content/snapshot.json`, `npm run content:snapshot`), so
+  build workers never open the database; at runtime they read Payload's Local API. Publishing calls
+  `revalidatePath("/", "layout")` (`src/payload/revalidate.ts`): the D1 tag cache (`website-cache`)
+  marks every page stale and the next visit re-renders it into the R2 page cache (`website-cache`).
+  Drafts never reach the site. Runtime dependencies are Next, React, Payload and the OpenNext adapter.
 - Hosted on Cloudflare Workers through OpenNext (`wrangler.jsonc`, `open-next.config.ts`), not Vercel.
   Cloudflare Images resizes photos through the `IMAGES` binding.
 - Cloudflare Access (app "Joshua Black admin", email one-time codes for an allow-list) guards
@@ -41,14 +46,23 @@ here. This site has no dark mode, no backend and no dashboard.
   `(site)/[...missing]`. Icons, the share image, `robots.ts` and `sitemap.ts` stay at the top of
   `src/app`, where Next gives them fixed addresses.
 - `src/payload.config.ts` takes bindings from the Worker at runtime and from Wrangler's local copy
-  everywhere else; only `npm run deploy:database` (Wrangler's `migrate` environment) reaches the live D1.
+  everywhere else; only the deploy's `deploy:database` and `content:snapshot:live` steps (Wrangler's
+  `migrate` environment) reach the live D1 and R2. `MEDIA_ORIGIN` (a Worker variable, empty in
+  `.dev.vars`) makes photo URLs point at `media.byjoshuablack.com`.
   `next build` loads no bindings. Workers have no sharp, so Payload stores originals uncropped.
 
 ## Conventions
 
-- All copy, products, articles and contact details live in `src/content/`. Components never hard-code them.
+- All copy, products, articles, photos and contact details live in Payload. Components never hard-code
+  them. `src/content/index.ts` is the only way pages read them (`getContent()`, cached per request);
+  `src/content/build.ts` turns Payload's documents into the shapes in `src/content/types.ts`, so
+  string lists are rows of `line` and photo fields are groups of `image`, `alt` and `crop`
+  (`src/payload/fields.ts`). Schema changes need a migration and must stay additive.
 - Client components receive data as props and never import `src/content/*`.
-- Photos are statically imported through `src/content/images.ts`, never referenced by string path.
+- Photos are Payload Media (R2), carrying width, height and a blur placeholder; the logo and brand
+  assets stay static imports. Today's photos came in through the seed migration
+  (`src/migrations/*_seed_content.ts`, from `src/migrations/seed/content.json`) and their files stay in
+  `src/assets/images` for it.
 - Photos are WebP, at most 1920px wide, produced by `scripts/prepare-photos.mjs`. Never add an
   AI upscaler: the brand wants sharper photos with no feature changed. Sharp camera originals go
   through its `clean/` folder instead: no unsharp mask, no width cap, saved lossless (the home
@@ -111,7 +125,7 @@ here. This site has no dark mode, no backend and no dashboard.
 - The home page is the hero, the Pocket Power banner (text, then photo on phones; text left, photo
   right from md; its pine Buy Pocket Power button goes to the store), nothing more.
 - The banner's photo is a carousel (`PhotoCarousel`, used whenever `SplitBanner` gets several
-  pictures) of the nine Pocket Power shots in `home.pocketPower.images` (the founder portrait and the
+  pictures) of the nine Pocket Power shots in the Home page's carousel photos (the founder portrait and the
   tile crops are left out). It cross-fades (half a second) every 3.5 seconds in a loop, with small round back and forward
   buttons in clear liquid glass (`glass-clear`) halfway down its sides at every width. It pauses while hovered, focused from the
   keyboard or off screen, does not move on its own under reduced motion, and only loads the photo
@@ -145,8 +159,12 @@ here. This site has no dark mode, no backend and no dashboard.
 - `npm run dev` — local server on port 3000
 - `npm run check` — type-check, lint and production build
 - `npm run photos -- <folder>` — prepare photos
-- `npm run preview` — Cloudflare build served locally on the Workers runtime, port 8787, with a local database
-- `npm run deploy` — migrate the live database, then build for Cloudflare and deploy
+- `npm run preview` — snapshot, Cloudflare build and local Workers runtime on port 8787, with a local database
+- `npm run deploy` — migrate the live database, snapshot its content, build for Cloudflare, deploy, then
+  refresh pages if anything was published meanwhile (`scripts/after-deploy.mjs`, `POST /api/revalidate`).
+  Workers Builds runs it as the deploy command.
+- `npm run content:snapshot` — save the local database's published content for `next build`
+  (`npm run check` and `npm run preview` run it first)
 - `npm run payload -- migrate:create <name>` — after changing collections; commit the migration.
   `npm run payload -- migrate` applies it to the local database
 - `npm run generate:types` — after changing `wrangler.jsonc` or collections

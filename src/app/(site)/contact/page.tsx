@@ -1,26 +1,25 @@
 import { Button } from "@/components/ui/Button";
 import { CopyText } from "@/components/ui/CopyText";
 import { Frame } from "@/components/ui/Frame";
-import { picture, site } from "@/content";
-import { contact } from "@/content/pages";
+import { getContent, picture } from "@/content";
 import { instagramDm } from "@/lib/social";
 import { pageMetadata } from "@/lib/seo";
 import { sizes } from "@/lib/sizes";
 
-export const metadata = pageMetadata({
-  title: contact.title,
-  description: contact.intro,
-  path: "/contact",
-});
+export async function generateMetadata() {
+  const { contact, site } = await getContent();
+  return pageMetadata({ title: contact.title, description: contact.intro, path: "/contact", siteName: site.name });
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { contact, site } = await getContent();
   return (
     <div className="lg:grid lg:grid-cols-2">
       <div className="gutter pb-16 pt-10 lg:px-16 lg:pb-24 lg:pt-16 xl:px-24">
         <h1 className="heading-lg">{contact.title}</h1>
         <p className="copy-lg mt-5 max-w-lg">{contact.intro}</p>
         <div className="mt-8 max-w-sm space-y-3">
-          <Button href={instagramDm} external variant="pine">
+          <Button href={instagramDm(site.contact.instagramHandle)} external variant="pine">
             {contact.cta}
           </Button>
           {site.contact.email && (

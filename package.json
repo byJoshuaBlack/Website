@@ -8,15 +8,17 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "check": "npm run typecheck && npm run lint && npm run build",
+    "check": "npm run typecheck && npm run lint && npm run content:snapshot && npm run build",
     "photos": "node scripts/prepare-photos.mjs",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "npm run deploy:database && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "npm run content:snapshot && opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "npm run deploy:database && npm run content:snapshot:live && opennextjs-cloudflare build && opennextjs-cloudflare deploy && node scripts/after-deploy.mjs",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "deploy:database": "CLOUDFLARE_ENV=migrate CLOUDFLARE_REMOTE_BINDINGS=true NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate && wrangler d1 execute D1 --command 'PRAGMA optimize' --remote",
     "payload": "payload",
     "generate:importmap": "payload generate:importmap",
-    "generate:types": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts && payload generate:types"
+    "generate:types": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts && payload generate:types",
+    "content:snapshot": "payload run scripts/content-snapshot.ts",
+    "content:snapshot:live": "CLOUDFLARE_ENV=migrate CLOUDFLARE_REMOTE_BINDINGS=true PAYLOAD_SECRET=ignore payload run scripts/content-snapshot.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "1.20.16",

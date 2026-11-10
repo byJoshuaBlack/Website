@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Frame } from "@/components/ui/Frame";
 import { TextLink } from "@/components/ui/TextLink";
-import { tileHint } from "@/content/pages";
 import type { LinkItem, Picture } from "@/content/types";
 import { cn } from "@/lib/cn";
 import { HoverHint } from "./HoverHint";
@@ -12,6 +11,8 @@ type Props = {
   href: string;
   picture: Picture;
   links: LinkItem[];
+  /** Follows the mouse over the photo. */
+  hint: string;
   sizes: string;
   caption?: "overlay" | "below";
   eager?: boolean;
@@ -19,11 +20,11 @@ type Props = {
   className?: string;
 };
 
-export function Tile({ title, kicker, href, picture, links, sizes, caption = "overlay", eager, aspect, className }: Props) {
+export function Tile({ title, kicker, href, picture, links, hint, sizes, caption = "overlay", eager, aspect, className }: Props) {
   const photos = (
     <div className="relative">
       <Frame picture={picture} sizes={sizes} eager={eager} aspect={aspect} />
-      <HoverHint label={tileHint} />
+      <HoverHint label={hint} />
     </div>
   );
 

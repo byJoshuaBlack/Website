@@ -1,18 +1,22 @@
 import { HeroBanner } from "@/components/editorial/HeroBanner";
 import { SplitBanner } from "@/components/editorial/SplitBanner";
 import { Frame } from "@/components/ui/Frame";
-import { picture, site } from "@/content";
-import { world } from "@/content/pages";
+import { getContent, picture } from "@/content";
 import { pageMetadata } from "@/lib/seo";
 import { sizes } from "@/lib/sizes";
 
-export const metadata = pageMetadata({
-  title: "The World of Joshua Black",
-  description: `${world.name.together} The name, the founder and the making of Pocket Power.`,
-  path: "/world",
-});
+export async function generateMetadata() {
+  const { world, site } = await getContent();
+  return pageMetadata({
+    title: world.hero.kicker,
+    description: `${world.name.together} The name, the founder and the making of Pocket Power.`,
+    path: "/world",
+    siteName: site.name,
+  });
+}
 
-export default function WorldPage() {
+export default async function WorldPage() {
+  const { world, site } = await getContent();
   return (
     <>
       <HeroBanner opening level="h1" kicker={world.hero.kicker} title={world.hero.title} picture={picture(world.hero.image)} />

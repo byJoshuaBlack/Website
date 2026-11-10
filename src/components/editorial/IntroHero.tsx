@@ -53,7 +53,7 @@ export function IntroHero({ title, accents, body, link, rise, picture }: Props) 
         <div aria-hidden="true" className="absolute inset-x-0 -top-36 bottom-0 -z-10 overflow-hidden md:inset-y-0 md:-left-[28%] md:right-0">
           <div
             className="absolute -inset-10 bg-[length:100%_1000%] bg-bottom bg-no-repeat blur-2xl saturate-150 md:bg-[length:1000%_100%] md:bg-right"
-            style={{ backgroundImage: `url(${picture.src.blurDataURL})` }}
+            style={picture.src.blurDataURL ? { backgroundImage: `url(${picture.src.blurDataURL})` } : undefined}
           />
           <div className="absolute inset-0 bg-linear-to-b from-ink/0 to-ink to-35% max-md:to-[9rem] md:bg-linear-to-r md:to-60%" />
         </div>

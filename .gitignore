@@ -45,3 +45,6 @@ next-env.d.ts
 /.wrangler/
 .dev.vars*
 !.env.example
+
+# content snapshot for next build
+/.content/

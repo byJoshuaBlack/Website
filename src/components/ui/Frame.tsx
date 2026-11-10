@@ -29,7 +29,9 @@ export function Frame({ picture, sizes, eager, priority, quality = 80, aspect = 
           fill
           sizes={scaleSizes(sizes, crop.zoom)}
           quality={quality}
-          placeholder="blur"
+          placeholder={picture.src.blurDataURL ? "blur" : "empty"}
+          // Local runs serve photos through Payload's file route, which the image resizer cannot fetch.
+          unoptimized={picture.src.src.startsWith("/api/")}
           loading={eager || priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : undefined}
           className="object-cover"
