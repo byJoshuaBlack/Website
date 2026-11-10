@@ -33,8 +33,14 @@ const cloudflare = inWorker
     : await getCloudflareContextFromWrangler();
 
 // Payload's default pretty logger relies on Node APIs that Workers lack.
+// Errors keep their message and stack, which JSON.stringify would otherwise drop.
+const serialize = (_key: string, value: unknown) =>
+  value instanceof Error ? { name: value.name, message: value.message, stack: value.stack } : value;
+
 const log = (level: string, write: (line: string) => void) => (objOrMsg: object | string, msg?: string) =>
-  write(JSON.stringify(typeof objOrMsg === "string" ? { level, msg: objOrMsg } : { level, ...objOrMsg, msg }));
+  write(
+    JSON.stringify(typeof objOrMsg === "string" ? { level, msg: objOrMsg } : { level, ...objOrMsg, msg }, serialize),
+  );
 
 const workerLogger = {
   level: process.env.PAYLOAD_LOG_LEVEL || "info",
@@ -54,6 +60,8 @@ export default buildConfig({
     meta: { titleSuffix: " | Joshua Black" },
   },
   collections: [Users, Media],
+  // Workers cap PBKDF2 at 100,000 iterations; Payload's default of 600,000 fails there.
+  auth: { passwordHashIterations: 100000 },
   secret: process.env.PAYLOAD_SECRET || "",
   graphQL: { disable: true },
   telemetry: false,
