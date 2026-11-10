@@ -5,7 +5,8 @@ box, ten pocket squares), the fila, a style guide, and the brand's story. Orderi
 itself once the online store opens; until then the product pages say it is opening soon. Visitors
 reach the brand by Instagram direct message from the Contact page.
 
-Built with Next.js 16, React 19, TypeScript and Tailwind CSS 4. Every page is static.
+Built with Next.js 16, React 19, TypeScript and Tailwind CSS 4. Every page is prerendered. Payload CMS
+runs alongside at `/admin`, ready for the content and store to move into it.
 
 ## Run it
 
@@ -33,9 +34,15 @@ The site runs on Cloudflare Workers through the OpenNext adapter (`@opennextjs/c
 serves every prerendered page straight from the Worker's static assets. Photos are resized
 and converted to WebP by Cloudflare Images through the `IMAGES` binding.
 
-Pushes to `main` deploy through Workers Builds once the repository is connected in the
-Cloudflare dashboard (build command `npx opennextjs-cloudflare build`, deploy command
-`npx wrangler deploy`). Set `NEXT_PUBLIC_SITE_URL` as a build variable there.
+Payload's database is the D1 database `website`, and uploaded files go to the R2 bucket
+`website-media`. Database changes are migrations in `src/migrations`, applied to the live database
+before each deploy.
+
+Pushes to `main` deploy through Workers Builds (build command `npx opennextjs-cloudflare build`,
+deploy command `npm run deploy:database && npx wrangler deploy`). Set `NEXT_PUBLIC_SITE_URL` as a
+build variable there, and `PAYLOAD_SECRET` (`openssl rand -hex 32`) as a secret on the Worker.
+
+For local work, copy `.env.example` to `.env` and to `.dev.vars` and fill in `PAYLOAD_SECRET`.
 
 ## Edit the site
 
@@ -133,18 +140,18 @@ This weight is paid for and was not in the supplied files, so small headings and
 3500 Medium for now. Once you have the file:
 
 1. Save it as `src/assets/fonts/TuskerGrotesk-3700Bold.otf`.
-2. In `src/app/fonts.ts`, add:
+2. In `src/app/(site)/fonts.ts`, add:
 
    ```ts
    export const tuskerBold = localFont({
-     src: "../assets/fonts/TuskerGrotesk-3700Bold.otf",
+     src: "../../assets/fonts/TuskerGrotesk-3700Bold.otf",
      variable: "--font-tusker-bold",
      weight: "700",
      display: "swap",
    });
    ```
 
-3. In `src/app/layout.tsx`, import `tuskerBold` and add `${tuskerBold.variable}` to the class
+3. In `src/app/(site)/layout.tsx`, import `tuskerBold` and add `${tuskerBold.variable}` to the class
    list on `<html>`.
 
 Small headings and numerals switch to the bold weight on their own.

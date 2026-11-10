@@ -12,7 +12,7 @@ export const inter = Inter({
 });
 
 export const tusker = localFont({
-  src: "../assets/fonts/TuskerGrotesk-3500Medium.otf",
+  src: "../../assets/fonts/TuskerGrotesk-3500Medium.otf",
   variable: "--font-tusker",
   weight: "500",
   display: "swap",
@@ -20,7 +20,7 @@ export const tusker = localFont({
 });
 
 export const signature = localFont({
-  src: "../assets/fonts/BrilliantSignatureRegular.ttf",
+  src: "../../assets/fonts/BrilliantSignatureRegular.ttf",
   variable: "--font-signature",
   weight: "400",
   display: "swap",

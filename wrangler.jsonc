@@ -14,11 +14,46 @@
       "service": "website"
     }
   ],
+  // Payload's database.
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_name": "website",
+      "database_id": "2b690e35-2c71-4160-8fab-888777fc60e4"
+    }
+  ],
+  // Files uploaded through Payload's admin.
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "website-media"
+    }
+  ],
   // Resizes next/image photos through Cloudflare Images.
   "images": {
     "binding": "IMAGES"
   },
   "observability": {
     "enabled": true
+  },
+  "env": {
+    // Used only by `npm run deploy:database`, so Payload's migrations reach the live database.
+    // Everything else, local builds and previews included, stays on a local copy.
+    "migrate": {
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_name": "website",
+          "database_id": "2b690e35-2c71-4160-8fab-888777fc60e4",
+          "remote": true
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "website-media"
+        }
+      ]
+    }
   }
 }
