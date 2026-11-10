@@ -46,6 +46,27 @@ export const productFields: Field[] = [
   image("tile", { label: "Card photo", description: "Shown in the store's grid." }),
   images("gallery", { label: "Gallery" }),
   {
+    type: "row",
+    fields: [
+      {
+        name: "price",
+        type: "number",
+        min: 0,
+        admin: { description: "In naira, whole numbers. Shown once the shop is open." },
+      },
+      {
+        name: "purchasable",
+        label: "Can be bought online",
+        type: "checkbox",
+        admin: { description: "Shows the Buy button while the shop is open. Needs a price and stock." },
+        validate: (value: boolean | null | undefined, { siblingData }: { siblingData: { price?: number | null } }) =>
+          value && !(typeof siblingData.price === "number" && siblingData.price > 0)
+            ? "Set a price before this product can be bought."
+            : true,
+      },
+    ],
+  },
+  {
     name: "needsPhoto",
     type: "checkbox",
     admin: { position: "sidebar", description: "Marks squares still waiting for their own photo." },

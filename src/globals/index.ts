@@ -2,6 +2,7 @@ import type { Field, GlobalConfig } from "payload";
 import { isAdmin, signedIn } from "@/payload/access";
 import { accents, highlight, image, images, link, lines, links } from "@/payload/fields";
 import { revalidateGlobal } from "@/payload/revalidate";
+import { nigerianStates } from "@/store/states";
 
 function page(slug: string, label: string, fields: Field[], description?: string, group = "Pages"): GlobalConfig {
   return {
@@ -316,6 +317,175 @@ const Contact = page("contact", "Contact", [
   image("image"),
 ]);
 
+const ShopSettings: GlobalConfig = {
+  slug: "shopSettings",
+  label: "Shop settings",
+  admin: {
+    group: "Shop",
+    description: "Opening the shop shows the Buy button on products that can be bought online.",
+  },
+  access: { read: () => true, update: isAdmin },
+  hooks: { afterChange: [revalidateGlobal] },
+  fields: [
+    {
+      type: "row",
+      fields: [
+        {
+          name: "status",
+          type: "select",
+          required: true,
+          defaultValue: "closed",
+          options: [
+            { label: "Closed: product pages show the store notice", value: "closed" },
+            { label: "Open: products can be bought", value: "open" },
+          ],
+          admin: { description: "Admins can test checkout at /checkout while the shop is closed." },
+        },
+        { name: "maxPerOrder", label: "Most of one product per order", type: "number", required: true, min: 1, defaultValue: 5 },
+      ],
+    },
+    {
+      name: "alertEmail",
+      label: "Send order alerts to",
+      type: "email",
+      required: true,
+      defaultValue: "hi@byjoshuablack.com",
+      access: { read: ({ req }) => Boolean(req.user) },
+    },
+    {
+      name: "zones",
+      label: "Delivery zones",
+      type: "array",
+      minRows: 1,
+      admin: { description: "Each state belongs to one zone. The zone marked as everywhere else covers the rest." },
+      validate: (rows: unknown) => {
+        const list = (rows ?? []) as { everywhereElse?: boolean; states?: string[] }[];
+        if (list.filter((zone) => zone.everywhereElse).length !== 1) return "Mark exactly one zone as everywhere else.";
+        const states = list.flatMap((zone) => zone.states ?? []);
+        const repeated = states.find((state, index) => states.indexOf(state) !== index);
+        return repeated ? `${repeated} is in more than one zone.` : true;
+      },
+      fields: [
+        {
+          type: "row",
+          fields: [
+            { name: "name", type: "text", required: true },
+            { name: "fee", label: "Delivery fee (naira)", type: "number", required: true, min: 0 },
+            { name: "everywhereElse", label: "Everywhere else", type: "checkbox" },
+          ],
+        },
+        {
+          name: "states",
+          type: "select",
+          hasMany: true,
+          options: nigerianStates.map((state) => ({ label: state, value: state })),
+          admin: { description: "Leave empty for the everywhere-else zone." },
+        },
+      ],
+    },
+  ],
+};
+
+const Checkout = page(
+  "checkout",
+  "Checkout",
+  [
+    group("cart", "Buying", [
+      {
+        type: "row",
+        fields: [
+          { name: "proceed", label: "Button beside the quantity", type: "text", required: true },
+          { name: "title", label: "Checkout page title", type: "text", required: true },
+          { name: "payLabel", label: "Pay button", type: "text", required: true },
+        ],
+      },
+      { name: "intro", type: "textarea" },
+      {
+        type: "row",
+        fields: [
+          { name: "empty", label: "When the cart is empty", type: "text", required: true },
+          { name: "continueShopping", type: "text", required: true },
+          { name: "remove", label: "Remove link", type: "text", required: true },
+        ],
+      },
+      {
+        type: "row",
+        fields: [
+          { name: "quantityLabel", type: "text", required: true },
+          { name: "detailsTitle", label: "Delivery details title", type: "text", required: true },
+          {
+            name: "priceNote",
+            label: "Beside the price when delivery is free",
+            type: "text",
+            required: true,
+            admin: { description: "Shown while every delivery zone's fee is ₦0." },
+          },
+        ],
+      },
+      {
+        type: "row",
+        fields: [
+          { name: "soldOut", label: "When sold out", type: "text", required: true },
+          { name: "closed", label: "When the shop is closed", type: "text", required: true },
+        ],
+      },
+    ]),
+    group("form", "Delivery details", [
+      {
+        type: "row",
+        fields: [
+          { name: "firstNameLabel", type: "text", required: true },
+          { name: "lastNameLabel", type: "text", required: true },
+          { name: "emailLabel", type: "text", required: true },
+        ],
+      },
+      {
+        type: "row",
+        fields: [
+          { name: "countryCodeLabel", label: "Country code (for screen readers)", type: "text", required: true },
+          { name: "emailInvalid", label: "When the email looks wrong", type: "text", required: true },
+          { name: "phoneInvalid", label: "When the phone number looks wrong", type: "text", required: true },
+        ],
+      },
+      {
+        type: "row",
+        fields: [
+          { name: "phoneLabel", type: "text", required: true },
+          { name: "addressLabel", type: "text", required: true },
+          { name: "cityLabel", type: "text", required: true },
+          { name: "stateLabel", type: "text", required: true },
+        ],
+      },
+      {
+        type: "row",
+        fields: [
+          { name: "subtotalLabel", type: "text", required: true },
+          { name: "deliveryLabel", type: "text", required: true },
+          { name: "deliveryIncluded", label: "Delivery when its fee is ₦0", type: "text", required: true },
+          { name: "totalLabel", type: "text", required: true },
+        ],
+      },
+      { name: "agreement", type: "text", required: true, admin: { description: "Shown beside the box buyers tick; the policies are linked after it." } },
+    ]),
+    group("complete", "After payment", [
+      { name: "paidTitle", type: "text", required: true },
+      { name: "paidText", type: "textarea", required: true },
+      { name: "failedTitle", type: "text", required: true },
+      { name: "failedText", type: "textarea", required: true },
+      { name: "pendingTitle", type: "text", required: true, admin: { description: "When Paystack has not confirmed the payment yet." } },
+      { name: "pendingText", type: "textarea", required: true },
+      { name: "retryLabel", type: "text", required: true },
+    ]),
+    group("email", "Order confirmation email", [
+      { name: "subject", type: "text", required: true },
+      { name: "intro", type: "textarea", required: true },
+      { name: "closing", type: "textarea", required: true },
+    ]),
+  ],
+  undefined,
+  "Shop",
+);
+
 export const globals: GlobalConfig[] = [
   SiteSettings,
   Navigation,
@@ -327,6 +497,8 @@ export const globals: GlobalConfig[] = [
   StoreNotice,
   Ordering,
   Contact,
+  ShopSettings,
+  Checkout,
 ];
 
 // Settings and navigation shape every page, so only admins change them.

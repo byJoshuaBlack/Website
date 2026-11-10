@@ -21,13 +21,18 @@ type Props = {
   onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
 };
 
-export function Button({ href, children, external, variant = "outline", size = "default", className, replace, onClick }: Props) {
-  const classes = cn(
+/** The pill's classes, for a `<button>` that must look like the links below. */
+export function buttonClasses(variant: keyof typeof variants = "outline", size: Props["size"] = "default", className?: string) {
+  return cn(
     "flex items-center justify-center gap-3 rounded-full border text-label font-bold transition-colors duration-300 ease-editorial",
     size === "compact" ? "h-9 whitespace-nowrap px-3" : "h-12 w-full px-6 text-base max-md:text-lg",
     variants[variant],
     className,
   );
+}
+
+export function Button({ href, children, external, variant = "outline", size = "default", className, replace, onClick }: Props) {
+  const classes = buttonClasses(variant, size, className);
   if (external || href.startsWith("mailto:")) {
     return (
       <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} onClick={onClick} className={classes}>

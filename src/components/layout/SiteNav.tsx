@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/Button";
 import { HomeLink } from "@/components/ui/HomeLink";
 import { Icon } from "@/components/ui/Icon";
 import type { LinkItem, SearchEntry } from "@/content/types";
+import { cartCount, useCart } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 import { MenuOverlay } from "./MenuOverlay";
 import { SearchOverlay } from "./SearchOverlay";
 
-const tab = "flex h-10 flex-1 items-center justify-center gap-2 rounded-full px-4 text-label transition-colors duration-300";
+const tab = "flex h-10 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full px-3 text-label transition-colors duration-300";
 const tabActive = "bg-ink text-paper";
 
 type Overlay = "menu" | "search";
@@ -22,10 +23,13 @@ type Props = {
   searchIndex: SearchEntry[];
   suggestions: LinkItem[];
   shop: LinkItem;
+  /** The cart link's label; the cart shows in the header and dock once it holds something. */
+  cartLabel: string;
 };
 
-export function SiteNav({ menuLinks, searchIndex, suggestions, shop }: Props) {
+export function SiteNav({ menuLinks, searchIndex, suggestions, shop, cartLabel }: Props) {
   const pathname = usePathname();
+  const inCart = cartCount(useCart());
   const onShop = pathname === shop.href;
   const header = useRef<HTMLElement>(null);
   const dock = useRef<HTMLElement>(null);
@@ -158,6 +162,12 @@ export function SiteNav({ menuLinks, searchIndex, suggestions, shop }: Props) {
           </HomeLink>
 
           <div className="col-start-3 hidden items-center justify-end gap-7 lg:flex lg:h-9">
+            {inCart > 0 && (
+              <Link href="/checkout" className="flex items-center gap-2 text-body">
+                <Icon name="bag" />
+                {cartLabel} ({inCart})
+              </Link>
+            )}
             <button type="button" onClick={openSearch} aria-haspopup="dialog" className="flex items-center gap-2 text-body">
               <Icon name="search" />
               Search
@@ -190,6 +200,19 @@ export function SiteNav({ menuLinks, searchIndex, suggestions, shop }: Props) {
             {shop.label}
           </Link>
         </div>
+        {inCart > 0 && (
+          <Link
+            href="/checkout"
+            aria-label={`${cartLabel}, ${inCart}`}
+            aria-current={pathname === "/checkout" ? "page" : undefined}
+            className="glass relative grid size-14 shrink-0 place-items-center rounded-full"
+          >
+            <Icon name="bag" />
+            <span className="absolute right-2 top-2 grid min-w-5 place-items-center rounded-full bg-pine px-1 text-tiny leading-5 text-paper">
+              {inCart}
+            </span>
+          </Link>
+        )}
         <button
           type="button"
           onClick={openSearch}

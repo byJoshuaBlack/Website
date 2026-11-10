@@ -11,23 +11,48 @@ here. This site has no dark mode, no backend and no dashboard.
 
 ## Decisions already made
 
-- Ordering will happen on this site, through an online store that opens soon. Until then, product
-  pages show "Online store opening soon" (the Store notice in Payload) where the order button
-  will go. Never send visitors to Instagram, WhatsApp or direct messages to order; how ordering will
-  work is explained at `/ordering` (the menu's Orders and Enquiries).
+- Ordering happens on this site. Only the Pocket Power box can be bought online (`purchasable` on the
+  product, with a `price` in naira and a row in Stock); squares stay "Sold as part of the Pocket Power
+  box" and the fila is not sold. While Shop settings → status is Closed, the store and the box's page
+  show the Store notice; Open swaps it for `BuyNow`: a pill quantity stepper (−, number, +) beside a
+  larger pine Proceed to Checkout pill, which puts that quantity in the cart and opens `/checkout`.
+  Signed-in admins can use `/checkout` while the shop is closed, to test. Never send visitors to Instagram, WhatsApp or direct messages to order; `/ordering` (the
+  menu's Orders and Enquiries) explains it.
+- The cart lives in the browser (`src/lib/cart.ts`, localStorage `jb-cart`). Once it holds
+  something, a bag circle with its count joins the dock (before Search) and a Checkout link the
+  header, both to `/checkout`. `/checkout` holds the items with quantity steppers, delivery details,
+  the total and Pay now, which goes straight to Paystack's payment page. `/cart` redirects there; a
+  paid order empties the cart.
+- Delivery details ask for first and last name (orders keep both and the full name), an email
+  checked as soon as the field is left, and a phone in one field (`PhoneField`): a country code
+  picker on its left (Nigeria first), then the number hinted with that country's example. Phones
+  are stored in international form (`+2348031234567`, `src/store/phone.ts`) so they can be texted.
+- The store is a small custom checkout, not Payload's beta store plugin (`src/store/`): `/checkout`
+  posts the cart's items to `POST /api/checkout`, which re-prices everything on the server, records
+  an order awaiting payment and returns Paystack's hosted payment page. Paystack sends buyers to
+  `/checkout/complete?reference=…` and calls `POST /api/paystack/webhook` (HMAC SHA-512 signed); both
+  run `finalizeOrder`, which verifies with Paystack and claims the order with one conditional D1
+  UPDATE, so stock falls and emails go out exactly once. Delivery fees come from Shop settings' zones
+  (Abuja, then everywhere else). Pocket Power is ₦300,000 with delivery included: both zones are ₦0,
+  so prices read "₦300,000 · Delivery included" and checkout, the confirmation and emails say
+  "Included" instead of ₦0. Emails go through Cloudflare Email Sending (`EMAIL` binding) from
+  orders@byjoshuablack.com; a failed email never blocks an order.
+- Policies live in Payload at `/policies/[slug]`. One page, Policies (`/policies/store`), covers
+  ordering, payment, delivery, cancellations, returns and privacy; it is linked from the footer's
+  Company column after Contact (in Navigation) and from "policies" in the checkout's agreement.
+  The starting text came from us at the brand's request; the brand edits it. Paystack reviews it.
 - Contact is an Instagram direct message: `/contact` (the footer's Contact) is one line and a pine
   Send a DM button to `instagramDm` (`ig.me/m/byjoshuablack`, `src/lib/social.ts`), which opens the
   chat straight away. Instagram cannot pre-write the message. Under it, an outline Send Email button
   opens `mailto:` `site.contact.email` (hi@byjoshuablack.com), with a hint whose address copies itself
   when tapped (`CopyText`). Its copy never mentions ordering.
-- Prices hidden. `showPrices` in Payload's Site settings turns them on (products carry no prices until the
-  store plugin adds them in Phase 4).
-- Catalogue is Pocket Power (the box and its ten squares), listed at `/collection`, which opens
-  straight on the grid (its Online Store title is for screen readers only). Every Shop Now (header, dock, menu) goes there; Buy Pocket Power goes to the box's
-  own page. The box's page has no "Inside the box" section; a square's page keeps "More from Pocket
-  Power". The fila, a branded Yoruba cap, has its own page at `/traditional`. Its card in the
-  store (second, after the box; Fila filter) and a picture link on the Pocket Power page both lead
-  there (`traditional.card`).
+- Prices show once the shop is Open (or earlier with `showPrices` in Site settings).
+- The store at `/collection` shows the Pocket Power box alone, as the brand asked: its card (photo,
+  name, price) leads to the box's page, with the tiles' hover (pointer cursor, soft shade and the
+  tile hint following the mouse), and `BuyNow` sits under it. No grid, filters or tile sizes. Every Shop Now (header, dock, menu) goes there; the home page's Buy Pocket Power goes to the
+  box's page. The ten squares keep their own pages (from search, articles and the box's family), and
+  a square's page keeps "More from Pocket Power". The fila, a branded Yoruba cap, keeps its page at
+  `/traditional`, reached from a picture link on the Pocket Power page (`traditional.card`).
 - All content lives in Payload CMS 3 on the same Worker (admin at `/admin`, API at `/api`), with D1
   (`website`) and R2 (`website-media`, public at `media.byjoshuablack.com`). Pages are prerendered from
   a snapshot taken just before `next build` (`.content/snapshot.json`, `npm run content:snapshot`), so
@@ -87,6 +112,9 @@ here. This site has no dark mode, no backend and no dashboard.
 - Inter is used at weight 400, except that buttons (`Button`) are bold (700); the dock's tabs stay
   regular. Buttons, the dock's tabs and the store notice are in sentence case as written in content
   ("Shop Now", "Get Started", "Buy Pocket Power", each set as the brand writes it), never forced to capitals; menu links stay in capitals. Full-width buttons set their text at 18px on phones and 16px from `md`, larger than the 13px label size. Do not add `font-medium` or any other weight.
+- Every dropdown uses `Select` (`src/components/ui/Select.tsx`), never the browser's own `<select>`:
+  a square list with a carbon hairline on linen, the chosen item in pine with a pine dot. It opens
+  upward near the bottom of the screen, and keeps arrows, Enter, Escape and type-to-jump.
 - Design rules: radius 0 and no shadows, except that every button (and the store notice in a
   button's place) is a fully rounded pill. The page ground is linen (the `paper` token); white is never
   used. Pine is the primary accent: bands, headline accents, the footer bar and the `pine` button

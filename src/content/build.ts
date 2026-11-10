@@ -71,18 +71,28 @@ const globalSlugs = [
   "storeNotice",
   "ordering",
   "contact",
+  "shopSettings",
+  "checkout",
 ] as const;
 
 /** Reads every published global, product and article, ready for the pages. */
 export async function buildContent(payload: BasePayload): Promise<Content> {
-  const [globals, products, articles] = await Promise.all([
+  const [globals, products, articles, policies] = await Promise.all([
     Promise.all(globalSlugs.map((slug) => payload.findGlobal({ slug, depth: 1, draft: false }))),
     payload.find({ collection: "products", where: { _status: { equals: "published" } }, sort: "_order", depth: 1, limit: 200, pagination: false }),
     payload.find({ collection: "articles", where: { _status: { equals: "published" } }, sort: "_order", depth: 1, limit: 200, pagination: false }),
+    payload.find({ collection: "policies", where: { _status: { equals: "published" } }, sort: "_order", depth: 0, limit: 50, pagination: false }),
   ]);
-  const [settings, navigation, home, collection, traditional, styleGuide, world, store, ordering, contact] = globals.map(
-    (doc) => normalize(doc) as Doc,
-  );
+  const [settings, navigation, home, collection, traditional, styleGuide, world, store, ordering, contact, shopSettings, checkout] =
+    globals.map((doc) => normalize(doc) as Doc);
+  const shop = {
+    open: shopSettings.status === "open",
+    maxPerOrder: (shopSettings.maxPerOrder as number) ?? 1,
+    // The alert address is for the brand only and never reaches the pages.
+    zones: ((shopSettings.zones ?? []) as { name: string; fee: number; states?: string[]; everywhereElse?: boolean }[]).map(
+      (zone) => ({ name: zone.name, fee: zone.fee, states: zone.states ?? [], everywhereElse: zone.everywhereElse === true }),
+    ),
+  };
 
   const { tileHint, searchPages, announcement, showPrices, ...siteFields } = settings;
   const banner = announcement as { text?: string; href?: string } | undefined;
@@ -106,7 +116,18 @@ export async function buildContent(payload: BasePayload): Promise<Content> {
     store: store as unknown as Content["store"],
     ordering: ordering as unknown as Content["ordering"],
     contact: contact as unknown as Content["contact"],
-    products: products.docs.map((doc) => ({ care: [], details: [], ...(normalize(doc) as object) }) as unknown as Product),
+    products: products.docs.map((doc) => {
+      const { price, ...product } = normalize(doc) as Doc;
+      // Prices show once the shop opens, or earlier if Site settings asks for them.
+      const visible = typeof price === "number" && price > 0 && (shop.open || site.showPrices);
+      return {
+        care: [],
+        details: [],
+        ...product,
+        purchasable: product.purchasable === true,
+        ...(visible ? { price: { amount: price, currency: "NGN" } } : {}),
+      } as unknown as Product;
+    }),
     articles: articles.docs.map((doc) => {
       const article = normalize(doc) as Doc;
       const related = (doc.related ?? [])
@@ -114,6 +135,9 @@ export async function buildContent(payload: BasePayload): Promise<Content> {
         .filter((slug): slug is string => Boolean(slug));
       return { ...article, related } as unknown as Article;
     }),
+    shop,
+    checkout: checkout as unknown as Content["checkout"],
+    policies: policies.docs.map((doc) => normalize(doc) as unknown as Content["policies"][number]),
   };
 }
 

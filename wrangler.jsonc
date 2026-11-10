@@ -43,6 +43,8 @@
       "bucket_name": "website-cache"
     }
   ],
+  // Order emails, through Cloudflare Email Sending (the domain is onboarded in the dashboard).
+  "send_email": [{ "name": "EMAIL" }],
   // Resizes next/image photos through Cloudflare Images.
   "images": {
     "binding": "IMAGES"
@@ -54,7 +56,8 @@
   // and the zone whose cache is purged when content is published.
   "vars": {
     "MEDIA_ORIGIN": "https://media.byjoshuablack.com",
-    "CACHE_PURGE_ZONE_ID": "737f2e62e0010acf6e68453f3ca9ead6"
+    "CACHE_PURGE_ZONE_ID": "737f2e62e0010acf6e68453f3ca9ead6",
+    "PAYSTACK_API_URL": "https://api.paystack.co"
   },
   // Deploys keep variables set in the Cloudflare dashboard instead of deleting them.
   "keep_vars": true,

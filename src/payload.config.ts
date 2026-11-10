@@ -7,10 +7,14 @@ import { buildConfig, type PayloadLogger } from "payload";
 import type { GetPlatformProxyOptions } from "wrangler";
 import { Articles } from "./collections/Articles";
 import { Media } from "./collections/Media";
+import { Orders } from "./collections/Orders";
+import { Policies } from "./collections/Policies";
 import { Products } from "./collections/Products";
+import { Stock } from "./collections/Stock";
 import { Users } from "./collections/Users";
 import { globals } from "./globals";
 import { revalidateEndpoint } from "./payload/endpoints";
+import { checkoutEndpoint, paystackWebhookEndpoint } from "./store/endpoints";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const isProduction = process.env.NODE_ENV === "production";
@@ -72,9 +76,9 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: " | Joshua Black" },
   },
-  collections: [Products, Articles, Media, Users],
+  collections: [Products, Articles, Media, Orders, Stock, Policies, Users],
   globals,
-  endpoints: [revalidateEndpoint],
+  endpoints: [revalidateEndpoint, checkoutEndpoint, paystackWebhookEndpoint],
   // Workers cap PBKDF2 at 100,000 iterations; Payload's default of 600,000 fails there.
   auth: { passwordHashIterations: 100000 },
   secret: process.env.PAYLOAD_SECRET || "",

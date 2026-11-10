@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductGallery, ProductThumbs } from "@/components/product/ProductGallery";
 import { StoreNotice } from "@/components/product/StoreNotice";
+import { BuyNow } from "@/components/store/BuyNow";
 import { Accordion, type AccordionItem } from "@/components/ui/Accordion";
 import { Frame } from "@/components/ui/Frame";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -65,7 +66,7 @@ function related(product: Product, box: Product, squares: Product[]): Product[] 
 export default async function ProductPage(props: PageProps<"/collection/[slug]">) {
   const { slug } = await props.params;
   const content = await getContent();
-  const { collection, site, store, traditional } = content;
+  const { checkout, collection, shop, site, store, traditional } = content;
   const product = getProduct(content, slug);
   if (!product) notFound();
   const box = getBox(content);
@@ -100,11 +101,28 @@ export default async function ProductPage(props: PageProps<"/collection/[slug]">
               <span className="text-ink">{isPiece ? "Colour" : "Contains"}: </span>
               <span>{isPiece ? product.descriptor : "Ten pocket squares"}</span>
             </p>
-            {product.price && <p className="mt-2 text-label">{formatPrice(product.price)}</p>}
+            {product.price && (
+              <p className="mt-2 text-label">
+                {formatPrice(product.price)}
+                {shop.zones.length > 0 && shop.zones.every((zone) => zone.fee === 0) && (
+                  <span className="text-mute"> · {checkout.cart.priceNote}</span>
+                )}
+              </p>
+            )}
             <p className="copy mt-5 max-w-sm text-mute">{product.summary}</p>
 
             <div className="mt-8 max-w-sm">
-              <StoreNotice status={store.status} note={store.note} />
+              {shop.open && product.purchasable ? (
+                <BuyNow
+                  slug={product.slug}
+                  name={product.name}
+                  label={checkout.cart.proceed}
+                  quantityLabel={checkout.cart.quantityLabel}
+                  max={shop.maxPerOrder}
+                />
+              ) : (
+                <StoreNotice status={store.status} note={store.note} />
+              )}
               {isPiece && (
                 <p className="mt-4 text-center text-tiny text-mute">Sold as part of the Pocket Power box of ten.</p>
               )}

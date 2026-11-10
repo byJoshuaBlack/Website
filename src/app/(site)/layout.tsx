@@ -33,7 +33,8 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const content = await getContent();
   const { site } = content;
-  const { footerColumns, menuLinks, shopLink, suggestions } = content.navigation;
+  const { menuLinks, shopLink, suggestions } = content.navigation;
+  const { footerColumns } = content.navigation;
   return (
     <html
       lang="en"
@@ -53,6 +54,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           searchIndex={searchIndex(content)}
           suggestions={suggestions}
           shop={shopLink}
+          cartLabel={content.checkout.cart.title}
         />
         <main id="main" className="page-width flex-1">
           {children}

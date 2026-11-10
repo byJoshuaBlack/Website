@@ -70,6 +70,9 @@ export interface Config {
     products: Product;
     articles: Article;
     media: Media;
+    orders: Order;
+    stock: Stock;
+    policies: Policy;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -81,6 +84,9 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    stock: StockSelect<false> | StockSelect<true>;
+    policies: PoliciesSelect<false> | PoliciesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -102,6 +108,8 @@ export interface Config {
     storeNotice: StoreNotice;
     ordering: Ordering;
     contact: Contact;
+    shopSettings: ShopSetting;
+    checkout: Checkout;
   };
   globalsSelect: {
     siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -114,6 +122,8 @@ export interface Config {
     storeNotice: StoreNoticeSelect<false> | StoreNoticeSelect<true>;
     ordering: OrderingSelect<false> | OrderingSelect<true>;
     contact: ContactSelect<false> | ContactSelect<true>;
+    shopSettings: ShopSettingsSelect<false> | ShopSettingsSelect<true>;
+    checkout: CheckoutSelect<false> | CheckoutSelect<true>;
   };
   locale: null;
   widgets: {
@@ -238,6 +248,14 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  /**
+   * In naira, whole numbers. Shown once the shop is open.
+   */
+  price?: number | null;
+  /**
+   * Shows the Buy button while the shop is open. Needs a price and stock.
+   */
+  purchasable?: boolean | null;
   /**
    * Marks squares still waiting for their own photo.
    */
@@ -387,6 +405,160 @@ export interface Article {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Orders placed through the online store. Mark them dispatched and delivered as they go out.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  fulfilment: 'to-send' | 'dispatched' | 'delivered';
+  /**
+   * Courier, tracking number or anything worth recording.
+   */
+  note?: string | null;
+  reference: string;
+  status: 'awaiting' | 'paid' | 'failed' | 'cancelled';
+  items: {
+    product: number | Product;
+    name: string;
+    unitPrice: number;
+    quantity: number;
+    id?: string | null;
+  }[];
+  subtotal: number;
+  deliveryFee: number;
+  /**
+   * Naira.
+   */
+  total: number;
+  firstName: string;
+  lastName: string;
+  customerName: string;
+  email: string;
+  /**
+   * International form, ready for SMS.
+   */
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zone: string;
+  payment?: {
+    channel?: string | null;
+    paidAt?: string | null;
+    amount?: number | null;
+  };
+  /**
+   * Whether the confirmation and alert emails went out.
+   */
+  emailsSent?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * How many of each product can still be sold. Paid orders lower it on their own.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stock".
+ */
+export interface Stock {
+  id: number;
+  product: number | Product;
+  /**
+   * Below zero means more were sold than were in stock: contact those buyers.
+   */
+  quantity: number;
+  label?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Delivery, returns and refunds, terms of sale and privacy, at /policies/<slug>. Paystack reviews these before it activates payments.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "policies".
+ */
+export interface Policy {
+  id: number;
+  _order?: string | null;
+  title: string;
+  slug: string;
+  /**
+   * For search engines.
+   */
+  summary: string;
+  body: (
+    | {
+        text: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'paragraph';
+      }
+    | {
+        text: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'heading';
+      }
+    | {
+        text: string;
+        /**
+         * Optional: who said it.
+         */
+        cite?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'quote';
+      }
+    | {
+        style: 'bullet' | 'number';
+        items?:
+          | {
+              /**
+               * Optional lead-in.
+               */
+              title?: string | null;
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'list';
+      }
+    | {
+        items?:
+          | {
+              term: string;
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'pair';
+      }
+    | {
+        letters?:
+          | {
+              letter: string;
+              word: string;
+              text: string;
+              example?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'acronym';
+      }
+  )[];
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -448,6 +620,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'stock';
+        value: number | Stock;
+      } | null)
+    | ({
+        relationTo: 'policies';
+        value: number | Policy;
       } | null)
     | ({
         relationTo: 'users';
@@ -554,6 +738,8 @@ export interface ProductsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  price?: T;
+  purchasable?: T;
   needsPhoto?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -674,6 +860,139 @@ export interface MediaSelect<T extends boolean = true> {
   filesize?: T;
   width?: T;
   height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  fulfilment?: T;
+  note?: T;
+  reference?: T;
+  status?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        name?: T;
+        unitPrice?: T;
+        quantity?: T;
+        id?: T;
+      };
+  subtotal?: T;
+  deliveryFee?: T;
+  total?: T;
+  firstName?: T;
+  lastName?: T;
+  customerName?: T;
+  email?: T;
+  phone?: T;
+  address?: T;
+  city?: T;
+  state?: T;
+  zone?: T;
+  payment?:
+    | T
+    | {
+        channel?: T;
+        paidAt?: T;
+        amount?: T;
+      };
+  emailsSent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stock_select".
+ */
+export interface StockSelect<T extends boolean = true> {
+  product?: T;
+  quantity?: T;
+  label?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "policies_select".
+ */
+export interface PoliciesSelect<T extends boolean = true> {
+  _order?: T;
+  title?: T;
+  slug?: T;
+  summary?: T;
+  body?:
+    | T
+    | {
+        paragraph?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+              blockName?: T;
+            };
+        heading?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+              blockName?: T;
+            };
+        quote?:
+          | T
+          | {
+              text?: T;
+              cite?: T;
+              id?: T;
+              blockName?: T;
+            };
+        list?:
+          | T
+          | {
+              style?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        pair?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    term?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        acronym?:
+          | T
+          | {
+              letters?:
+                | T
+                | {
+                    letter?: T;
+                    word?: T;
+                    text?: T;
+                    example?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1444,6 +1763,142 @@ export interface Contact {
   createdAt?: string | null;
 }
 /**
+ * Opening the shop shows the Buy button on products that can be bought online.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shopSettings".
+ */
+export interface ShopSetting {
+  id: number;
+  /**
+   * Admins can test checkout at /checkout while the shop is closed.
+   */
+  status: 'closed' | 'open';
+  maxPerOrder: number;
+  alertEmail: string;
+  /**
+   * Each state belongs to one zone. The zone marked as everywhere else covers the rest.
+   */
+  zones?:
+    | {
+        name: string;
+        fee: number;
+        everywhereElse?: boolean | null;
+        /**
+         * Leave empty for the everywhere-else zone.
+         */
+        states?:
+          | (
+              | 'Abia'
+              | 'Adamawa'
+              | 'Akwa Ibom'
+              | 'Anambra'
+              | 'Bauchi'
+              | 'Bayelsa'
+              | 'Benue'
+              | 'Borno'
+              | 'Cross River'
+              | 'Delta'
+              | 'Ebonyi'
+              | 'Edo'
+              | 'Ekiti'
+              | 'Enugu'
+              | 'Federal Capital Territory (Abuja)'
+              | 'Gombe'
+              | 'Imo'
+              | 'Jigawa'
+              | 'Kaduna'
+              | 'Kano'
+              | 'Katsina'
+              | 'Kebbi'
+              | 'Kogi'
+              | 'Kwara'
+              | 'Lagos'
+              | 'Nasarawa'
+              | 'Niger'
+              | 'Ogun'
+              | 'Ondo'
+              | 'Osun'
+              | 'Oyo'
+              | 'Plateau'
+              | 'Rivers'
+              | 'Sokoto'
+              | 'Taraba'
+              | 'Yobe'
+              | 'Zamfara'
+            )[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "checkout".
+ */
+export interface Checkout {
+  id: number;
+  cart: {
+    proceed: string;
+    title: string;
+    payLabel: string;
+    intro?: string | null;
+    empty: string;
+    continueShopping: string;
+    remove: string;
+    quantityLabel: string;
+    detailsTitle: string;
+    /**
+     * Shown while every delivery zone's fee is ₦0.
+     */
+    priceNote: string;
+    soldOut: string;
+    closed: string;
+  };
+  form: {
+    firstNameLabel: string;
+    lastNameLabel: string;
+    emailLabel: string;
+    countryCodeLabel: string;
+    emailInvalid: string;
+    phoneInvalid: string;
+    phoneLabel: string;
+    addressLabel: string;
+    cityLabel: string;
+    stateLabel: string;
+    subtotalLabel: string;
+    deliveryLabel: string;
+    deliveryIncluded: string;
+    totalLabel: string;
+    /**
+     * Shown beside the box buyers tick; the policies are linked after it.
+     */
+    agreement: string;
+  };
+  complete: {
+    paidTitle: string;
+    paidText: string;
+    failedTitle: string;
+    failedText: string;
+    /**
+     * When Paystack has not confirmed the payment yet.
+     */
+    pendingTitle: string;
+    pendingText: string;
+    retryLabel: string;
+  };
+  email: {
+    subject: string;
+    intro: string;
+    closing: string;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "siteSettings_select".
  */
@@ -1971,6 +2426,90 @@ export interface ContactSelect<T extends boolean = true> {
               zoom?: T;
               top?: T;
             };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shopSettings_select".
+ */
+export interface ShopSettingsSelect<T extends boolean = true> {
+  status?: T;
+  maxPerOrder?: T;
+  alertEmail?: T;
+  zones?:
+    | T
+    | {
+        name?: T;
+        fee?: T;
+        everywhereElse?: T;
+        states?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "checkout_select".
+ */
+export interface CheckoutSelect<T extends boolean = true> {
+  cart?:
+    | T
+    | {
+        proceed?: T;
+        title?: T;
+        payLabel?: T;
+        intro?: T;
+        empty?: T;
+        continueShopping?: T;
+        remove?: T;
+        quantityLabel?: T;
+        detailsTitle?: T;
+        priceNote?: T;
+        soldOut?: T;
+        closed?: T;
+      };
+  form?:
+    | T
+    | {
+        firstNameLabel?: T;
+        lastNameLabel?: T;
+        emailLabel?: T;
+        countryCodeLabel?: T;
+        emailInvalid?: T;
+        phoneInvalid?: T;
+        phoneLabel?: T;
+        addressLabel?: T;
+        cityLabel?: T;
+        stateLabel?: T;
+        subtotalLabel?: T;
+        deliveryLabel?: T;
+        deliveryIncluded?: T;
+        totalLabel?: T;
+        agreement?: T;
+      };
+  complete?:
+    | T
+    | {
+        paidTitle?: T;
+        paidText?: T;
+        failedTitle?: T;
+        failedText?: T;
+        pendingTitle?: T;
+        pendingText?: T;
+        retryLabel?: T;
+      };
+  email?:
+    | T
+    | {
+        subject?: T;
+        intro?: T;
+        closing?: T;
       };
   _status?: T;
   updatedAt?: T;

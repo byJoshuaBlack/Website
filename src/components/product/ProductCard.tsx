@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HoverHint } from "@/components/editorial/HoverHint";
 import { Frame } from "@/components/ui/Frame";
 import type { Picture } from "@/content/types";
 
@@ -14,10 +15,21 @@ export type ProductCardData = {
   picture: Picture;
 };
 
-export function ProductCard({ product, sizes, eager }: { product: ProductCardData; sizes: string; eager?: boolean }) {
+type Props = {
+  product: ProductCardData;
+  sizes: string;
+  eager?: boolean;
+  /** A label that follows the mouse over the photo, with a soft shade, as on the style guide's tiles. */
+  hint?: string;
+};
+
+export function ProductCard({ product, sizes, eager, hint }: Props) {
   return (
-    <article className="group relative h-full bg-paper">
-      <Frame picture={product.picture} sizes={sizes} eager={eager} />
+    <article className="group relative h-full cursor-pointer bg-paper">
+      <div className="relative">
+        <Frame picture={product.picture} sizes={sizes} eager={eager} />
+        {hint && <HoverHint label={hint} />}
+      </div>
       <div className="px-4 pb-6 pt-4 text-center">
         <h3 className="heading-sm truncate">
           <Link href={product.href ?? `/collection/${product.slug}`} className="after:absolute after:inset-0">

@@ -4,7 +4,7 @@ import { image } from "@/payload/fields";
 import { revalidateOnDelete, revalidateOnPublish } from "@/payload/revalidate";
 
 // Block slugs match the `type` of ArticleBlock in src/content/types.ts.
-const blocks: Block[] = [
+export const articleBlocks: Block[] = [
   {
     slug: "paragraph",
     fields: [{ name: "text", type: "textarea", required: true }],
@@ -118,7 +118,7 @@ export const Articles: CollectionConfig = {
     { name: "kicker", type: "text", required: true, maxLength: 60, admin: { description: "The script line under the title." } },
     { name: "excerpt", type: "textarea", required: true, maxLength: 240 },
     image("cover"),
-    { name: "body", type: "blocks", required: true, minRows: 1, blocks },
+    { name: "body", type: "blocks", required: true, minRows: 1, blocks: articleBlocks },
     {
       name: "related",
       label: "Wear it with",
