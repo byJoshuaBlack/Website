@@ -148,7 +148,10 @@ here. This site has no dark mode, no backend and no dashboard.
 - `npm run generate:types` — after changing `wrangler.jsonc` or collections
 - Builds use webpack (`next build --webpack`), as Payload on Cloudflare requires.
 - Local runs need `PAYLOAD_SECRET` in `.env` and `.dev.vars` (see `.env.example`); the live one is a
-  Worker secret set in the Cloudflare dashboard.
+  Worker secret set in the Cloudflare dashboard (type Secret, never in `wrangler.jsonc`). `keep_vars`
+  stops deploys deleting dashboard variables; without it a Text `PAYLOAD_SECRET` vanished on deploy.
+- Payload hashes passwords with 100,000 PBKDF2 iterations (`auth.passwordHashIterations`): Workers
+  reject Payload's default of 600,000.
 - Cloudflare installs with npm 10 (`npm clean-install`). After changing dependencies, refresh the lock
   file with `npx npm@10 install`: one written by npm 11 alone fails there (missing `@emnapi/*`).
 - Judge image sharpness on a deployed Cloudflare version, where Cloudflare Images resizes photos;
