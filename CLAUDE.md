@@ -37,6 +37,10 @@ here. This site has no dark mode, no backend and no dashboard.
   so prices read "₦300,000 · Delivery included" and checkout, the confirmation and emails say
   "Included" instead of ₦0. Emails go through Cloudflare Email Sending (`EMAIL` binding) from
   orders@byjoshuablack.com; a failed email never blocks an order.
+- A paid order's page (`/checkout/complete`) reads Payment completed under an outline thumbs-up in pine
+  (`ThumbsUp`, CSS only: it draws itself, then loops a jiggle and a gap running round the line), says the details went to the buyer's email, lists the order, and
+  goes home after 8 seconds (`RedirectHome`), with a Go to home page button for anyone not waiting.
+  Paystack adds `trxref` and `reference` to the return address, so the site's callback carries none.
 - Policies live in Payload at `/policies/[slug]`. One page, Policies (`/policies/store`), covers
   ordering, payment, delivery, cancellations, returns and privacy; it is linked from the footer's
   Company column after Contact (in Navigation) and from "policies" in the checkout's agreement.

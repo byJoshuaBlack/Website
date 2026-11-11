@@ -470,6 +470,8 @@ const Checkout = page(
     group("complete", "After payment", [
       { name: "paidTitle", type: "text", required: true },
       { name: "paidText", type: "textarea", required: true },
+      { name: "redirectText", type: "text", admin: { description: "Under the order, while the page waits to go back to the home page." } },
+      { name: "homeLabel", label: "Home button", type: "text" },
       { name: "failedTitle", type: "text", required: true },
       { name: "failedText", type: "textarea", required: true },
       { name: "pendingTitle", type: "text", required: true, admin: { description: "When Paystack has not confirmed the payment yet." } },

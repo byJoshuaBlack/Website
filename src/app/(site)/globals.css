@@ -351,9 +351,89 @@
   }
 }
 
+/* The paid order's thumbs-up: its outline draws itself and swings up, the rays flash, then it loops:
+   the thumb jiggles and a gap runs once round the outline. */
+@keyframes thumb-lift {
+  from {
+    transform: rotate(-35deg) scale(0.7);
+  }
+}
+
+@keyframes thumb-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes thumb-jiggle {
+  0%,
+  20%,
+  100% {
+    transform: none;
+  }
+  4% {
+    transform: rotate(-7deg);
+  }
+  8% {
+    transform: rotate(6deg);
+  }
+  12% {
+    transform: rotate(-4deg);
+  }
+  16% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes thumb-gap {
+  0%,
+  22% {
+    stroke-dasharray: 1 0;
+    stroke-dashoffset: 0;
+  }
+  32% {
+    stroke-dasharray: 0.86 0.14;
+    stroke-dashoffset: -0.12;
+  }
+  82% {
+    stroke-dasharray: 0.86 0.14;
+    stroke-dashoffset: -0.9;
+  }
+  92%,
+  100% {
+    stroke-dasharray: 1 0;
+    stroke-dashoffset: -1;
+  }
+}
+
+@keyframes thumb-burst {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes home-timer {
+  from {
+    transform: scaleX(0);
+  }
+}
+
 @theme {
   --animate-sheet-in: sheet-in 0.4s var(--ease-editorial) both;
   --animate-rise-wave: rise-wave 6s ease-in-out infinite both;
+  --animate-thumb-lift: thumb-lift 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both, thumb-jiggle 3.2s 0.9s ease-in-out infinite;
+  --animate-thumb-draw: thumb-draw 0.9s ease-out both;
+  --animate-thumb-line: thumb-draw 0.9s ease-out both, thumb-gap 3.2s 0.9s linear infinite;
+  --animate-thumb-burst: thumb-burst 0.7s 0.75s ease-out both;
+  --animate-home-timer: home-timer 8s linear both;
 }
 
 dialog::backdrop {

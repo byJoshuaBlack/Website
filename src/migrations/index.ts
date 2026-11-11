@@ -4,6 +4,8 @@ import * as migration_20261110_070000_seed_content from './20261110_070000_seed_
 import * as migration_20261110_090018_store from './20261110_090018_store';
 import * as migration_20261110_090100_store_defaults from './20261110_090100_store_defaults';
 import * as migration_20261110_100000_store_policy from './20261110_100000_store_policy';
+import * as migration_20261111_145134_payment_completed from './20261111_145134_payment_completed';
+import * as migration_20261111_145200_payment_completed_copy from './20261111_145200_payment_completed_copy';
 
 export const migrations = [
   {
@@ -35,5 +37,15 @@ export const migrations = [
     up: migration_20261110_100000_store_policy.up,
     down: migration_20261110_100000_store_policy.down,
     name: '20261110_100000_store_policy',
+  },
+  {
+    up: migration_20261111_145134_payment_completed.up,
+    down: migration_20261111_145134_payment_completed.down,
+    name: '20261111_145134_payment_completed'
+  },
+  {
+    up: migration_20261111_145200_payment_completed_copy.up,
+    down: migration_20261111_145200_payment_completed_copy.down,
+    name: '20261111_145200_payment_completed_copy',
   },
 ];

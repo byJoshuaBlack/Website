@@ -223,6 +223,8 @@ export type CheckoutContent = {
   complete: {
     paidTitle: string;
     paidText: string;
+    redirectText?: string;
+    homeLabel?: string;
     failedTitle: string;
     failedText: string;
     pendingTitle: string;

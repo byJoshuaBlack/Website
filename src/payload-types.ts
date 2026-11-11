@@ -1880,6 +1880,11 @@ export interface Checkout {
   complete: {
     paidTitle: string;
     paidText: string;
+    /**
+     * Under the order, while the page waits to go back to the home page.
+     */
+    redirectText?: string | null;
+    homeLabel?: string | null;
     failedTitle: string;
     failedText: string;
     /**
@@ -2498,6 +2503,8 @@ export interface CheckoutSelect<T extends boolean = true> {
     | {
         paidTitle?: T;
         paidText?: T;
+        redirectText?: T;
+        homeLabel?: T;
         failedTitle?: T;
         failedText?: T;
         pendingTitle?: T;

@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { ClearCart } from "@/components/store/ClearCart";
+import { RedirectHome } from "@/components/store/RedirectHome";
+import { ThumbsUp } from "@/components/store/ThumbsUp";
 import { Button } from "@/components/ui/Button";
 import { getContent } from "@/content";
+import { cn } from "@/lib/cn";
 import { formatPrice } from "@/lib/format";
 import { finalizeOrder, type Outcome } from "@/store/checkout";
 
@@ -12,12 +15,14 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function CheckoutCompletePage(props: PageProps<"/checkout/complete">) {
-  const { reference } = await props.searchParams;
+  // Paystack returns with ?trxref=…&reference=…; older links carried a second reference of our own.
+  const query = await props.searchParams;
+  const reference = [query.reference, query.trxref].flat().find((value) => typeof value === "string" && value);
   const { checkout } = await getContent();
   const payload = await getPayload({ config });
 
   let outcome: Outcome = { status: "missing" };
-  if (typeof reference === "string" && reference) {
+  if (reference) {
     try {
       outcome = await finalizeOrder(payload, reference);
     } catch (error) {
@@ -33,7 +38,8 @@ export default async function CheckoutCompletePage(props: PageProps<"/checkout/c
 
   return (
     <section className="gutter mx-auto max-w-2xl py-16 text-center lg:py-28">
-      <h1 className="heading-lg">{title}</h1>
+      {paid && <ThumbsUp />}
+      <h1 className={cn("heading-lg", paid && "mt-8")}>{title}</h1>
       <p className="copy-lg mt-5">{text}</p>
       {paid && <ClearCart />}
       {paid && (
@@ -63,6 +69,14 @@ export default async function CheckoutCompletePage(props: PageProps<"/checkout/c
             <dd>{formatPrice({ amount: order.total, currency: "NGN" })}</dd>
           </div>
         </dl>
+      )}
+      {paid && <RedirectHome text={checkout.complete.redirectText} />}
+      {paid && checkout.complete.homeLabel && (
+        <div className="mx-auto mt-6 max-w-sm">
+          <Button href="/" variant="pine" replace>
+            {checkout.complete.homeLabel}
+          </Button>
+        </div>
       )}
       {!paid && !pending && (
         <div className="mx-auto mt-10 max-w-sm">

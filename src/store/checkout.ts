@@ -162,7 +162,8 @@ export async function startCheckout(payload: BasePayload, input: CheckoutInput, 
     email: input.email,
     amount: priced.total * 100,
     reference,
-    callbackUrl: `${origin}/checkout/complete?reference=${encodeURIComponent(reference)}`,
+    // Paystack adds ?trxref=…&reference=… itself; a reference of our own would arrive twice.
+    callbackUrl: `${origin}/checkout/complete`,
     metadata: { orderId: order.id, items: priced.lines.map((line) => ({ product: line.product.slug, quantity: line.quantity })) },
   });
   return { reference, authorizationUrl };
