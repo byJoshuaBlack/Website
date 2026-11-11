@@ -375,6 +375,12 @@ const ShopSettings: GlobalConfig = {
           ],
         },
         {
+          name: "estimate",
+          label: "Delivery time",
+          type: "text",
+          admin: { description: "Shown after payment, in the order email and on the invoice, such as \"5 to 7 working days\"." },
+        },
+        {
           name: "states",
           type: "select",
           hasMany: true,
@@ -482,6 +488,8 @@ const Checkout = page(
       { name: "subject", type: "text", required: true },
       { name: "intro", type: "textarea", required: true },
       { name: "closing", type: "textarea", required: true },
+      { name: "estimateLabel", label: "Label before the delivery time", type: "text" },
+      { name: "invoiceNote", label: "Note about the attached invoice", type: "text" },
     ]),
   ],
   undefined,

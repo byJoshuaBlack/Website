@@ -185,7 +185,7 @@ export type ContactContent = {
 export type ShopContent = {
   open: boolean;
   maxPerOrder: number;
-  zones: { name: string; fee: number; states: string[]; everywhereElse: boolean }[];
+  zones: { name: string; fee: number; states: string[]; everywhereElse: boolean; estimate?: string }[];
 };
 
 export type CheckoutContent = {
@@ -231,6 +231,7 @@ export type CheckoutContent = {
     pendingText: string;
     retryLabel: string;
   };
+  email?: { estimateLabel?: string };
 };
 
 export type Policy = { slug: string; title: string; summary: string; body: ArticleBlock[] };

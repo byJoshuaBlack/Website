@@ -37,6 +37,14 @@ here. This site has no dark mode, no backend and no dashboard.
   so prices read "₦300,000 · Delivery included" and checkout, the confirmation and emails say
   "Included" instead of ₦0. Emails go through Cloudflare Email Sending (`EMAIL` binding) from
   orders@byjoshuablack.com; a failed email never blocks an order.
+- Each delivery zone carries a delivery time (`estimate`: Abuja within 24 hours, 2 days at most;
+  elsewhere 5 to 7 working days), shown on the paid page, in the order email and on the invoice.
+  The buyer's and the brand's emails attach a one-page PDF invoice built on the Worker
+  (`src/store/invoice.ts`, with `pdf-lib`): the logo in pine, Tusker Grotesk headings in capitals and
+  Inter Regular text (the total line included), carbon and pine on linen. Workers cannot read files, so the fonts and logo are
+  packed into `src/store/invoice-assets.ts` by `npm run invoice:assets` (rerun it after changing
+  them). Inter is embedded whole: pdf-lib's subsetting drops its letters. Paystack has no invoice
+  for a checkout payment.
 - A paid order's page (`/checkout/complete`) reads Payment completed under an outline thumbs-up in pine
   (`ThumbsUp`, CSS only: it draws itself, then loops a jiggle and a gap running round the line), says the details went to the buyer's email, lists the order, and
   goes home after 8 seconds (`RedirectHome`), with a Go to home page button for anyone not waiting.
@@ -63,7 +71,8 @@ here. This site has no dark mode, no backend and no dashboard.
   build workers never open the database; at runtime they read Payload's Local API. Publishing calls
   `revalidatePath("/", "layout")` (`src/payload/revalidate.ts`): the D1 tag cache (`website-cache`)
   marks every page stale and the next visit re-renders it into the R2 page cache (`website-cache`).
-  Drafts never reach the site. Runtime dependencies are Next, React, Payload and the OpenNext adapter.
+  Drafts never reach the site. Runtime dependencies are Next, React, Payload, the OpenNext adapter
+  and, for the invoice, `pdf-lib` with `@pdf-lib/fontkit`.
 - Hosted on Cloudflare Workers through OpenNext (`wrangler.jsonc`, `open-next.config.ts`), not Vercel.
   Cloudflare Images resizes photos through the `IMAGES` binding.
 - Cloudflare Access (app "Joshua Black admin", email one-time codes for an allow-list) guards
@@ -191,6 +200,7 @@ here. This site has no dark mode, no backend and no dashboard.
 - `npm run dev` — local server on port 3000
 - `npm run check` — type-check, lint and production build
 - `npm run photos -- <folder>` — prepare photos
+- `npm run invoice:assets` — repack the invoice's fonts and logo after changing them
 - `npm run preview` — snapshot, Cloudflare build and local Workers runtime on port 8787, with a local database
 - `npm run deploy` — migrate the live database, snapshot its content, build for Cloudflare, deploy, then
   refresh pages if anything was published meanwhile (`scripts/after-deploy.mjs`, `POST /api/revalidate`).

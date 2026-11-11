@@ -166,6 +166,11 @@ Only the Pocket Power box is sold online. Everything is managed under **Shop** i
    `https://byjoshuablack.com/api/paystack/webhook` in Paystack's settings, place one real order,
    then set **Shop settings → status** to Open.
 
+**Emails and invoices:** a paid order emails the buyer their order, the delivery time for their
+zone (**Shop → Shop settings → Delivery zones → Delivery time**) and a PDF invoice; the alert email
+to the brand carries the same invoice. The site builds the invoice itself; nothing is needed in
+Paystack.
+
 **Day to day:** paid orders appear under **Shop → Orders** (and in the alert email). Set each one's
 **Delivery** to Dispatched, then Delivered, with a note such as the courier or tracking number. A
 negative stock means more were sold than were in stock: contact those buyers.

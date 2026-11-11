@@ -6,6 +6,8 @@ import * as migration_20261110_090100_store_defaults from './20261110_090100_sto
 import * as migration_20261110_100000_store_policy from './20261110_100000_store_policy';
 import * as migration_20261111_145134_payment_completed from './20261111_145134_payment_completed';
 import * as migration_20261111_145200_payment_completed_copy from './20261111_145200_payment_completed_copy';
+import * as migration_20261111_154235_order_emails from './20261111_154235_order_emails';
+import * as migration_20261111_154300_order_emails_copy from './20261111_154300_order_emails_copy';
 
 export const migrations = [
   {
@@ -41,11 +43,21 @@ export const migrations = [
   {
     up: migration_20261111_145134_payment_completed.up,
     down: migration_20261111_145134_payment_completed.down,
-    name: '20261111_145134_payment_completed'
+    name: '20261111_145134_payment_completed',
   },
   {
     up: migration_20261111_145200_payment_completed_copy.up,
     down: migration_20261111_145200_payment_completed_copy.down,
     name: '20261111_145200_payment_completed_copy',
+  },
+  {
+    up: migration_20261111_154235_order_emails.up,
+    down: migration_20261111_154235_order_emails.down,
+    name: '20261111_154235_order_emails'
+  },
+  {
+    up: migration_20261111_154300_order_emails_copy.up,
+    down: migration_20261111_154300_order_emails_copy.down,
+    name: '20261111_154300_order_emails_copy',
   },
 ];

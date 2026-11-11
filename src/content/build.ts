@@ -89,9 +89,15 @@ export async function buildContent(payload: BasePayload): Promise<Content> {
     open: shopSettings.status === "open",
     maxPerOrder: (shopSettings.maxPerOrder as number) ?? 1,
     // The alert address is for the brand only and never reaches the pages.
-    zones: ((shopSettings.zones ?? []) as { name: string; fee: number; states?: string[]; everywhereElse?: boolean }[]).map(
-      (zone) => ({ name: zone.name, fee: zone.fee, states: zone.states ?? [], everywhereElse: zone.everywhereElse === true }),
-    ),
+    zones: (
+      (shopSettings.zones ?? []) as { name: string; fee: number; states?: string[]; everywhereElse?: boolean; estimate?: string | null }[]
+    ).map((zone) => ({
+      name: zone.name,
+      fee: zone.fee,
+      states: zone.states ?? [],
+      everywhereElse: zone.everywhereElse === true,
+      ...(zone.estimate ? { estimate: zone.estimate } : {}),
+    })),
   };
 
   const { tileHint, searchPages, announcement, showPrices, ...siteFields } = settings;

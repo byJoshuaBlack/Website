@@ -1785,6 +1785,10 @@ export interface ShopSetting {
         fee: number;
         everywhereElse?: boolean | null;
         /**
+         * Shown after payment, in the order email and on the invoice, such as "5 to 7 working days".
+         */
+        estimate?: string | null;
+        /**
          * Leave empty for the everywhere-else zone.
          */
         states?:
@@ -1898,6 +1902,8 @@ export interface Checkout {
     subject: string;
     intro: string;
     closing: string;
+    estimateLabel?: string | null;
+    invoiceNote?: string | null;
   };
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
@@ -2451,6 +2457,7 @@ export interface ShopSettingsSelect<T extends boolean = true> {
         name?: T;
         fee?: T;
         everywhereElse?: T;
+        estimate?: T;
         states?: T;
         id?: T;
       };
@@ -2517,6 +2524,8 @@ export interface CheckoutSelect<T extends boolean = true> {
         subject?: T;
         intro?: T;
         closing?: T;
+        estimateLabel?: T;
+        invoiceNote?: T;
       };
   _status?: T;
   updatedAt?: T;

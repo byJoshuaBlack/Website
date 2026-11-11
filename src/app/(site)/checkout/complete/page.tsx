@@ -18,7 +18,7 @@ export default async function CheckoutCompletePage(props: PageProps<"/checkout/c
   // Paystack returns with ?trxref=…&reference=…; older links carried a second reference of our own.
   const query = await props.searchParams;
   const reference = [query.reference, query.trxref].flat().find((value) => typeof value === "string" && value);
-  const { checkout } = await getContent();
+  const { checkout, shop } = await getContent();
   const payload = await getPayload({ config });
 
   let outcome: Outcome = { status: "missing" };
@@ -32,6 +32,7 @@ export default async function CheckoutCompletePage(props: PageProps<"/checkout/c
   }
   const { order } = outcome;
   const paid = outcome.status === "paid" && order;
+  const estimate = shop.zones.find((zone) => zone.name === order?.zone)?.estimate;
   const pending = outcome.status === "pending";
   const title = paid ? checkout.complete.paidTitle : pending ? checkout.complete.pendingTitle : checkout.complete.failedTitle;
   const text = paid ? checkout.complete.paidText : pending ? checkout.complete.pendingText : checkout.complete.failedText;
@@ -68,6 +69,12 @@ export default async function CheckoutCompletePage(props: PageProps<"/checkout/c
             <dt>Total</dt>
             <dd>{formatPrice({ amount: order.total, currency: "NGN" })}</dd>
           </div>
+          {estimate && checkout.email?.estimateLabel && (
+            <div className="mt-3 flex justify-between gap-6 border-t border-rule pt-3">
+              <dt className="text-mute">{checkout.email.estimateLabel}</dt>
+              <dd className="text-right">{estimate}</dd>
+            </div>
+          )}
         </dl>
       )}
       {paid && <RedirectHome text={checkout.complete.redirectText} />}
