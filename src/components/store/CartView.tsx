@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Frame } from "@/components/ui/Frame";
 import { PhoneField } from "@/components/store/PhoneField";
@@ -66,6 +66,13 @@ export function CartView({ catalog, zones, states, copy, policies }: Props) {
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState<Partial<Record<Field | "form", string>>>({});
   const [sending, setSending] = useState(false);
+
+  // Safari shows this page from its back cache when buyers come back from Paystack; free Pay Now again.
+  useEffect(() => {
+    const restore = (event: PageTransitionEvent) => event.persisted && setSending(false);
+    window.addEventListener("pageshow", restore);
+    return () => window.removeEventListener("pageshow", restore);
+  }, []);
 
   const lines = cart.flatMap((line) => {
     const item = catalog.find((entry) => entry.slug === line.slug);
@@ -328,8 +335,8 @@ export function CartView({ catalog, zones, states, copy, policies }: Props) {
             {errors.form}
           </p>
         )}
-        <button type="submit" disabled={sending} className={buttonClasses("pine", "default", "mt-6 disabled:opacity-60")}>
-          {sending ? "…" : `${copy.cart.payLabel} · ${naira(total)}`}
+        <button type="submit" disabled={sending} className={buttonClasses("pine", "default", "mt-6 disabled:opacity-60 max-lg:mx-auto max-lg:max-w-xs")}>
+          {sending ? "…" : copy.cart.payLabel}
         </button>
       </div>
     </form>

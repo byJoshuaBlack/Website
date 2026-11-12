@@ -15,13 +15,13 @@ here. This site has no dark mode, no backend and no dashboard.
   product, with a `price` in naira and a row in Stock); squares stay "Sold as part of the Pocket Power
   box" and the fila is not sold. While Shop settings → status is Closed, the store and the box's page
   show the Store notice; Open swaps it for `BuyNow`: a pill quantity stepper (−, number, +) beside a
-  larger pine Proceed to Checkout pill, which puts that quantity in the cart and opens `/checkout`.
+  larger pine Checkout pill, which puts that quantity in the cart and opens `/checkout`.
   Signed-in admins can use `/checkout` while the shop is closed, to test. Never send visitors to Instagram, WhatsApp or direct messages to order; `/ordering` (the
   menu's Orders and Enquiries) explains it.
 - The cart lives in the browser (`src/lib/cart.ts`, localStorage `jb-cart`). Once it holds
   something, a bag circle with its count joins the dock (before Search) and a Checkout link the
   header, both to `/checkout`. `/checkout` holds the items with quantity steppers, delivery details,
-  the total and Pay now, which goes straight to Paystack's payment page. `/cart` redirects there; a
+  the total and Pay Now (no amount on it; below `lg` it is as wide as the menu's Shop Now), which goes straight to Paystack's payment page. `/cart` redirects there; a
   paid order empties the cart.
 - Delivery details ask for first and last name (orders keep both and the full name), an email
   checked as soon as the field is left, and a phone in one field (`PhoneField`): a country code

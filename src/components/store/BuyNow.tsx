@@ -14,7 +14,7 @@ type Props = {
   max: number;
 };
 
-// A quantity stepper beside a Proceed to Checkout pill; the chosen quantity goes straight to checkout.
+// A quantity stepper beside a Checkout pill; the chosen quantity goes straight to checkout.
 export function BuyNow({ slug, name, label, quantityLabel, max }: Props) {
   const router = useRouter();
   const inCart = useCart().find((line) => line.slug === slug)?.quantity;

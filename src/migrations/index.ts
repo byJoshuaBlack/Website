@@ -10,6 +10,7 @@ import * as migration_20261111_154235_order_emails from './20261111_154235_order
 import * as migration_20261111_154300_order_emails_copy from './20261111_154300_order_emails_copy';
 import * as migration_20261112_090000_order_email_wording from './20261112_090000_order_email_wording';
 import * as migration_20261112_101454_order_alert_addresses from './20261112_101454_order_alert_addresses';
+import * as migration_20261112_120000_checkout_labels from './20261112_120000_checkout_labels';
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20261112_101454_order_alert_addresses.up,
     down: migration_20261112_101454_order_alert_addresses.down,
     name: '20261112_101454_order_alert_addresses'
+  },
+  {
+    up: migration_20261112_120000_checkout_labels.up,
+    down: migration_20261112_120000_checkout_labels.down,
+    name: '20261112_120000_checkout_labels',
   },
 ];
