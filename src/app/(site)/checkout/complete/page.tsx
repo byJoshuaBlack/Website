@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { ClearCart } from "@/components/store/ClearCart";
-import { RedirectHome } from "@/components/store/RedirectHome";
 import { ThumbsUp } from "@/components/store/ThumbsUp";
 import { Button } from "@/components/ui/Button";
 import { getContent } from "@/content";
@@ -77,9 +76,8 @@ export default async function CheckoutCompletePage(props: PageProps<"/checkout/c
           )}
         </dl>
       )}
-      {paid && <RedirectHome text={checkout.complete.redirectText} />}
       {paid && checkout.complete.homeLabel && (
-        <div className="mx-auto mt-6 max-w-sm">
+        <div className="mx-auto mt-8 max-w-sm">
           <Button href="/" variant="pine" replace>
             {checkout.complete.homeLabel}
           </Button>

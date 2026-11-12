@@ -168,7 +168,8 @@ Only the Pocket Power box is sold online. Everything is managed under **Shop** i
 
 **Emails and invoices:** a paid order emails the buyer their order, the delivery time for their
 zone (**Shop → Shop settings → Delivery zones → Delivery time**) and a PDF invoice; the alert email
-to the brand carries the same invoice. The site builds the invoice itself; nothing is needed in
+to the brand carries the same invoice, and goes to the alert address plus any listed under
+**Shop → Shop settings → Also send order alerts to**. The site builds the invoice itself; nothing is needed in
 Paystack.
 
 **Day to day:** paid orders appear under **Shop → Orders** (and in the alert email). Set each one's

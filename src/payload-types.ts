@@ -1777,6 +1777,15 @@ export interface ShopSetting {
   maxPerOrder: number;
   alertEmail: string;
   /**
+   * Everyone here gets the same alert as the address above, in one email.
+   */
+  alertEmails?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Each state belongs to one zone. The zone marked as everywhere else covers the rest.
    */
   zones?:
@@ -1884,9 +1893,6 @@ export interface Checkout {
   complete: {
     paidTitle: string;
     paidText: string;
-    /**
-     * Under the order, while the page waits to go back to the home page.
-     */
     redirectText?: string | null;
     homeLabel?: string | null;
     failedTitle: string;
@@ -2451,6 +2457,12 @@ export interface ShopSettingsSelect<T extends boolean = true> {
   status?: T;
   maxPerOrder?: T;
   alertEmail?: T;
+  alertEmails?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
   zones?:
     | T
     | {

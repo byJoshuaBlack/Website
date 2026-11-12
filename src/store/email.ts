@@ -107,9 +107,13 @@ export async function sendOrderEmails(payload: BasePayload, order: Order) {
     attachments,
   });
 
+  // One alert for the whole team: the main address, then any others, each listed once.
+  const team = [shop.alertEmail, ...(shop.alertEmails ?? []).map((row) => row.email)];
+  const alertTo = team.filter((address, index) => team.findIndex((other) => other.toLowerCase() === address.toLowerCase()) === index);
+
   await email.send({
     from,
-    to: shop.alertEmail,
+    to: alertTo,
     replyTo: order.email,
     subject: `New order ${order.reference}: ${naira(order.total)}`,
     text: [heading, ...lines, `Email: ${order.email}`, "", "See it in the admin under Shop → Orders."].join("\n"),

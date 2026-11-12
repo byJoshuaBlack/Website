@@ -353,6 +353,15 @@ const ShopSettings: GlobalConfig = {
       access: { read: ({ req }) => Boolean(req.user) },
     },
     {
+      name: "alertEmails",
+      label: "Also send order alerts to",
+      labels: { singular: "Address", plural: "Addresses" },
+      type: "array",
+      admin: { description: "Everyone here gets the same alert as the address above, in one email." },
+      access: { read: ({ req }) => Boolean(req.user) },
+      fields: [{ name: "email", type: "email", required: true }],
+    },
+    {
       name: "zones",
       label: "Delivery zones",
       type: "array",
@@ -476,7 +485,8 @@ const Checkout = page(
     group("complete", "After payment", [
       { name: "paidTitle", type: "text", required: true },
       { name: "paidText", type: "textarea", required: true },
-      { name: "redirectText", type: "text", admin: { description: "Under the order, while the page waits to go back to the home page." } },
+      // No longer shown: the paid page stopped going home on its own. Kept so the schema stays additive.
+      { name: "redirectText", type: "text", admin: { hidden: true } },
       { name: "homeLabel", label: "Home button", type: "text" },
       { name: "failedTitle", type: "text", required: true },
       { name: "failedText", type: "textarea", required: true },

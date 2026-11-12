@@ -9,6 +9,7 @@ import * as migration_20261111_145200_payment_completed_copy from './20261111_14
 import * as migration_20261111_154235_order_emails from './20261111_154235_order_emails';
 import * as migration_20261111_154300_order_emails_copy from './20261111_154300_order_emails_copy';
 import * as migration_20261112_090000_order_email_wording from './20261112_090000_order_email_wording';
+import * as migration_20261112_101454_order_alert_addresses from './20261112_101454_order_alert_addresses';
 
 export const migrations = [
   {
@@ -54,7 +55,7 @@ export const migrations = [
   {
     up: migration_20261111_154235_order_emails.up,
     down: migration_20261111_154235_order_emails.down,
-    name: '20261111_154235_order_emails'
+    name: '20261111_154235_order_emails',
   },
   {
     up: migration_20261111_154300_order_emails_copy.up,
@@ -65,5 +66,10 @@ export const migrations = [
     up: migration_20261112_090000_order_email_wording.up,
     down: migration_20261112_090000_order_email_wording.down,
     name: '20261112_090000_order_email_wording',
+  },
+  {
+    up: migration_20261112_101454_order_alert_addresses.up,
+    down: migration_20261112_101454_order_alert_addresses.down,
+    name: '20261112_101454_order_alert_addresses'
   },
 ];

@@ -420,12 +420,6 @@
   }
 }
 
-@keyframes home-timer {
-  from {
-    transform: scaleX(0);
-  }
-}
-
 @theme {
   --animate-sheet-in: sheet-in 0.4s var(--ease-editorial) both;
   --animate-rise-wave: rise-wave 6s ease-in-out infinite both;
@@ -433,7 +427,6 @@
   --animate-thumb-draw: thumb-draw 0.9s ease-out both;
   --animate-thumb-line: thumb-draw 0.9s ease-out both, thumb-gap 3.2s 0.9s linear infinite;
   --animate-thumb-burst: thumb-burst 0.7s 0.75s ease-out both;
-  --animate-home-timer: home-timer 8s linear both;
 }
 
 dialog::backdrop {

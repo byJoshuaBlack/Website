@@ -36,7 +36,8 @@ here. This site has no dark mode, no backend and no dashboard.
   (Abuja, then everywhere else). Pocket Power is ₦300,000 with delivery included: both zones are ₦0,
   so prices read "₦300,000 · Delivery included" and checkout, the confirmation and emails say
   "Included" instead of ₦0. Emails go through Cloudflare Email Sending (`EMAIL` binding) from
-  orders@byjoshuablack.com; a failed email never blocks an order.
+  orders@byjoshuablack.com; a failed email never blocks an order. The brand's order alert goes, as one
+  email, to Shop settings' alert address and any under "Also send order alerts to" (`alertEmails`).
 - Each delivery zone carries a delivery time (`estimate`: Abuja within 24 hours, or 48 hours at the latest;
   elsewhere 5 to 7 working days), shown on the paid page, in the order email and on the invoice.
   The buyer's and the brand's emails attach a one-page PDF invoice built on the Worker
@@ -47,7 +48,7 @@ here. This site has no dark mode, no backend and no dashboard.
   for a checkout payment.
 - A paid order's page (`/checkout/complete`) reads Payment completed under an outline thumbs-up in pine
   (`ThumbsUp`, CSS only: it draws itself, then loops a jiggle and a gap running round the line), says the details went to the buyer's email, lists the order, and
-  goes home after 8 seconds (`RedirectHome`), with a Go to home page button for anyone not waiting.
+  ends with a pine Go to home page button. It never leaves on its own: the brand removed an earlier 8-second redirect.
   Paystack adds `trxref` and `reference` to the return address, so the site's callback carries none.
 - Policies live in Payload at `/policies/[slug]`. One page, Policies (`/policies/store`), covers
   ordering, payment, delivery, cancellations, returns and privacy; it is linked from the footer's
