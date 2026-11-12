@@ -8,6 +8,7 @@ import * as migration_20261111_145134_payment_completed from './20261111_145134_
 import * as migration_20261111_145200_payment_completed_copy from './20261111_145200_payment_completed_copy';
 import * as migration_20261111_154235_order_emails from './20261111_154235_order_emails';
 import * as migration_20261111_154300_order_emails_copy from './20261111_154300_order_emails_copy';
+import * as migration_20261112_090000_order_email_wording from './20261112_090000_order_email_wording';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20261111_154300_order_emails_copy.up,
     down: migration_20261111_154300_order_emails_copy.down,
     name: '20261111_154300_order_emails_copy',
+  },
+  {
+    up: migration_20261112_090000_order_email_wording.up,
+    down: migration_20261112_090000_order_email_wording.down,
+    name: '20261112_090000_order_email_wording',
   },
 ];

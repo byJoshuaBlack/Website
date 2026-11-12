@@ -37,7 +37,7 @@ here. This site has no dark mode, no backend and no dashboard.
   so prices read "₦300,000 · Delivery included" and checkout, the confirmation and emails say
   "Included" instead of ₦0. Emails go through Cloudflare Email Sending (`EMAIL` binding) from
   orders@byjoshuablack.com; a failed email never blocks an order.
-- Each delivery zone carries a delivery time (`estimate`: Abuja within 24 hours, 2 days at most;
+- Each delivery zone carries a delivery time (`estimate`: Abuja within 24 hours, or 48 hours at the latest;
   elsewhere 5 to 7 working days), shown on the paid page, in the order email and on the invoice.
   The buyer's and the brand's emails attach a one-page PDF invoice built on the Worker
   (`src/store/invoice.ts`, with `pdf-lib`): the logo in pine, Tusker Grotesk headings in capitals and
