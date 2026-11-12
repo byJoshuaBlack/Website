@@ -60,8 +60,8 @@ here. This site has no dark mode, no backend and no dashboard.
   when tapped (`CopyText`). Its copy never mentions ordering.
 - Prices show once the shop is Open (or earlier with `showPrices` in Site settings).
 - The store at `/collection` shows the Pocket Power box alone, as the brand asked: its card (photo,
-  name, price) leads to the box's page, with the tiles' hover (pointer cursor, soft shade and the
-  tile hint following the mouse), and `BuyNow` sits under it. No grid, filters or tile sizes. Every Shop Now (header, dock, menu) goes there; the home page's Buy Pocket Power goes to the
+  name, price) leads to the box's page, with the tiles' hover (pointer cursor and soft shade) but the
+  tile hint held at the photo's centre rather than following the mouse, as the brand asked, and `BuyNow` sits under it. No grid, filters or tile sizes. Every Shop Now (header, dock, menu) goes there; the home page's Buy Pocket Power goes to the
   box's page. The ten squares keep their own pages (from search, articles and the box's family), and
   a square's page keeps "More from Pocket Power". The fila, a branded Yoruba cap, keeps its page at
   `/traditional`, reached from a picture link on the Pocket Power page (`traditional.card`).

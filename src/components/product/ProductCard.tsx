@@ -19,7 +19,7 @@ type Props = {
   product: ProductCardData;
   sizes: string;
   eager?: boolean;
-  /** A label that follows the mouse over the photo, with a soft shade, as on the style guide's tiles. */
+  /** A label centred over the photo on hover, with a soft shade, as on the style guide's tiles. */
   hint?: string;
 };
 
@@ -28,7 +28,7 @@ export function ProductCard({ product, sizes, eager, hint }: Props) {
     <article className="group relative h-full cursor-pointer bg-paper">
       <div className="relative">
         <Frame picture={product.picture} sizes={sizes} eager={eager} />
-        {hint && <HoverHint label={hint} />}
+        {hint && <HoverHint label={hint} centred />}
       </div>
       <div className="px-4 pb-6 pt-4 text-center">
         <h3 className="heading-sm truncate">
